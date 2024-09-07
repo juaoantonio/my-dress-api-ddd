@@ -22,6 +22,9 @@ describe("Dress Entity Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
+      expect(dress.getModel()).toBe("Tomara que caia");
+      expect(dress.getColor()).toBe("Marsala");
+      expect(dress.getFabric()).toBe("Tule");
     });
 
     it("should create Dress without id", () => {

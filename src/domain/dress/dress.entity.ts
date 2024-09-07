@@ -52,6 +52,18 @@ export class Dress extends AggregateRoot<DressId> {
     return this.description.toString();
   }
 
+  getModel(): string {
+    return this.description.getModel();
+  }
+
+  getColor(): string {
+    return this.description.getColor();
+  }
+
+  getFabric(): string {
+    return this.description.getFabric();
+  }
+
   getImageUrl(): string {
     return this.imageUrl;
   }

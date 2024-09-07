@@ -23,6 +23,18 @@ export class DressDescription extends ValueObject {
     this.validate();
   }
 
+  getColor(): string {
+    return this.color;
+  }
+
+  getModel(): string {
+    return this.model;
+  }
+
+  getFabric(): string {
+    return this.fabric;
+  }
+
   validate(): void {
     if (!this.color) throw new Error("Cor do vestido não pode ser vazia");
     if (!this.model) throw new Error("Modelo do vestido não pode ser vazio");
