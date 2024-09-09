@@ -1,6 +1,8 @@
 import { AggregateRoot } from "@domain/@shared/aggregate-root";
 import { DressId } from "@domain/dress/dress-id.vo";
 import { DressDescription } from "@domain/dress/dress-description.vo";
+import { DressValidatorFactory } from "@domain/dress/dress.validator";
+import { EntityValidationError } from "@domain/validators/validation.error";
 
 type DressConstructorProps = {
   id?: DressId;
@@ -32,7 +34,7 @@ export class Dress extends AggregateRoot<DressId> {
     this.rentPrice = props.rentPrice;
     this.description = props.description;
     this.isPickedUp = false;
-    this.validate();
+    Dress.validate(this);
   }
 
   public static create(props: DressCreateCommandProps): Dress {
@@ -46,6 +48,15 @@ export class Dress extends AggregateRoot<DressId> {
       rentPrice: props.rentPrice,
       description: new DressDescription(props.description),
     });
+  }
+
+  static validate(entity: Dress): void {
+    const validator = DressValidatorFactory.create();
+    const isValid = validator.validate(entity);
+
+    if (!isValid) {
+      throw new EntityValidationError(validator.errors);
+    }
   }
 
   getName(): string {
@@ -86,22 +97,15 @@ export class Dress extends AggregateRoot<DressId> {
 
   changeRentPrice(newRentPrice: number): void {
     this.rentPrice = newRentPrice;
-    this.validate();
+    Dress.validate(this);
   }
 
   changeImageUrl(newImageUrl: string): void {
     this.imageUrl = newImageUrl;
-    this.validate();
+    Dress.validate(this);
   }
 
   changeDescription(newDescription: DressDescription): void {
     this.description = newDescription;
-  }
-
-  private validate(): void {
-    if (!this.imageUrl) throw new Error("Url da imagem inválida");
-    if (!this.rentPrice && this.rentPrice != 0)
-      throw new Error("Preço inválido");
-    if (this.rentPrice < 0) throw new Error("Preço não pode ser negativo");
   }
 }

@@ -1,4 +1,6 @@
 import { ValueObject } from "@domain/@shared/value-object";
+import { DressDescriptionValidatorFactory } from "@domain/dress/dress-description.validator";
+import { ValueObjectValidationError } from "@domain/validators/validation.error";
 
 export class DressDescription extends ValueObject {
   private readonly color: string;
@@ -20,7 +22,16 @@ export class DressDescription extends ValueObject {
     this.model = model;
     this.fabric = fabric;
 
-    this.validate();
+    DressDescription.validate(this);
+  }
+
+  static validate(vo: DressDescription): void {
+    const validator = DressDescriptionValidatorFactory.create();
+    const isValid = validator.validate(vo);
+
+    if (!isValid) {
+      throw new ValueObjectValidationError(validator.errors);
+    }
   }
 
   getColor(): string {
@@ -33,12 +44,6 @@ export class DressDescription extends ValueObject {
 
   getFabric(): string {
     return this.fabric;
-  }
-
-  validate(): void {
-    if (!this.color) throw new Error("Cor do vestido não pode ser vazia");
-    if (!this.model) throw new Error("Modelo do vestido não pode ser vazio");
-    if (!this.fabric) throw new Error("Tecido do vestido não pode ser vazio");
   }
 
   toString(): string {

@@ -1,9 +1,14 @@
-import { describe, expect, it } from "vitest";
 import { Dress } from "@domain/dress/dress.entity";
 import { DressId } from "@domain/dress/dress-id.vo";
 import { DressDescription } from "@domain/dress/dress-description.vo";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("Dress Entity Unit Tests", function () {
+  beforeEach(() => {
+    vi.spyOn(Dress, "validate");
+    vi.spyOn(DressDescription, "validate");
+  });
+
   describe("Dress Create Constructor", function () {
     it("should create a Dress with id", function () {
       const dress = new Dress({
@@ -25,6 +30,7 @@ describe("Dress Entity Unit Tests", function () {
       expect(dress.getModel()).toBe("Tomara que caia");
       expect(dress.getColor()).toBe("Marsala");
       expect(dress.getFabric()).toBe("Tule");
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
 
     it("should create Dress without id", () => {
@@ -43,47 +49,7 @@ describe("Dress Entity Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
-    });
-
-    it("should not create dress without valid description", () => {
-      expect(
-        () =>
-          new Dress({
-            imageUrl: "https://www.google.com",
-            rentPrice: 100,
-            description: new DressDescription({
-              color: "Marsala",
-              model: "",
-              fabric: "Tule",
-            }),
-          }),
-      ).toThrowError("Modelo do vestido não pode ser vazio");
-
-      expect(
-        () =>
-          new Dress({
-            imageUrl: "https://www.google.com",
-            rentPrice: 100,
-            description: new DressDescription({
-              color: "Marsala",
-              model: "Tomara que caia",
-              fabric: "",
-            }),
-          }),
-      ).toThrowError("Tecido do vestido não pode ser vazio");
-
-      expect(
-        () =>
-          new Dress({
-            imageUrl: "https://www.google.com",
-            rentPrice: 100,
-            description: new DressDescription({
-              color: "",
-              model: "Tomara que caia",
-              fabric: "Tule",
-            }),
-          }),
-      ).toThrowError("Cor do vestido não pode ser vazia");
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -105,6 +71,7 @@ describe("Dress Entity Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
 
     it("should create Dress without id", () => {
@@ -123,58 +90,7 @@ describe("Dress Entity Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
-    });
-
-    it("should not create dress without valid description", () => {
-      expect(() =>
-        Dress.create({
-          imageUrl: "https://www.google.com",
-          rentPrice: 100,
-          description: {
-            color: "Marsala",
-            model: "",
-            fabric: "Tule",
-          },
-        }),
-      ).toThrowError("Modelo do vestido não pode ser vazio");
-
-      expect(() =>
-        Dress.create({
-          imageUrl: "https://www.google.com",
-          rentPrice: 100,
-          description: {
-            color: "Marsala",
-            model: "Tomara que caia",
-            fabric: "",
-          },
-        }),
-      ).toThrowError("Tecido do vestido não pode ser vazio");
-
-      expect(() =>
-        Dress.create({
-          imageUrl: "https://www.google.com",
-          rentPrice: 100,
-          description: {
-            color: "",
-            model: "Tomara que caia",
-            fabric: "Tule",
-          },
-        }),
-      ).toThrowError("Cor do vestido não pode ser vazia");
-    });
-
-    it("should not create dress with negative price", () => {
-      expect(() =>
-        Dress.create({
-          imageUrl: "https://www.google.com",
-          rentPrice: -100,
-          description: {
-            color: "Marsala",
-            model: "Tomara que caia",
-            fabric: "Tule",
-          },
-        }),
-      ).toThrowError("Preço não pode ser negativo");
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -195,6 +111,7 @@ describe("Dress Entity Unit Tests", function () {
       dress.pickUp();
 
       expect(dress.getIsPickedUp()).toBe(true);
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
 
     it("should return a Dress", () => {
@@ -213,6 +130,7 @@ describe("Dress Entity Unit Tests", function () {
 
       dress.returned();
       expect(dress.getIsPickedUp()).toBe(false);
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
 
     it("should change price", () => {
@@ -230,27 +148,10 @@ describe("Dress Entity Unit Tests", function () {
       dress.changeRentPrice(200);
 
       expect(dress.getRentPrice()).toBe(200);
-      dress.changeRentPrice(0);
 
-      expect(dress.getRentPrice()).toBe(0);
       dress.changeRentPrice(200);
       expect(dress.getRentPrice()).toBe(200);
-    });
-
-    it("should not change rent price with negative number", () => {
-      const dress = Dress.create({
-        imageUrl: "https://www.google.com",
-        rentPrice: 100,
-        description: {
-          color: "Marsala",
-          model: "Tomara que caia",
-          fabric: "Tule",
-        },
-      });
-
-      expect(() => dress.changeRentPrice(-10)).toThrowError(
-        "Preço não pode ser negativo",
-      );
+      expect(Dress.validate).toHaveBeenCalledTimes(3);
     });
 
     it("should change description", () => {
@@ -271,6 +172,8 @@ describe("Dress Entity Unit Tests", function () {
           fabric: "Seda",
         }),
       );
+
+      expect(Dress.validate).toHaveBeenCalledTimes(1);
     });
 
     it("should change image url", () => {
@@ -286,6 +189,164 @@ describe("Dress Entity Unit Tests", function () {
 
       dress.changeImageUrl("https://teste.png");
       expect(dress.getImageUrl()).toBe("https://teste.png");
+      expect(Dress.validate).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("Dress Validation", function () {
+    describe("Dress Create Validation", function () {
+      const scenarios = [
+        {
+          data: {
+            imageUrl: "",
+            rentPrice: 100,
+            description: {
+              color: "Marsala",
+              model: "Tomara que caia",
+              fabric: "Tule",
+            },
+          },
+          errors: {
+            imageUrl: [
+              "Url da imagem não pode ser vazia",
+              "Url da imagem deve ser válida",
+            ],
+          },
+        },
+        {
+          data: {
+            imageUrl: "https://www.google.com",
+            rentPrice: 0,
+            description: {
+              color: "Marsala",
+              model: "Tomara que caia",
+              fabric: "Tule",
+            },
+          },
+          errors: {
+            rentPrice: ["Preço de aluguel deve ser um número positivo"],
+          },
+        },
+        {
+          data: {
+            imageUrl: "https://www.google.com",
+            rentPrice: -1,
+            description: {
+              color: "Marsala",
+              model: "Tomara que caia",
+              fabric: "Tule",
+            },
+          },
+          errors: {
+            rentPrice: ["Preço de aluguel deve ser um número positivo"],
+          },
+        },
+      ];
+      it.each(scenarios)(
+        "should validate the creation of a Dress",
+        (scenario) => {
+          expect(() => Dress.create(scenario.data)).containsErrorMessages(
+            scenario.errors,
+          );
+          expect(Dress.validate).toHaveBeenCalledTimes(1);
+        },
+      );
+    });
+
+    describe("Dress Description Validation", function () {
+      const scenarios = [
+        {
+          data: {
+            imageUrl: "https://www.google.com",
+            rentPrice: 100,
+            description: {
+              color: "Marsala",
+              model: "",
+              fabric: "Tule",
+            },
+          },
+          errors: {
+            model: ["Modelo do vestido não pode ser vazio"],
+          },
+        },
+        {
+          data: {
+            imageUrl: "https://www.google.com",
+            rentPrice: 100,
+            description: {
+              color: "Marsala",
+              model: "Tomara que caia",
+              fabric: "",
+            },
+          },
+          errors: {
+            fabric: ["Tecido do vestido não pode ser vazio"],
+          },
+        },
+        {
+          data: {
+            imageUrl: "https://www.google.com",
+            rentPrice: 100,
+            description: {
+              color: "",
+              model: "Tomara que caia",
+              fabric: "Tule",
+            },
+          },
+          errors: {
+            color: ["Cor do vestido não pode ser vazia"],
+          },
+        },
+      ];
+
+      it.each(scenarios)(
+        "should validate the creation of a new Dress Description",
+        (scenario) => {
+          expect(() => Dress.create(scenario.data)).containsErrorMessages(
+            scenario.errors,
+          );
+          expect(DressDescription.validate).toHaveBeenCalledTimes(1);
+        },
+      );
+    });
+
+    describe("Dress Change Validation", function () {
+      it("should validate the change of a Dress Image Url", () => {
+        const dress = Dress.create({
+          imageUrl: "https://www.google.com",
+          rentPrice: 100,
+          description: {
+            color: "Marsala",
+            model: "Tomara que caia",
+            fabric: "Tule",
+          },
+        });
+
+        expect(() => dress.changeImageUrl("")).containsErrorMessages({
+          imageUrl: [
+            "Url da imagem não pode ser vazia",
+            "Url da imagem deve ser válida",
+          ],
+        });
+        expect(Dress.validate).toHaveBeenCalledTimes(2);
+      });
+
+      it("should validate the change of a Dress Rent Price", () => {
+        const dress = Dress.create({
+          imageUrl: "https://www.google.com",
+          rentPrice: 100,
+          description: {
+            color: "Marsala",
+            model: "Tomara que caia",
+            fabric: "Tule",
+          },
+        });
+
+        expect(() => dress.changeRentPrice(0)).containsErrorMessages({
+          rentPrice: ["Preço de aluguel deve ser um número positivo"],
+        });
+        expect(Dress.validate).toHaveBeenCalledTimes(2);
+      });
     });
   });
 });

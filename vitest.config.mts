@@ -3,6 +3,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    setupFiles: ["./test/vitest.setup.ts"],
     alias: {
       // ts-expect-error expect
       "@infra/": new URL("./src/infra/", import.meta.url).pathname,
@@ -14,6 +15,7 @@ export default defineConfig({
       "@test/": new URL("./test/", import.meta.url).pathname,
     },
     root: "./",
+    restoreMocks: true,
   },
   resolve: {
     alias: {
