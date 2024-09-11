@@ -1,6 +1,5 @@
 import { ValueObject } from "@domain/@shared/value-object";
-import { DressDescriptionValidatorFactory } from "@domain/dress/dress-description.validator";
-import { ValueObjectValidationError } from "@domain/validators/validation.error";
+import { InvalidDressDescriptionError } from "@domain/dress/dress.errors";
 
 export class DressDescription extends ValueObject {
   private readonly color: string;
@@ -21,17 +20,14 @@ export class DressDescription extends ValueObject {
     this.color = color;
     this.model = model;
     this.fabric = fabric;
-
-    DressDescription.validate(this);
   }
 
-  static validate(vo: DressDescription): void {
-    const validator = DressDescriptionValidatorFactory.create();
-    const isValid = validator.validate(vo);
+  validate(): void {
+    const isValid = [this.color, this.model, this.fabric].every(
+      (value) => value.length > 0,
+    );
 
-    if (!isValid) {
-      throw new ValueObjectValidationError(validator.errors);
-    }
+    if (!isValid) throw new InvalidDressDescriptionError();
   }
 
   getColor(): string {

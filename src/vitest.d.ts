@@ -1,8 +1,9 @@
 import "vitest";
-import { FieldsErrors } from "@domain/validators/validator-fields.interface";
 
 interface CustomMatchers<R = unknown> {
-  containsErrorMessages: (expected: FieldsErrors) => R;
+  notificationContainsErrorMessages: (
+    expected: Array<string | { [key: string]: string[] }>,
+  ) => R;
 }
 
 declare module "vitest" {

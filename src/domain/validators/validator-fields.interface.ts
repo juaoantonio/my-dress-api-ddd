@@ -1,9 +1,11 @@
-export type FieldsErrors = {
-  [field: string]: string[];
-};
+import { INotification } from "@domain/validators/notification.interface";
 
-export interface IValidatorFields<PropsValidated> {
-  errors: FieldsErrors | null;
-  validatedData: PropsValidated | null;
-  validate(props: any): boolean;
+export type FieldsErrors =
+  | {
+      [field: string]: string[];
+    }
+  | string;
+
+export interface IValidatorFields {
+  validate(notification: INotification, data: any, fields?: string[]): void;
 }

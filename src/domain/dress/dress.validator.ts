@@ -1,37 +1,28 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-  IsString,
-  IsUrl,
-} from "class-validator";
+import { IsPositive, IsUrl } from "class-validator";
 import { Dress } from "@domain/dress/dress.entity";
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
+import { INotification } from "@domain/validators/notification.interface";
 
 class DressRules {
-  @IsUrl({}, { message: "Url da imagem deve ser válida" })
-  @IsString({
-    message: "Url da imagem deve ser uma string",
-  })
-  @IsNotEmpty({
-    message: "Url da imagem não pode ser vazia",
-  })
+  @IsUrl({}, { message: "Url da imagem deve ser válida", groups: ["imageUrl"] })
   imageUrl: string;
 
-  @IsPositive({ message: "Preço de aluguel deve ser um número positivo" })
-  @IsNumber({}, { message: "Preço de aluguel deve ser um número" })
-  @IsNotEmpty({ message: "Preço de aluguel não pode ser vazio" })
+  @IsPositive({
+    message: "Preço de aluguel deve ser positivo",
+    groups: ["rentPrice"],
+  })
   rentPrice: number;
 
-  constructor(props: Dress) {
-    this.imageUrl = props.getImageUrl();
-    this.rentPrice = props.getRentPrice();
+  constructor(aggregate: Dress) {
+    Object.assign(this, aggregate);
   }
 }
 
-export class DressValidator extends ClassValidatorFields<DressRules> {
-  validate(entity: Dress) {
-    return super.validate(new DressRules(entity));
+export class DressValidator extends ClassValidatorFields {
+  validate(notification: INotification, data: any, fields?: string[]): void {
+    const newFields = fields?.length ? fields : Object.keys(data);
+
+    return super.validate(notification, new DressRules(data), newFields);
   }
 }
 

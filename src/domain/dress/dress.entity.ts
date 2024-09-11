@@ -2,7 +2,6 @@ import { AggregateRoot } from "@domain/@shared/aggregate-root";
 import { DressId } from "@domain/dress/dress-id.vo";
 import { DressDescription } from "@domain/dress/dress-description.vo";
 import { DressValidatorFactory } from "@domain/dress/dress.validator";
-import { EntityValidationError } from "@domain/validators/validation.error";
 
 type DressConstructorProps = {
   id?: DressId;
@@ -34,7 +33,7 @@ export class Dress extends AggregateRoot<DressId> {
     this.rentPrice = props.rentPrice;
     this.description = props.description;
     this.isPickedUp = false;
-    Dress.validate(this);
+    this.validate();
   }
 
   public static create(props: DressCreateCommandProps): Dress {
@@ -50,15 +49,12 @@ export class Dress extends AggregateRoot<DressId> {
     });
   }
 
-  static validate(entity: Dress): void {
+  validate(fields?: string[]): void {
     const validator = DressValidatorFactory.create();
-    const isValid = validator.validate(entity);
-
-    if (!isValid) {
-      throw new EntityValidationError(validator.errors);
-    }
+    return validator.validate(this.notification, this, fields);
   }
 
+  // Getters
   getName(): string {
     return this.description.toString();
   }
@@ -83,6 +79,7 @@ export class Dress extends AggregateRoot<DressId> {
     return this.rentPrice;
   }
 
+  // Behavior Methods
   pickUp(): void {
     this.isPickedUp = true;
   }
@@ -97,15 +94,23 @@ export class Dress extends AggregateRoot<DressId> {
 
   changeRentPrice(newRentPrice: number): void {
     this.rentPrice = newRentPrice;
-    Dress.validate(this);
+    this.validate(["rentPrice"]);
   }
 
   changeImageUrl(newImageUrl: string): void {
     this.imageUrl = newImageUrl;
-    Dress.validate(this);
+    this.validate(["imageUrl"]);
   }
 
-  changeDescription(newDescription: DressDescription): void {
-    this.description = newDescription;
+  changeDescription({
+    color,
+    model,
+    fabric,
+  }: {
+    color: string;
+    model: string;
+    fabric: string;
+  }): void {
+    this.description = new DressDescription({ color, model, fabric });
   }
 }
