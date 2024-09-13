@@ -17,7 +17,9 @@ describe("Dress Entity Unit Tests", function () {
         }),
       });
 
-      expect(dress.getId()).toBe("81d4babd-9644-4b6a-afaf-930f6608f6d5");
+      expect(dress.getId().getValue()).toBe(
+        "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+      );
       expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
@@ -63,7 +65,9 @@ describe("Dress Entity Unit Tests", function () {
         },
       });
 
-      expect(dress.getId()).toBe("81d4babd-9644-4b6a-afaf-930f6608f6d5");
+      expect(dress.getId().getValue()).toBe(
+        "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+      );
       expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);

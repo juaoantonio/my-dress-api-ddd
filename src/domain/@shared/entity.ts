@@ -11,8 +11,8 @@ export abstract class Entity<ID extends Identifier> {
     this.id = id;
   }
 
-  public getId(): string {
-    return this.id.getValue();
+  public getId(): ID {
+    return this.id;
   }
 
   public equals(entity: Entity<ID>): boolean {
