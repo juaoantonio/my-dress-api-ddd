@@ -1,4 +1,4 @@
-import { Dress } from "@domain/dress/dress.entity";
+import { Dress } from "@domain/dress/dress.aggregate";
 import { DressId } from "@domain/dress/dress-id.vo";
 
 export interface DressRepository {

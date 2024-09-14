@@ -1,5 +1,5 @@
-import { IsPositive, IsUrl } from "class-validator";
-import { Dress } from "@domain/dress/dress.entity";
+import { IsNotEmpty, IsPositive, IsUrl } from "class-validator";
+import { Dress } from "@domain/dress/dress.aggregate";
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
 import { INotification } from "@domain/validators/notification.interface";
 
@@ -12,6 +12,24 @@ class DressRules {
     groups: ["rentPrice"],
   })
   rentPrice: number;
+
+  @IsNotEmpty({
+    message: "Modelo não pode ser vazio",
+    groups: ["model"],
+  })
+  model: string;
+
+  @IsNotEmpty({
+    message: "Cor não pode ser vazia",
+    groups: ["color"],
+  })
+  color: string;
+
+  @IsNotEmpty({
+    message: "Tecido não pode ser vazio",
+    groups: ["fabric"],
+  })
+  fabric: string;
 
   constructor(aggregate: Dress) {
     Object.assign(this, aggregate);
