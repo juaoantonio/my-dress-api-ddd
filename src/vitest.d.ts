@@ -1,9 +1,8 @@
 import "vitest";
+import { ToJsonOutput } from "@domain/validators/notification.interface";
 
 interface CustomMatchers<R = unknown> {
-  notificationContainsErrorMessages: (
-    expected: Array<string | { [key: string]: string[] }>,
-  ) => R;
+  notificationContainsErrorMessages: (expected: ToJsonOutput) => R;
 }
 
 declare module "vitest" {

@@ -1,6 +1,7 @@
-import { AggregateRoot, IDomainEvent } from "@domain/@shared/aggregate-root";
+import { AggregateRoot } from "@domain/@shared/aggregate-root";
 import { Uuid } from "@domain/@shared/value-objects/uuid.vo";
 import { describe, expect, it } from "vitest";
+import { IDomainEvent } from "@domain/@shared/events/domain-event";
 
 class StubEvent implements IDomainEvent {
   public aggregateId: Uuid;

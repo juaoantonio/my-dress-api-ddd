@@ -8,6 +8,7 @@ type DressConstructorProps = {
   imageUrl: string;
   rentPrice: number;
   description: DressDescription;
+  isPickedUp?: boolean;
 };
 
 type DressCreateCommandProps = {
@@ -32,7 +33,7 @@ export class Dress extends AggregateRoot<DressId> {
     this.imageUrl = props.imageUrl;
     this.rentPrice = props.rentPrice;
     this.description = props.description;
-    this.isPickedUp = false;
+    this.isPickedUp = props.isPickedUp || false;
     this.validate();
   }
 
