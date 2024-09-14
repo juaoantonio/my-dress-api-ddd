@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { Clutch, ClutchCreateCommandProps } from "@domain/clutch/clutch.entity";
+import {
+  Clutch,
+  ClutchCreateCommandProps,
+} from "@domain/clutch/clutch.aggregate";
 import { ClutchId } from "@domain/clutch/clutch-id.vo";
 import { ToJsonOutput } from "@domain/validators/notification.interface";
 
-describe("Clutch Entity Unit Tests", function () {
+describe("Clutch Aggregate Unit Tests", function () {
   describe("Clutch Create Constructor", function () {
     it("should create a valid clutch", () => {
       const clutch = new Clutch({
@@ -159,6 +162,142 @@ describe("Clutch Entity Unit Tests", function () {
           expect(clutch.notification).notificationContainsErrorMessages(errors);
         },
       );
+    });
+
+    describe("Validate Clutch Behavior Methods", function () {
+      describe("Validate Change Image Url", function () {
+        it("should validate valid imageUrl", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeImageUrl("https://example.com/image2.jpg");
+          expect(clutch.notification.hasErrors()).toBe(false);
+        });
+
+        it("should validate invalid imageUrl", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeImageUrl("");
+          expect(clutch.notification).notificationContainsErrorMessages([
+            {
+              imageUrl: [
+                "Url da imagem não pode ser vazia",
+                "Url da imagem deve ser válida",
+              ],
+            },
+          ]);
+          expect(clutch.notification.hasErrors()).toBe(true);
+        });
+      });
+
+      describe("Validate Change Rent Price", function () {
+        it("should validate valid rent price", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeRentPrice(200);
+          expect(clutch.notification.hasErrors()).toBe(false);
+        });
+
+        it("should validate invalid rent price", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeRentPrice(0);
+          expect(clutch.notification).notificationContainsErrorMessages([
+            {
+              rentPrice: ["Preço de aluguel deve ser positivo"],
+            },
+          ]);
+          expect(clutch.notification.hasErrors()).toBe(true);
+
+          clutch.changeRentPrice(-1);
+          expect(clutch.notification).notificationContainsErrorMessages([
+            {
+              rentPrice: ["Preço de aluguel deve ser positivo"],
+            },
+          ]);
+        });
+      });
+
+      describe("Validate Change Color", function () {
+        it("should validate valid color", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeColor("Azul");
+          expect(clutch.notification.hasErrors()).toBe(false);
+        });
+
+        it("should validate invalid color", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeColor("");
+          expect(clutch.notification).notificationContainsErrorMessages([
+            {
+              color: ["Cor não pode ser vazia"],
+            },
+          ]);
+          expect(clutch.notification.hasErrors()).toBe(true);
+        });
+      });
+
+      describe("Validate Change Model", function () {
+        it("should validate valid model", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeModel("Strass fecho de strass 2");
+          expect(clutch.notification.hasErrors()).toBe(false);
+        });
+
+        it("should validate invalid model", () => {
+          const clutch = Clutch.create({
+            imageUrl: "https://example.com/image.jpg",
+            rentPrice: 100,
+            model: "Strass fecho de strass",
+            color: "Prata",
+          });
+
+          clutch.changeModel("");
+          expect(clutch.notification).notificationContainsErrorMessages([
+            {
+              model: ["Modelo não pode ser vazio"],
+            },
+          ]);
+          expect(clutch.notification.hasErrors()).toBe(true);
+        });
+      });
     });
   });
 });

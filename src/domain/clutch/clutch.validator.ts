@@ -1,10 +1,14 @@
 import { IsNotEmpty, IsPositive, IsString, IsUrl } from "class-validator";
-import { Clutch } from "@domain/clutch/clutch.entity";
+import { Clutch } from "@domain/clutch/clutch.aggregate";
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
 import { INotification } from "@domain/validators/notification.interface";
 
 class ClutchRules {
   @IsUrl({}, { message: "Url da imagem deve ser válida", groups: ["imageUrl"] })
+  @IsNotEmpty({
+    message: "Url da imagem não pode ser vazia",
+    groups: ["imageUrl"],
+  })
   imageUrl: string;
 
   @IsPositive({

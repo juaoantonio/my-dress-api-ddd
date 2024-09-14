@@ -61,6 +61,26 @@ export class Clutch extends AggregateRoot<ClutchId> {
     this.isPickedUp = false;
   }
 
+  public changeRentPrice(rentPrice: number): void {
+    this.rentPrice = rentPrice;
+    this.validate(["rentPrice"]);
+  }
+
+  public changeColor(color: string): void {
+    this.color = color;
+    this.validate(["color"]);
+  }
+
+  public changeModel(model: string): void {
+    this.model = model;
+    this.validate(["model"]);
+  }
+
+  changeImageUrl(imageUrl: string): void {
+    this.imageUrl = imageUrl;
+    this.validate(["imageUrl"]);
+  }
+
   // Getters
 
   public getImageUrl(): string {
