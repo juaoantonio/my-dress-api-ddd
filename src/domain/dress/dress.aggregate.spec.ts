@@ -27,24 +27,6 @@ describe("Dress Aggregate Unit Tests", function () {
 
       expect(dress.notification.hasErrors()).toBe(false);
     });
-
-    it("should create Dress without id", () => {
-      const dress = new Dress({
-        imageUrl: "https://www.google.com",
-        rentPrice: 100,
-        color: "Marsala",
-        model: "Tomara que caia",
-        fabric: "Tule",
-      });
-
-      expect(dress.getId()).toBeDefined();
-      expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
-      expect(dress.getImageUrl()).toBe("https://www.google.com");
-      expect(dress.getIsPickedUp()).toBe(false);
-      expect(dress.getRentPrice()).toBe(100);
-
-      expect(dress.notification.hasErrors()).toBe(false);
-    });
   });
 
   describe("Dress Create Factory Method", function () {

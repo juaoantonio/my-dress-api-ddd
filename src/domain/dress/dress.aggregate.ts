@@ -3,7 +3,7 @@ import { DressId } from "@domain/dress/dress-id.vo";
 import { DressValidatorFactory } from "@domain/dress/dress.validator";
 
 type DressConstructorProps = {
-  id?: DressId;
+  id: DressId;
   imageUrl: string;
   rentPrice: number;
   color: string;
@@ -30,7 +30,7 @@ export class Dress extends AggregateRoot<DressId> {
   private isPickedUp: boolean;
 
   constructor(props: DressConstructorProps) {
-    super(props.id ? props.id : DressId.random());
+    super(props.id);
     this.imageUrl = props.imageUrl;
     this.rentPrice = props.rentPrice;
     this.color = props.color;
