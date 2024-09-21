@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsPositive, IsString, IsUrl } from "class-validator";
-import { Clutch } from "@domain/clutch/clutch.aggregate";
+import { Clutch } from "@domain/products/clutch/clutch.aggregate";
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
 import { INotification } from "@domain/validators/notification.interface";
 

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsPositive, IsUrl } from "class-validator";
-import { Dress } from "@domain/dress/dress.aggregate";
+import { Dress } from "@domain/products/dress/dress.aggregate";
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
 import { INotification } from "@domain/validators/notification.interface";
 

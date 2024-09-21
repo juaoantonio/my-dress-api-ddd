@@ -4,3 +4,10 @@ export class InvalidBookingPeriodError extends Error {
     this.name = "InvalidBookingPeriodError";
   }
 }
+
+export class BookingAlreadyPaidError extends Error {
+  constructor() {
+    super("Reserva já paga");
+    this.name = "BookingAlreadyPaidError";
+  }
+}

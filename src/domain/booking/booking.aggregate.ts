@@ -1,8 +1,9 @@
-import { DressId } from "@domain/dress/dress-id.vo";
-import { ClutchId } from "@domain/clutch/clutch-id.vo";
 import { BookingPeriod } from "@domain/booking/booking-period.vo";
 import { AggregateRoot } from "@domain/@shared/aggregate-root";
 import { Uuid } from "@domain/@shared/value-objects/uuid.vo";
+import { DateVo } from "@domain/booking/date.vo";
+import { BookingItem } from "@domain/booking/entities/booking-item.entity";
+import { BookingValidatorFactory } from "@domain/booking/booking.validator";
 
 export enum BookingPaymentStatus {
   PENDING = "PENDING",
@@ -19,56 +20,104 @@ export enum BookingStatus {
 export type BookingConstructorProps = {
   id: BookingId;
   customerId: string;
-  eventDate: Date;
+  eventDate: DateVo;
   expectedBookingPeriod: BookingPeriod;
-  bookingPeriod: BookingPeriod;
-  dresses: DressId[];
-  clutches: ClutchId[];
+  bookingPeriod?: BookingPeriod;
+  items: BookingItem[];
   paymentStatus?: BookingPaymentStatus;
   status?: BookingStatus;
+  amountPaid?: number;
 };
 
 export type BookingCreateCommandProps = {
   id?: string;
   customerId: string;
-  eventDate: Date;
-  expectedBookingPeriod: BookingPeriod;
-  dresses: DressId[];
-  clutches: ClutchId[];
+  eventDate: string;
+  expectedPickUpDate: string;
+  expectedReturnDate: string;
+  pickUpDate?: string;
+  returnDate?: string;
+  items: BookingItem[];
+  paymentStatus?: BookingPaymentStatus;
+  status?: BookingStatus;
+  amountPaid?: number;
 };
 
 export class BookingId extends Uuid {}
 
 export class Booking extends AggregateRoot<BookingId> {
   private customerId: string;
-  private eventDate: Date;
+  private eventDate: DateVo;
   private expectedBookingPeriod: BookingPeriod;
-  private bookingPeriod: BookingPeriod;
-  private dresses: DressId[] = [];
-  private clutches: ClutchId[] = [];
+  private bookingPeriod?: BookingPeriod;
+  private items: BookingItem[] = [];
   private paymentStatus: BookingPaymentStatus;
   private status: BookingStatus;
+  private amountPaid: number = 0;
+  private totalBookingPrice: number = 0;
 
-  constructor({
-    bookingPeriod,
-    expectedBookingPeriod,
-    clutches,
-    paymentStatus,
-    status,
-    dresses,
-    customerId,
-    eventDate,
-    id,
-  }: BookingConstructorProps) {
-    super(id);
-    this.customerId = customerId;
-    this.eventDate = eventDate;
-    this.expectedBookingPeriod = expectedBookingPeriod;
-    this.bookingPeriod = bookingPeriod;
-    this.dresses = dresses;
-    this.clutches = clutches;
-    this.paymentStatus = paymentStatus;
-    this.status = status;
+  constructor(props: BookingConstructorProps) {
+    super(props.id);
+    this.customerId = props.customerId;
+    this.eventDate = props.eventDate;
+    this.expectedBookingPeriod = props.expectedBookingPeriod;
+    this.bookingPeriod = props.bookingPeriod;
+    this.items = props.items;
+    this.paymentStatus = props.paymentStatus;
+    this.status = props.status;
+    this.amountPaid = props.amountPaid || 0;
+    this.totalBookingPrice = this.calculateTotalPrice();
+  }
+
+  static create(props: BookingCreateCommandProps): Booking {
+    const newInstanceId = props.id
+      ? BookingId.create(props.id)
+      : BookingId.random();
+
+    return new Booking({
+      id: newInstanceId,
+      customerId: props.customerId,
+      eventDate: DateVo.create(props.eventDate),
+      expectedBookingPeriod: new BookingPeriod({
+        pickUpDate: DateVo.create(props.expectedPickUpDate),
+        returnDate: DateVo.create(props.expectedReturnDate),
+      }),
+      bookingPeriod: props.pickUpDate
+        ? new BookingPeriod({
+            pickUpDate: DateVo.create(props.pickUpDate),
+            returnDate: DateVo.create(props.returnDate),
+          })
+        : undefined,
+      items: props.items,
+      paymentStatus: BookingPaymentStatus.PENDING,
+      status: BookingStatus.PAYMENT_PENDING,
+      amountPaid: props.amountPaid,
+    });
+  }
+
+  validate(fields?: string[]): void {
+    const validator = BookingValidatorFactory.create();
+    return validator.validate(this.notification, this, fields);
+  }
+
+  // Behavior methods
+  public calculateTotalPrice(): number {
+    return this.items.reduce((acc, item) => acc + item.getRentPrice(), 0);
+  }
+
+  public updatePayment(value: number): void {
+    this.amountPaid += value;
+    this.validate();
+  }
+
+  public addItem(item: BookingItem): void {
+    this.items.push(item);
+  }
+
+  public removeItem(itemId: string): void {
+    this.items = this.items.filter(
+      (item) => item.getId().getValue() !== itemId,
+    );
   }
 
   // Getters
@@ -76,7 +125,7 @@ export class Booking extends AggregateRoot<BookingId> {
     return this.customerId;
   }
 
-  public getEventDate(): Date {
+  public getEventDate(): DateVo {
     return this.eventDate;
   }
 
@@ -84,7 +133,31 @@ export class Booking extends AggregateRoot<BookingId> {
     return this.expectedBookingPeriod;
   }
 
-  public getBookingPeriod(): BookingPeriod {
+  public getBookingPeriod(): BookingPeriod | undefined {
     return this.bookingPeriod;
+  }
+
+  public getItems(): BookingItem[] {
+    return this.items;
+  }
+
+  public getDresses(): BookingItem[] {
+    return this.items.filter((item) => item.getType() === "dress");
+  }
+
+  public getClutches(): BookingItem[] {
+    return this.items.filter((item) => item.getType() === "clutch");
+  }
+
+  public getPaymentStatus(): BookingPaymentStatus {
+    return this.paymentStatus;
+  }
+
+  public getStatus(): BookingStatus {
+    return this.status;
+  }
+
+  public getAmountPaid(): number {
+    return this.amountPaid;
   }
 }

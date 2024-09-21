@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   Clutch,
   ClutchCreateCommandProps,
-} from "@domain/clutch/clutch.aggregate";
-import { ClutchId } from "@domain/clutch/clutch-id.vo";
+} from "@domain/products/clutch/clutch.aggregate";
+import { ClutchId } from "@domain/products/clutch/clutch-id.vo";
 import { ToJsonOutput } from "@domain/validators/notification.interface";
 
 describe("Clutch Aggregate Unit Tests", function () {

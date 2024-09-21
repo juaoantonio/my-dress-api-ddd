@@ -1,5 +1,5 @@
-import { Dress } from "@domain/dress/dress.aggregate";
-import { DressId } from "@domain/dress/dress-id.vo";
+import { Dress } from "@domain/products/dress/dress.aggregate";
+import { DressId } from "@domain/products/dress/dress-id.vo";
 import { describe, expect, it } from "vitest";
 
 describe("Dress Aggregate Unit Tests", function () {
@@ -100,7 +100,7 @@ describe("Dress Aggregate Unit Tests", function () {
       dress.pickUp();
       expect(dress.getIsPickedUp()).toBe(true);
 
-      dress.returned();
+      dress.return();
       expect(dress.getIsPickedUp()).toBe(false);
 
       expect(dress.notification.hasErrors()).toBe(false);

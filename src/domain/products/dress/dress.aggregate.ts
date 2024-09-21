@@ -1,6 +1,7 @@
 import { AggregateRoot } from "@domain/@shared/aggregate-root";
-import { DressId } from "@domain/dress/dress-id.vo";
-import { DressValidatorFactory } from "@domain/dress/dress.validator";
+import { DressId } from "@domain/products/dress/dress-id.vo";
+import { DressValidatorFactory } from "@domain/products/dress/dress.validator";
+import { IProduct } from "@domain/products/product.interface";
 
 type DressConstructorProps = {
   id: DressId;
@@ -21,7 +22,7 @@ type DressCreateCommandProps = {
   fabric: string;
 };
 
-export class Dress extends AggregateRoot<DressId> {
+export class Dress extends AggregateRoot<DressId> implements IProduct {
   private imageUrl: string;
   private rentPrice: number;
   private color: string;
@@ -90,7 +91,7 @@ export class Dress extends AggregateRoot<DressId> {
     this.isPickedUp = true;
   }
 
-  returned(): void {
+  return(): void {
     this.isPickedUp = false;
   }
 
