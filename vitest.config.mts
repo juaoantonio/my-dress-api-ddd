@@ -7,6 +7,11 @@ export default defineConfig({
     setupFiles: ["./test/vitest.setup.ts"],
     root: "./",
     restoreMocks: true,
+    coverage: {
+      provider: "v8",
+      enabled: true,
+      reporter: ["html"],
+    },
   },
 
   plugins: [
