@@ -4,11 +4,7 @@ import { Uuid } from "@domain/@shared/value-objects/uuid.vo";
 import { DateVo } from "@domain/booking/date.vo";
 import { BookingItem } from "@domain/booking/entities/booking-item.entity";
 import { BookingValidatorFactory } from "@domain/booking/booking.validator";
-
-export enum BookingPaymentStatus {
-  PENDING = "PENDING",
-  PAID = "PAID",
-}
+import { BookingAmountPaidUpdatedEvent } from "@domain/booking/booking.event";
 
 export enum BookingStatus {
   PAYMENT_PENDING = "PAYMENT_PENDING",
@@ -24,7 +20,6 @@ export type BookingConstructorProps = {
   expectedBookingPeriod: BookingPeriod;
   bookingPeriod?: BookingPeriod;
   items: BookingItem[];
-  paymentStatus?: BookingPaymentStatus;
   status?: BookingStatus;
   amountPaid?: number;
 };
@@ -38,7 +33,6 @@ export type BookingCreateCommandProps = {
   pickUpDate?: string;
   returnDate?: string;
   items: BookingItem[];
-  paymentStatus?: BookingPaymentStatus;
   status?: BookingStatus;
   amountPaid?: number;
 };
@@ -51,7 +45,6 @@ export class Booking extends AggregateRoot<BookingId> {
   private expectedBookingPeriod: BookingPeriod;
   private bookingPeriod?: BookingPeriod;
   private items: BookingItem[] = [];
-  private paymentStatus: BookingPaymentStatus;
   private status: BookingStatus;
   private amountPaid: number = 0;
   private totalBookingPrice: number = 0;
@@ -63,10 +56,13 @@ export class Booking extends AggregateRoot<BookingId> {
     this.expectedBookingPeriod = props.expectedBookingPeriod;
     this.bookingPeriod = props.bookingPeriod;
     this.items = props.items;
-    this.paymentStatus = props.paymentStatus;
     this.status = props.status;
     this.amountPaid = props.amountPaid || 0;
     this.totalBookingPrice = this.calculateTotalPrice();
+    this.registerHandler(
+      BookingAmountPaidUpdatedEvent.name,
+      this.onBookingAmountPaidUpdate.bind(this),
+    );
   }
 
   static create(props: BookingCreateCommandProps): Booking {
@@ -89,7 +85,6 @@ export class Booking extends AggregateRoot<BookingId> {
           })
         : undefined,
       items: props.items,
-      paymentStatus: BookingPaymentStatus.PENDING,
       status: BookingStatus.PAYMENT_PENDING,
       amountPaid: props.amountPaid,
     });
@@ -108,6 +103,7 @@ export class Booking extends AggregateRoot<BookingId> {
   public updatePayment(value: number): void {
     this.amountPaid += value;
     this.validate();
+    this.applyEvent(new BookingAmountPaidUpdatedEvent(this.getId(), value));
   }
 
   public addItem(item: BookingItem): void {
@@ -118,6 +114,13 @@ export class Booking extends AggregateRoot<BookingId> {
     this.items = this.items.filter(
       (item) => item.getId().getValue() !== itemId,
     );
+  }
+
+  // Event handlers
+  public onBookingAmountPaidUpdate(): void {
+    if (this.amountPaid === this.totalBookingPrice) {
+      this.status = BookingStatus.READY;
+    }
   }
 
   // Getters
@@ -147,10 +150,6 @@ export class Booking extends AggregateRoot<BookingId> {
 
   public getClutches(): BookingItem[] {
     return this.items.filter((item) => item.getType() === "clutch");
-  }
-
-  public getPaymentStatus(): BookingPaymentStatus {
-    return this.paymentStatus;
   }
 
   public getStatus(): BookingStatus {
