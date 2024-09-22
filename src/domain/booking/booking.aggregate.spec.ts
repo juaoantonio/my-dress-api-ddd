@@ -5,7 +5,7 @@ import {
   BookingId,
   BookingStatus,
 } from "@domain/booking/booking.aggregate";
-import { DateVo } from "@domain/booking/date.vo";
+import { DateVo } from "@domain/@shared/vo/date.vo";
 import {
   BookingItem,
   BookingItemId,

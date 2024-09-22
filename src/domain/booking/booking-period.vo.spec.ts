@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { DateVo } from "@domain/booking/date.vo";
+import { DateVo } from "@domain/@shared/vo/date.vo";
 import { BookingPeriod } from "@domain/booking/booking-period.vo";
 
 describe("BookingPeriod", () => {

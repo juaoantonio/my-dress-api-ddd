@@ -2,6 +2,8 @@ import { AggregateRoot } from "@domain/@shared/aggregate-root";
 import { DressId } from "@domain/products/dress/dress-id.vo";
 import { DressValidatorFactory } from "@domain/products/dress/dress.validator";
 import { IProduct } from "@domain/products/product.interface";
+import { DateVo } from "@domain/@shared/vo/date.vo";
+import { Period } from "@domain/@shared/vo/period.vo";
 
 type DressConstructorProps = {
   id: DressId;
@@ -11,6 +13,7 @@ type DressConstructorProps = {
   model: string;
   fabric: string;
   isPickedUp?: boolean;
+  reservationPeriods?: Period[];
 };
 
 type DressCreateCommandProps = {
@@ -29,6 +32,7 @@ export class Dress extends AggregateRoot<DressId> implements IProduct {
   private model: string;
   private fabric: string;
   private isPickedUp: boolean;
+  private reservationPeriods: Period[];
 
   constructor(props: DressConstructorProps) {
     super(props.id);
@@ -38,6 +42,7 @@ export class Dress extends AggregateRoot<DressId> implements IProduct {
     this.model = props.model;
     this.fabric = props.fabric;
     this.isPickedUp = props.isPickedUp || false;
+    this.reservationPeriods = props.reservationPeriods || [];
     this.validate();
   }
 
@@ -86,6 +91,10 @@ export class Dress extends AggregateRoot<DressId> implements IProduct {
     return this.rentPrice;
   }
 
+  getReservationPeriods(): Period[] {
+    return this.reservationPeriods;
+  }
+
   // Behavior Methods
   pickUp(): void {
     this.isPickedUp = true;
@@ -122,5 +131,13 @@ export class Dress extends AggregateRoot<DressId> implements IProduct {
   changeFabric(newFabric: string): void {
     this.fabric = newFabric;
     this.validate(["fabric"]);
+  }
+
+  isAvailableFor(date: DateVo): boolean {
+    return this.reservationPeriods.every((period) => !period.contains(date));
+  }
+
+  addReservationPeriod(period: Period): void {
+    this.reservationPeriods.push(period);
   }
 }

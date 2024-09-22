@@ -1,7 +1,7 @@
 import { BookingPeriod } from "@domain/booking/booking-period.vo";
 import { AggregateRoot } from "@domain/@shared/aggregate-root";
 import { Uuid } from "@domain/@shared/value-objects/uuid.vo";
-import { DateVo } from "@domain/booking/date.vo";
+import { DateVo } from "@domain/@shared/vo/date.vo";
 import { BookingItem } from "@domain/booking/entities/booking-item.entity";
 import { BookingValidatorFactory } from "@domain/booking/booking.validator";
 import {

@@ -1,11 +1,25 @@
 import { BookingItem } from "@domain/booking/entities/booking-item.entity";
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
 import { INotification } from "@domain/validators/notification.interface";
-import { IsUUID } from "class-validator";
+import { IsEnum, IsUUID } from "class-validator";
+import { ValidateObjectFields } from "@domain/@shared/validation/custom-class-validator-decorators";
 
 class BookingItemRules {
   @IsUUID("4", { message: "Id do produto inválido", groups: ["productId"] })
   productId: string;
+
+  @ValidateObjectFields((o) => o.type === "dress", {
+    groups: ["adjustments"],
+    message: "Somente vestidos podem ter ajustes",
+  })
+  adjustments: any[];
+
+  @IsEnum(["dress", "clutch"], {
+    message: "Tipo de produto inválido",
+    groups: ["type"],
+  })
+  type: "dress" | "clutch";
+
   constructor(aggregate: BookingItem) {
     Object.assign(this, aggregate);
   }

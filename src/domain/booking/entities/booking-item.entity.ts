@@ -45,6 +45,14 @@ export class BookingItem extends Entity<BookingItemId> {
       isCourtesy: props.isCourtesy,
     });
     newBooking.validate();
+    const isDress = newBooking.getType() === "dress";
+    const hasAdjustments = newBooking.getAdjustments().length > 0;
+    if (!isDress && hasAdjustments) {
+      newBooking.notification.addError(
+        "Only dress items can have adjustments",
+        "adjustments",
+      );
+    }
     return newBooking;
   }
 
@@ -61,6 +69,7 @@ export class BookingItem extends Entity<BookingItemId> {
     this.adjustments.add(
       new Adjustment(adjustment.label, adjustment.description),
     );
+    this.validate(["adjustments"]);
   }
 
   public addManyAdjustments(
@@ -72,6 +81,7 @@ export class BookingItem extends Entity<BookingItemId> {
     adjustments.forEach((adjustment) => {
       this.addAdjustment(adjustment);
     });
+    this.validate(["adjustments"]);
   }
 
   public removeAdjustment(adjustment: {

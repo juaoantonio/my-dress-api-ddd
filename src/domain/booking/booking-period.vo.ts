@@ -1,6 +1,6 @@
 import { ValueObject } from "@domain/@shared/value-object";
 import { InvalidBookingPeriodError } from "@domain/booking/booking.errors";
-import { DateVo } from "@domain/booking/date.vo";
+import { DateVo } from "@domain/@shared/vo/date.vo";
 
 export class BookingPeriod extends ValueObject {
   private readonly pickUpDate: DateVo;

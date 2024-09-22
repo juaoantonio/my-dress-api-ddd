@@ -44,7 +44,7 @@ describe("BookingItemEntity Unit Test", () => {
   });
 
   describe("addAdjustment", () => {
-    it("should add an adjustment to the booking item", () => {
+    it("should add an adjustment to the booking item that is a dress", () => {
       const bookingItem = new BookingItem({
         id: BookingItemId.random(),
         productId: Uuid.random().value,
@@ -139,6 +139,48 @@ describe("BookingItemEntity Unit Test", () => {
       expect(bookingItem.notification.hasErrors()).toBe(true);
       expect(bookingItem.notification).notificationContainsErrorMessages([
         { productId: ["Id do produto inválido"] },
+      ]);
+    });
+
+    it("should validate when try to add adjustments to a clutch", () => {
+      const bookingItem = BookingItem.create({
+        id: BookingItemId.random(),
+        productId: Uuid.random().value,
+        type: "clutch",
+        isCourtesy: false,
+        rentPrice: 100,
+        adjustments: [],
+      });
+
+      bookingItem.addAdjustment({
+        label: "Tronco",
+        description: "2cm",
+      });
+
+      expect(bookingItem.notification.hasErrors()).toBe(true);
+      expect(bookingItem.notification).notificationContainsErrorMessages([
+        { adjustments: ["Somente vestidos podem ter ajustes"] },
+      ]);
+    });
+
+    it("should validate when try to add many adjustments to a clutch", () => {
+      const bookingItem = BookingItem.create({
+        id: BookingItemId.random(),
+        productId: Uuid.random().value,
+        type: "clutch",
+        isCourtesy: false,
+        rentPrice: 100,
+        adjustments: [],
+      });
+
+      bookingItem.addManyAdjustments([
+        { label: "Tronco", description: "2cm" },
+        { label: "Cintura", description: "3cm" },
+      ]);
+
+      expect(bookingItem.notification.hasErrors()).toBe(true);
+      expect(bookingItem.notification).notificationContainsErrorMessages([
+        { adjustments: ["Somente vestidos podem ter ajustes"] },
       ]);
     });
   });
