@@ -12,3 +12,13 @@ export class BookingAmountPaidUpdatedEvent implements IDomainEvent {
     this.amountPaid = amountPaid;
   }
 }
+
+export class BookingMarkedAsCompletedEvent implements IDomainEvent {
+  public aggregateId: BookingId;
+  public occurredOn: Date;
+
+  constructor(aggregateId: BookingId) {
+    this.aggregateId = aggregateId;
+    this.occurredOn = new Date();
+  }
+}

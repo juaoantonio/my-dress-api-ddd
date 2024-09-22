@@ -4,13 +4,17 @@ import { Uuid } from "@domain/@shared/value-objects/uuid.vo";
 import { DateVo } from "@domain/booking/date.vo";
 import { BookingItem } from "@domain/booking/entities/booking-item.entity";
 import { BookingValidatorFactory } from "@domain/booking/booking.validator";
-import { BookingAmountPaidUpdatedEvent } from "@domain/booking/booking.event";
+import {
+  BookingAmountPaidUpdatedEvent,
+  BookingMarkedAsCompletedEvent,
+} from "@domain/booking/booking.event";
 
 export enum BookingStatus {
   PAYMENT_PENDING = "PAYMENT_PENDING",
   READY = "READY",
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
+  CANCELED = "CANCELED",
 }
 
 export type BookingConstructorProps = {
@@ -63,6 +67,10 @@ export class Booking extends AggregateRoot<BookingId> {
       BookingAmountPaidUpdatedEvent.name,
       this.onBookingAmountPaidUpdate.bind(this),
     );
+    this.registerHandler(
+      BookingMarkedAsCompletedEvent.name,
+      this.onBookingMarkedAsCompleted.bind(this),
+    );
   }
 
   static create(props: BookingCreateCommandProps): Booking {
@@ -70,7 +78,7 @@ export class Booking extends AggregateRoot<BookingId> {
       ? BookingId.create(props.id)
       : BookingId.random();
 
-    return new Booking({
+    const newBooking = new Booking({
       id: newInstanceId,
       customerId: props.customerId,
       eventDate: DateVo.create(props.eventDate),
@@ -88,6 +96,18 @@ export class Booking extends AggregateRoot<BookingId> {
       status: BookingStatus.PAYMENT_PENDING,
       amountPaid: props.amountPaid,
     });
+
+    newBooking.getItems().forEach((item) => {
+      if (item.notification.hasErrors()) {
+        newBooking.notification.addError(
+          `Item de reserva (${item.getId().getValue()}) inválido`,
+          "items",
+        );
+      }
+    });
+
+    newBooking.validate();
+    return newBooking;
   }
 
   validate(fields?: string[]): void {
@@ -102,12 +122,18 @@ export class Booking extends AggregateRoot<BookingId> {
 
   public updatePayment(value: number): void {
     this.amountPaid += value;
-    this.validate();
+    this.validate(["amountPaid"]);
     this.applyEvent(new BookingAmountPaidUpdatedEvent(this.getId(), value));
   }
 
   public addItem(item: BookingItem): void {
     this.items.push(item);
+    if (item.notification.hasErrors()) {
+      this.notification.addError(
+        `Item de reserva (${item.getId().getValue()}) inválido`,
+        "items",
+      );
+    }
   }
 
   public removeItem(itemId: string): void {
@@ -116,11 +142,33 @@ export class Booking extends AggregateRoot<BookingId> {
     );
   }
 
-  // Event handlers
-  public onBookingAmountPaidUpdate(): void {
-    if (this.amountPaid === this.totalBookingPrice) {
-      this.status = BookingStatus.READY;
+  public start() {
+    if (!(this.status === BookingStatus.READY)) {
+      this.notification.addError("Reserva ainda não foi paga");
+      return;
     }
+    this.status = BookingStatus.IN_PROGRESS;
+  }
+
+  public complete() {
+    if (this.status === BookingStatus.CANCELED) {
+      this.notification.addError("Reserva já foi cancelada");
+      return;
+    }
+    if (this.status === BookingStatus.PAYMENT_PENDING) {
+      this.notification.addError("Reserva ainda não foi paga");
+      return;
+    }
+    this.status = BookingStatus.COMPLETED;
+    this.applyEvent(new BookingMarkedAsCompletedEvent(this.getId()));
+  }
+
+  public cancel() {
+    if (this.status === BookingStatus.COMPLETED) {
+      this.notification.addError("Reserva já foi finalizada");
+      return;
+    }
+    this.status = BookingStatus.CANCELED;
   }
 
   // Getters
@@ -158,5 +206,19 @@ export class Booking extends AggregateRoot<BookingId> {
 
   public getAmountPaid(): number {
     return this.amountPaid;
+  }
+
+  // Event handlers
+  private onBookingAmountPaidUpdate(): void {
+    if (this.amountPaid === this.totalBookingPrice) {
+      this.status = BookingStatus.READY;
+    }
+  }
+
+  private onBookingMarkedAsCompleted(): void {
+    this.bookingPeriod = new BookingPeriod({
+      pickUpDate: this.bookingPeriod.getPickUpDate(),
+      returnDate: DateVo.create(new Date()),
+    });
   }
 }

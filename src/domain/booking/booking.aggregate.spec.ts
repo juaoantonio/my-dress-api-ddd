@@ -399,6 +399,89 @@ describe("Booking Aggregate Unit Tests", function () {
       booking.removeItem("81d4babd-9644-4b6a-afaf-930f6608f6d5");
       expect(booking.calculateTotalPrice()).toBe(50);
     });
+
+    it("should initialize a booking", () => {
+      const booking = Booking.create({
+        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: "2024-09-01",
+        expectedPickUpDate: "2024-08-31",
+        expectedReturnDate: "2024-09-02",
+        items: [
+          new BookingItem({
+            id: BookingItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "dress",
+            rentPrice: 100,
+          }),
+          new BookingItem({
+            id: BookingItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "clutch",
+            rentPrice: 50,
+          }),
+        ],
+      });
+      booking.updatePayment(150);
+      expect(booking.getStatus()).toBe(BookingStatus.READY);
+      booking.start();
+      expect(booking.getStatus()).toBe(BookingStatus.IN_PROGRESS);
+    });
+
+    it("should cancel booking", () => {
+      const booking = Booking.create({
+        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: "2024-09-01",
+        expectedPickUpDate: "2024-08-31",
+        expectedReturnDate: "2024-09-02",
+        items: [
+          new BookingItem({
+            id: BookingItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "dress",
+            rentPrice: 100,
+          }),
+          new BookingItem({
+            id: BookingItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "clutch",
+            rentPrice: 50,
+          }),
+        ],
+      });
+      booking.cancel();
+      expect(booking.getStatus()).toBe(BookingStatus.CANCELED);
+    });
+
+    it("should complete a booking", () => {
+      vi.setSystemTime(new Date("2024-09-02"));
+      const booking = new Booking({
+        id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: DateVo.create("2024-09-01"),
+        expectedBookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+          returnDate: DateVo.create("2024-09-02"),
+        }),
+        bookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+        }),
+        items: [
+          BookingItem.create({
+            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "dress",
+            rentPrice: 100,
+          }),
+        ],
+        status: BookingStatus.IN_PROGRESS,
+        amountPaid: 100,
+      });
+      booking.complete();
+      expect(booking.getStatus()).toBe(BookingStatus.COMPLETED);
+      expect(
+        booking.getBookingPeriod()?.getReturnDate()?.getDateFormatted(),
+      ).toBe("2024-09-02");
+    });
   });
 
   describe("Booking Validation", function () {
@@ -467,6 +550,179 @@ describe("Booking Aggregate Unit Tests", function () {
           },
         ]);
       });
+
+      it("should validate invalid booking items", () => {
+        const booking = Booking.create({
+          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          eventDate: "2024-09-01",
+          expectedPickUpDate: "2024-08-31",
+          expectedReturnDate: "2024-09-02",
+          items: [
+            BookingItem.create({
+              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+              productId: "",
+              type: "dress",
+              rentPrice: 100,
+            }),
+            BookingItem.create({
+              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6c5"),
+              productId: "",
+              type: "clutch",
+              rentPrice: 50,
+            }),
+          ],
+        });
+        expect(booking.notification).notificationContainsErrorMessages([
+          {
+            items: [
+              "Item de reserva (81d4babd-9644-4b6a-afaf-930f6608f6d5) inválido",
+              "Item de reserva (81d4babd-9644-4b6a-afaf-930f6608f6c5) inválido",
+            ],
+          },
+        ]);
+      });
+
+      it("should validate when adding a invalid booking item", () => {
+        const booking = Booking.create({
+          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          eventDate: "2024-09-01",
+          expectedPickUpDate: "2024-08-31",
+          expectedReturnDate: "2024-09-02",
+          items: [
+            BookingItem.create({
+              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+              productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+              type: "dress",
+              rentPrice: 100,
+            }),
+          ],
+        });
+        booking.addItem(
+          BookingItem.create({
+            id: BookingItemId.create("91d4babd-9644-4b6a-afaf-930f6608f6d5"),
+            productId: "",
+            type: "clutch",
+            rentPrice: 50,
+          }),
+        );
+        expect(booking.notification).notificationContainsErrorMessages([
+          {
+            items: [
+              "Item de reserva (91d4babd-9644-4b6a-afaf-930f6608f6d5) inválido",
+            ],
+          },
+        ]);
+      });
+
+      it("should validate when starting a booking with invalid status", () => {
+        const booking = Booking.create({
+          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          eventDate: "2024-09-01",
+          expectedPickUpDate: "2024-08-31",
+          expectedReturnDate: "2024-09-02",
+          items: [
+            BookingItem.create({
+              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+              productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+              type: "dress",
+              rentPrice: 100,
+            }),
+          ],
+        });
+        booking.updatePayment(50);
+        booking.start();
+        expect(booking.notification).notificationContainsErrorMessages([
+          "Reserva ainda não foi paga",
+        ]);
+        expect(booking.notification.hasErrors()).toBe(true);
+      });
+    });
+
+    it("should validate when canceling a booking with invalid status", () => {
+      const booking = new Booking({
+        id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: DateVo.create("2024-09-01"),
+        expectedBookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+          returnDate: DateVo.create("2024-09-02"),
+        }),
+        bookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+        }),
+        items: [
+          BookingItem.create({
+            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "dress",
+            rentPrice: 100,
+          }),
+        ],
+        status: BookingStatus.COMPLETED,
+        amountPaid: 100,
+      });
+      booking.cancel();
+      expect(booking.notification).notificationContainsErrorMessages([
+        "Reserva já foi finalizada",
+      ]);
+      expect(booking.notification.hasErrors()).toBe(true);
+    });
+
+    it("should validate when completing a booking with canceled status", () => {
+      const booking = new Booking({
+        id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: DateVo.create("2024-09-01"),
+        expectedBookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+          returnDate: DateVo.create("2024-09-02"),
+        }),
+        bookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+        }),
+        items: [
+          BookingItem.create({
+            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "dress",
+            rentPrice: 100,
+          }),
+        ],
+        status: BookingStatus.CANCELED,
+        amountPaid: 100,
+      });
+      booking.complete();
+      expect(booking.notification).notificationContainsErrorMessages([
+        "Reserva já foi cancelada",
+      ]);
+      expect(booking.notification.hasErrors()).toBe(true);
+    });
+
+    it("should validate when completing a booking with canceled status", () => {
+      const booking = new Booking({
+        id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: DateVo.create("2024-09-01"),
+        expectedBookingPeriod: new BookingPeriod({
+          pickUpDate: DateVo.create("2024-08-31"),
+          returnDate: DateVo.create("2024-09-02"),
+        }),
+        items: [
+          BookingItem.create({
+            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            type: "dress",
+            rentPrice: 100,
+          }),
+        ],
+        status: BookingStatus.PAYMENT_PENDING,
+        amountPaid: 100,
+      });
+      booking.complete();
+      expect(booking.notification).notificationContainsErrorMessages([
+        "Reserva ainda não foi paga",
+      ]);
+      expect(booking.notification.hasErrors()).toBe(true);
     });
   });
 });

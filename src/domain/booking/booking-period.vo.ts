@@ -11,19 +11,30 @@ export class BookingPeriod extends ValueObject {
 
     this.pickUpDate = props.pickUpDate;
     this.returnDate = props.returnDate;
+  }
 
-    if (this.pickUpDate > this.returnDate) {
-      throw new InvalidBookingPeriodError(
-        "Pick up date cannot be after return date",
-      );
-    }
+  static create(props: {
+    pickUpDate: DateVo;
+    returnDate?: DateVo;
+  }): BookingPeriod {
+    const bookingPeriod = new BookingPeriod(props);
+    bookingPeriod.validate();
+    return bookingPeriod;
+  }
 
+  validate(): void {
     if (this.pickUpDate.getDate() < new Date()) {
       throw new InvalidBookingPeriodError("Pick up date cannot be in the past");
     }
 
     if (this.returnDate?.getDate() < new Date()) {
       throw new InvalidBookingPeriodError("Return date cannot be in the past");
+    }
+
+    if (this.pickUpDate.getDate() > this.returnDate.getDate()) {
+      throw new InvalidBookingPeriodError(
+        "Pick up date cannot be after return date",
+      );
     }
   }
 

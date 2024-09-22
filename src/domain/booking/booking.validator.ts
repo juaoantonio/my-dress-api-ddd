@@ -1,5 +1,5 @@
 import { ClassValidatorFields } from "@domain/validators/class-validator-fields";
-import { IsPositive } from "class-validator";
+import { IsPositive, Min } from "class-validator";
 import { INotification } from "@domain/validators/notification.interface";
 import { Booking } from "@domain/booking/booking.aggregate";
 import { isLessThanOrEqual } from "@domain/@shared/validation/custom-class-validator-decorators";
@@ -9,7 +9,7 @@ class BookingRules {
     message: "Valor pago não pode ser maior que o valor total da reserva",
     groups: ["amountPaid"],
   })
-  @IsPositive({
+  @Min(0, {
     message: "Valor pago deve ser positivo",
     groups: ["amountPaid"],
   })
