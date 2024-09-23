@@ -44,7 +44,9 @@ export class Period extends ValueObject {
     const diffTime = Math.abs(
       this.endDate.getDate().getTime() - this.startDate.getDate().getTime(),
     );
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const milisecondsInADay = 1000 * 60 * 60 * 24;
+    const diffDays = Math.ceil(diffTime / milisecondsInADay);
+    return diffDays + 1;
   }
 
   public contains(date: DateVo): boolean {

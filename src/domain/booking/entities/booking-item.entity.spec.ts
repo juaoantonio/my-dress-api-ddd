@@ -41,6 +41,25 @@ describe("BookingItemEntity Unit Test", () => {
       expect(bookingItem.getIsCourtesy()).toBe(false);
       expect(bookingItem.notification.hasErrors()).toBe(false);
     });
+
+    it("should validate when a booking item that is not a dress is created with adjustments", () => {
+      const bookingItem = BookingItem.create({
+        id: BookingItemId.random(),
+        productId: Uuid.random().value,
+        type: "clutch",
+        isCourtesy: false,
+        rentPrice: 100,
+        adjustments: [
+          new Adjustment("Cintura", "3cm"),
+          new Adjustment("Tronco", "2cm"),
+        ],
+      });
+
+      expect(bookingItem.notification.hasErrors()).toBe(true);
+      expect(bookingItem.notification).notificationContainsErrorMessages([
+        { adjustments: ["Somente vestidos podem ter ajustes"] },
+      ]);
+    });
   });
 
   describe("addAdjustment", () => {

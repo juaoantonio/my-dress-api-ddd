@@ -45,14 +45,6 @@ export class BookingItem extends Entity<BookingItemId> {
       isCourtesy: props.isCourtesy,
     });
     newBooking.validate();
-    const isDress = newBooking.getType() === "dress";
-    const hasAdjustments = newBooking.getAdjustments().length > 0;
-    if (!isDress && hasAdjustments) {
-      newBooking.notification.addError(
-        "Only dress items can have adjustments",
-        "adjustments",
-      );
-    }
     return newBooking;
   }
 
