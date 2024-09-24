@@ -19,4 +19,21 @@ export class DateVo extends ValueObject {
   public getDateFormatted(): string {
     return this.date.toISOString().split("T")[0];
   }
+
+  public isToday(): boolean {
+    const today = new Date();
+    return (
+      this.date.getDate() === today.getDate() &&
+      this.date.getMonth() === today.getMonth() &&
+      this.date.getFullYear() === today.getFullYear()
+    );
+  }
+
+  public isInPast(): boolean {
+    return this.date < new Date();
+  }
+
+  public isInFuture(): boolean {
+    return this.date > new Date();
+  }
 }

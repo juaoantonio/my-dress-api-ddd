@@ -4,7 +4,7 @@ import { DateVo } from "@domain/@shared/vo/date.vo";
 describe("DateVO", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2024-08-30T00:00:00"));
+    vi.setSystemTime(new Date("2024-08-30"));
   });
 
   afterEach(() => {
@@ -35,5 +35,25 @@ describe("DateVO", () => {
       expect(dateVO.getDate()).toEqual(new Date(date));
       expect(dateVO.getDateFormatted()).toBe("2024-08-30");
     });
+  });
+
+  it("should check if date is equal today", () => {
+    const datevo = DateVo.create(new Date());
+    expect(datevo.isToday()).toBe(true);
+  });
+
+  it("should check if date is not equal today", () => {
+    const datevo = DateVo.create("2024-08-29");
+    expect(datevo.isToday()).toBe(false);
+  });
+
+  it("should check if is in past", () => {
+    const datevo = DateVo.create("2024-08-29");
+    expect(datevo.isInPast()).toBe(true);
+  });
+
+  it("should check if is in future", () => {
+    const datevo = DateVo.create("2024-08-31");
+    expect(datevo.isInFuture()).toBe(true);
   });
 });
