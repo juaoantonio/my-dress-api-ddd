@@ -12,6 +12,10 @@ export class DateVo extends ValueObject {
     return new DateVo(new Date(date));
   }
 
+  static now(): DateVo {
+    return new DateVo(new Date());
+  }
+
   public getDate(): Date {
     return this.date;
   }

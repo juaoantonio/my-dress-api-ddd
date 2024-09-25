@@ -56,4 +56,9 @@ describe("DateVO", () => {
     const datevo = DateVo.create("2024-08-31");
     expect(datevo.isInFuture()).toBe(true);
   });
+
+  it("should return now date", () => {
+    const datevo = DateVo.now();
+    expect(datevo.isToday()).toBe(true);
+  });
 });
