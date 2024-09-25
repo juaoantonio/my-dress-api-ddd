@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   Clutch,
   ClutchCreateCommandProps,
-} from "@domain/clutch/clutch.aggregate";
-import { ClutchId } from "@domain/clutch/clutch-id.vo";
+} from "@domain/products/clutch/clutch.aggregate";
+import { ClutchId } from "@domain/products/clutch/clutch-id.vo";
 import { ToJsonOutput } from "@domain/validators/notification.interface";
+import { Period } from "@domain/@shared/vo/period.vo";
+import { DateVo } from "@domain/@shared/vo/date.vo";
 
 describe("Clutch Aggregate Unit Tests", function () {
   describe("Clutch Create Constructor", function () {
@@ -88,6 +90,52 @@ describe("Clutch Aggregate Unit Tests", function () {
 
       clutch.return();
       expect(clutch.getIsPickedUp()).toBe(false);
+    });
+
+    it("should add a reservation period", () => {
+      const clutch = new Clutch({
+        id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        imageUrl: "https://example.com/image.jpg",
+        rentPrice: 100,
+        model: "Strass fecho de strass",
+        color: "Prata",
+      });
+
+      const period = new Period({
+        startDate: DateVo.create("2021-10-10"),
+        endDate: DateVo.create("2021-10-20"),
+      });
+      clutch.addReservationPeriod(period);
+      expect(clutch.getReservationPeriods()).toContain(period);
+    });
+
+    it("should check if a dress is available for rent in a specific date range", () => {
+      const clutch = new Clutch({
+        id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        imageUrl: "https://example.com/image.jpg",
+        rentPrice: 100,
+        model: "Strass fecho de strass",
+        color: "Prata",
+        reservationPeriods: [
+          new Period({
+            startDate: DateVo.create("2021-10-10"),
+            endDate: DateVo.create("2021-10-20"),
+          }),
+          new Period({
+            startDate: DateVo.create("2021-10-25"),
+            endDate: DateVo.create("2021-10-27"),
+          }),
+        ],
+      });
+
+      const date = DateVo.create("2021-10-15");
+      expect(clutch.isAvailableFor(date)).toBe(false);
+
+      const date2 = DateVo.create("2021-10-22");
+      expect(clutch.isAvailableFor(date2)).toBe(true);
+
+      const date3 = DateVo.create("2021-10-27");
+      expect(clutch.isAvailableFor(date3)).toBe(false);
     });
   });
 

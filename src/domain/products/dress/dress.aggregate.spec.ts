@@ -1,6 +1,8 @@
-import { Dress } from "@domain/dress/dress.aggregate";
-import { DressId } from "@domain/dress/dress-id.vo";
+import { Dress } from "@domain/products/dress/dress.aggregate";
+import { DressId } from "@domain/products/dress/dress-id.vo";
 import { describe, expect, it } from "vitest";
+import { DateVo } from "@domain/@shared/vo/date.vo";
+import { Period } from "@domain/@shared/vo/period.vo";
 
 describe("Dress Aggregate Unit Tests", function () {
   describe("Dress Create Constructor", function () {
@@ -24,24 +26,8 @@ describe("Dress Aggregate Unit Tests", function () {
       expect(dress.getModel()).toBe("Tomara que caia");
       expect(dress.getColor()).toBe("Marsala");
       expect(dress.getFabric()).toBe("Tule");
-
       expect(dress.notification.hasErrors()).toBe(false);
-    });
-
-    it("should create Dress without id", () => {
-      const dress = new Dress({
-        imageUrl: "https://www.google.com",
-        rentPrice: 100,
-        color: "Marsala",
-        model: "Tomara que caia",
-        fabric: "Tule",
-      });
-
-      expect(dress.getId()).toBeDefined();
-      expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
-      expect(dress.getImageUrl()).toBe("https://www.google.com");
-      expect(dress.getIsPickedUp()).toBe(false);
-      expect(dress.getRentPrice()).toBe(100);
+      expect(dress.getReservationPeriods()).toEqual([]);
 
       expect(dress.notification.hasErrors()).toBe(false);
     });
@@ -65,7 +51,7 @@ describe("Dress Aggregate Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
-
+      expect(dress.getReservationPeriods()).toEqual([]);
       expect(dress.notification.hasErrors()).toBe(false);
     });
 
@@ -83,7 +69,7 @@ describe("Dress Aggregate Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
-
+      expect(dress.getReservationPeriods()).toEqual([]);
       expect(dress.notification.hasErrors()).toBe(false);
     });
   });
@@ -118,7 +104,7 @@ describe("Dress Aggregate Unit Tests", function () {
       dress.pickUp();
       expect(dress.getIsPickedUp()).toBe(true);
 
-      dress.returned();
+      dress.return();
       expect(dress.getIsPickedUp()).toBe(false);
 
       expect(dress.notification.hasErrors()).toBe(false);
@@ -199,6 +185,61 @@ describe("Dress Aggregate Unit Tests", function () {
       expect(dress.getImageUrl()).toBe("https://teste.png");
 
       expect(dress.notification.hasErrors()).toBe(false);
+    });
+
+    it("should check if a dress is available for rent in a specific date range", () => {
+      const dress = new Dress({
+        id: DressId.random(),
+        imageUrl: "https://www.google.com",
+        rentPrice: 100,
+        color: "Marsala",
+        model: "Tomara que caia",
+        fabric: "Tule",
+        isPickedUp: false,
+        reservationPeriods: [
+          new Period({
+            startDate: DateVo.create("2022-01-10"),
+            endDate: DateVo.create("2022-01-20"),
+          }),
+          new Period({
+            startDate: DateVo.create("2022-01-25"),
+            endDate: DateVo.create("2022-01-30"),
+          }),
+        ],
+      });
+
+      const dateToCheck = DateVo.create("2022-01-15");
+      expect(dress.isAvailableFor(dateToCheck)).toBe(false);
+
+      const dateToCheck2 = DateVo.create("2022-01-22");
+      expect(dress.isAvailableFor(dateToCheck2)).toBe(true);
+
+      const dateToCheck3 = DateVo.create("2022-01-30");
+      expect(dress.isAvailableFor(dateToCheck3)).toBe(false);
+
+      const dateToCheck4 = DateVo.create("2022-01-05");
+      expect(dress.isAvailableFor(dateToCheck4)).toBe(true);
+    });
+
+    it("should add a reservation period", () => {
+      const dress = new Dress({
+        id: DressId.random(),
+        imageUrl: "https://www.google.com",
+        rentPrice: 100,
+        color: "Marsala",
+        model: "Tomara que caia",
+        fabric: "Tule",
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      const period = new Period({
+        startDate: DateVo.create("2022-01-10"),
+        endDate: DateVo.create("2022-01-20"),
+      });
+
+      dress.addReservationPeriod(period);
+      expect(dress.getReservationPeriods()).toEqual([period]);
     });
   });
 

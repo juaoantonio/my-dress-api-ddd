@@ -1,6 +1,9 @@
 import { AggregateRoot } from "@domain/@shared/aggregate-root";
-import { ClutchId } from "@domain/clutch/clutch-id.vo";
-import { ClutchValidatorFactory } from "@domain/clutch/clutch.validator";
+import { ClutchId } from "@domain/products/clutch/clutch-id.vo";
+import { ClutchValidatorFactory } from "@domain/products/clutch/clutch.validator";
+import { IProduct } from "@domain/products/product.interface";
+import { DateVo } from "@domain/@shared/vo/date.vo";
+import { Period } from "@domain/@shared/vo/period.vo";
 
 export type ClutchConstructorProps = {
   id: ClutchId;
@@ -9,6 +12,7 @@ export type ClutchConstructorProps = {
   color: string;
   model: string;
   isPickedUp?: boolean;
+  reservationPeriods?: Period[];
 };
 
 export type ClutchCreateCommandProps = {
@@ -19,12 +23,13 @@ export type ClutchCreateCommandProps = {
   model: string;
 };
 
-export class Clutch extends AggregateRoot<ClutchId> {
+export class Clutch extends AggregateRoot<ClutchId> implements IProduct {
   private imageUrl: string;
   private rentPrice: number;
   private color: string;
   private model: string;
   private isPickedUp: boolean;
+  private reservationPeriods: Period[] = [];
 
   constructor(props: ClutchConstructorProps) {
     super(props.id);
@@ -33,6 +38,7 @@ export class Clutch extends AggregateRoot<ClutchId> {
     this.color = props.color;
     this.model = props.model;
     this.isPickedUp = props.isPickedUp || false;
+    this.reservationPeriods = props.reservationPeriods || [];
 
     this.validate();
   }
@@ -81,6 +87,14 @@ export class Clutch extends AggregateRoot<ClutchId> {
     this.validate(["imageUrl"]);
   }
 
+  isAvailableFor(date: DateVo): boolean {
+    return this.reservationPeriods.every((period) => !period.contains(date));
+  }
+
+  addReservationPeriod(period: Period): void {
+    this.reservationPeriods.push(period);
+  }
+
   // Getters
 
   public getImageUrl(): string {
@@ -105,5 +119,9 @@ export class Clutch extends AggregateRoot<ClutchId> {
 
   public getIsPickedUp(): boolean {
     return this.isPickedUp;
+  }
+
+  getReservationPeriods(): Period[] {
+    return this.reservationPeriods;
   }
 }

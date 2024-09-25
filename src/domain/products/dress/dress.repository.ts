@@ -1,5 +1,5 @@
-import { Dress } from "@domain/dress/dress.aggregate";
-import { DressId } from "@domain/dress/dress-id.vo";
+import { Dress } from "@domain/products/dress/dress.aggregate";
+import { DressId } from "@domain/products/dress/dress-id.vo";
 
 export interface DressRepository {
   save(dress: Dress): Promise<DressId>;

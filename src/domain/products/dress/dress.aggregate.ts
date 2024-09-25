@@ -1,15 +1,19 @@
 import { AggregateRoot } from "@domain/@shared/aggregate-root";
-import { DressId } from "@domain/dress/dress-id.vo";
-import { DressValidatorFactory } from "@domain/dress/dress.validator";
+import { DressId } from "@domain/products/dress/dress-id.vo";
+import { DressValidatorFactory } from "@domain/products/dress/dress.validator";
+import { IProduct } from "@domain/products/product.interface";
+import { DateVo } from "@domain/@shared/vo/date.vo";
+import { Period } from "@domain/@shared/vo/period.vo";
 
 type DressConstructorProps = {
-  id?: DressId;
+  id: DressId;
   imageUrl: string;
   rentPrice: number;
   color: string;
   model: string;
   fabric: string;
   isPickedUp?: boolean;
+  reservationPeriods?: Period[];
 };
 
 type DressCreateCommandProps = {
@@ -21,22 +25,24 @@ type DressCreateCommandProps = {
   fabric: string;
 };
 
-export class Dress extends AggregateRoot<DressId> {
+export class Dress extends AggregateRoot<DressId> implements IProduct {
   private imageUrl: string;
   private rentPrice: number;
   private color: string;
   private model: string;
   private fabric: string;
   private isPickedUp: boolean;
+  private reservationPeriods: Period[];
 
   constructor(props: DressConstructorProps) {
-    super(props.id ? props.id : DressId.random());
+    super(props.id);
     this.imageUrl = props.imageUrl;
     this.rentPrice = props.rentPrice;
     this.color = props.color;
     this.model = props.model;
     this.fabric = props.fabric;
     this.isPickedUp = props.isPickedUp || false;
+    this.reservationPeriods = props.reservationPeriods || [];
     this.validate();
   }
 
@@ -85,12 +91,16 @@ export class Dress extends AggregateRoot<DressId> {
     return this.rentPrice;
   }
 
+  getReservationPeriods(): Period[] {
+    return this.reservationPeriods;
+  }
+
   // Behavior Methods
   pickUp(): void {
     this.isPickedUp = true;
   }
 
-  returned(): void {
+  return(): void {
     this.isPickedUp = false;
   }
 
@@ -121,5 +131,13 @@ export class Dress extends AggregateRoot<DressId> {
   changeFabric(newFabric: string): void {
     this.fabric = newFabric;
     this.validate(["fabric"]);
+  }
+
+  isAvailableFor(date: DateVo): boolean {
+    return this.reservationPeriods.every((period) => !period.contains(date));
+  }
+
+  addReservationPeriod(period: Period): void {
+    this.reservationPeriods.push(period);
   }
 }
