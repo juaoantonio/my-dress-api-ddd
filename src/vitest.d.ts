@@ -1,5 +1,5 @@
 import "vitest";
-import { ToJsonOutput } from "@domain/validators/notification.interface";
+import { ToJsonOutput } from "./core/@shared/domain/validators/notification.interface";
 
 interface CustomMatchers<R = unknown> {
   notificationContainsErrorMessages: (expected: ToJsonOutput) => R;

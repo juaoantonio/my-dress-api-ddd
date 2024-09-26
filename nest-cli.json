@@ -7,6 +7,6 @@
     "builder": "swc",
     "typeCheck": true
   },
-  "entryFile": "infra/main.js"
+  "entryFile": "main.js"
 
 }

@@ -1,6 +1,6 @@
 import { expect } from "vitest";
-import { NotificationImplementation } from "@domain/validators/notification-implementation";
-import { ToJsonOutput } from "@domain/validators/notification.interface";
+import { NotificationImplementation } from "../src/core/@shared/domain/validators/notification-implementation";
+import { ToJsonOutput } from "../src/core/@shared/domain/validators/notification.interface";
 
 expect.extend({
   notificationContainsErrorMessages(
