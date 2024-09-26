@@ -7,7 +7,7 @@ export abstract class AggregateRoot<ID extends Identifier> extends Entity<ID> {
   public events: Set<IDomainEvent> = new Set<IDomainEvent>();
   private readonly localMediator = new EventEmitter2();
 
-  protected constructor(id: ID) {
+  constructor(id: ID) {
     super(id);
   }
 
