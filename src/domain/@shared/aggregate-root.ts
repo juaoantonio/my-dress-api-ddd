@@ -1,7 +1,7 @@
 import { Identifier } from "@domain/@shared/identifier";
 import { Entity } from "@domain/@shared/entity";
 import EventEmitter2 from "eventemitter2";
-import { IDomainEvent } from "@domain/@shared/events/domain-event";
+import { IDomainEvent } from "@domain/@shared/events/domain-event.interface";
 
 export abstract class AggregateRoot<ID extends Identifier> extends Entity<ID> {
   public events: Set<IDomainEvent> = new Set<IDomainEvent>();

@@ -1,4 +1,4 @@
-import { IDomainEvent } from "@domain/@shared/events/domain-event";
+import { IDomainEvent } from "@domain/@shared/events/domain-event.interface";
 import { BookingId } from "@domain/booking/booking.aggregate";
 
 export class BookingAmountPaidUpdatedEvent implements IDomainEvent {

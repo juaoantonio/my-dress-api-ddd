@@ -11,6 +11,7 @@ export default defineConfig({
       provider: "v8",
       enabled: true,
       reporter: ["html"],
+      exclude: ["**/*.d.ts", "**/*.interface.ts"],
     },
   },
 
