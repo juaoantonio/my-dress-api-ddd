@@ -18,7 +18,7 @@
     "test:watch": "pnpm run type-check && vitest",
     "test:cov": "pnpm run type-check && vitest run --coverage",
     "test:debug": "pnpm run type-check && vitest --inspect-brk --inspect --logHeapUsage --threads=false",
-    "test:e2e": "pnpm run type-check && vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "pnpm run type-check && vitest run --config ./vitest.config.e2e.mts"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.3.10",
