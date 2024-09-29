@@ -1,6 +1,5 @@
 import { Period } from "./period.vo";
 import { DateVo } from "./date.vo";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("Period Value Object Unit Tests", () => {
   beforeEach(() => {

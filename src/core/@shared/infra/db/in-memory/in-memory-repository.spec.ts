@@ -1,7 +1,6 @@
 import { InMemoryRepository } from "./in-memory-repository";
 import { AggregateRoot } from "../../../domain/aggregate-root";
 import { Uuid } from "../../../domain/value-objects/uuid.vo";
-import { beforeEach, describe, expect, it } from "vitest";
 import { EntityNotFoundError } from "../../../domain/error/entity-not-found.error";
 import { InvalidArgumentError } from "../../../domain/error/invalid-argument.error";
 

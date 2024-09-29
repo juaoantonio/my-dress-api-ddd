@@ -1,9 +1,9 @@
 import { Dress } from "../../../domain/dress/dress.aggregate";
 import { DressModel, ReservationPeriodModel } from "./dress.model";
-import { Period } from "../../../../@shared/domain/vo/period.vo";
+import { Period } from "../../../../@shared/domain/value-objects/period.vo";
 import { DressId } from "../../../domain/dress/dress-id.vo";
-import { DateVo } from "../../../../@shared/domain/vo/date.vo";
-import { IModelMapper } from "../../../../@shared/infra/db/mikro/model.mapper.interface";
+import { DateVo } from "../../../../@shared/domain/value-objects/date.vo";
+import { IModelMapper } from "../../../../@shared/infra/db/model.mapper.interface";
 
 export class DressModelMapper implements IModelMapper<Dress, DressModel> {
   toModel(entity: Dress): DressModel {

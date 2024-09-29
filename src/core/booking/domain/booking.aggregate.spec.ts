@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BookingPeriod } from "./booking-period.vo";
 import { Booking, BookingId, BookingStatus } from "./booking.aggregate";
-import { DateVo } from "../../@shared/domain/vo/date.vo";
+import { DateVo } from "../../@shared/domain/value-objects/date.vo";
 import { BookingItem, BookingItemId } from "./entities/booking-item.entity";
 
 describe("Booking Aggregate Unit Tests", function () {

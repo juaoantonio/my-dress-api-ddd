@@ -2,7 +2,7 @@ import { BookingItem } from "./booking-item.entity";
 import { ClassValidatorFields } from "../../../@shared/domain/validators/class-validator-fields";
 import { INotification } from "../../../@shared/domain/validators/notification.interface";
 import { IsEnum, IsUUID } from "class-validator";
-import { ValidateObjectFields } from "../../../@shared/domain/validation/custom-class-validator-decorators";
+import { ValidateObjectFields } from "@core/@shared/domain/custom-decorators/custom-class-validator-decorators";
 
 class BookingItemRules {
   @IsUUID("4", { message: "Id do produto inválido", groups: ["productId"] })

@@ -1,18 +1,8 @@
 import { Module } from "@nestjs/common";
-import { MikroOrmModule } from "@mikro-orm/nestjs";
-import { SqliteDriver } from "@mikro-orm/sqlite";
+import { ConfigModule } from "@nest/config-module/config.module";
+import { DatabaseModule } from "@nest/database-module/database.module";
 
 @Module({
-  imports: [
-    MikroOrmModule.forRoot({
-      entities: ["./dist/**/*.model.js"],
-      entitiesTs: ["./src/**/*.model.ts"],
-      baseDir: process.cwd(),
-      driver: SqliteDriver,
-      host: ":memory:",
-      autoLoadEntities: true,
-      dbName: "memory",
-    }),
-  ],
+  imports: [ConfigModule.forRoot(), DatabaseModule],
 })
 export class AppModule {}

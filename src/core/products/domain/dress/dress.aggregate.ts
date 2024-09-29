@@ -2,8 +2,8 @@ import { AggregateRoot } from "../../../@shared/domain/aggregate-root";
 import { DressId } from "./dress-id.vo";
 import { DressValidatorFactory } from "./dress.validator";
 import { IProduct } from "../product.interface";
-import { DateVo } from "../../../@shared/domain/vo/date.vo";
-import { Period } from "../../../@shared/domain/vo/period.vo";
+import { DateVo } from "../../../@shared/domain/value-objects/date.vo";
+import { Period } from "../../../@shared/domain/value-objects/period.vo";
 
 type DressConstructorProps = {
   id: DressId;

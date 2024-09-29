@@ -1,9 +1,8 @@
-import { describe, expect, it } from "vitest";
 import { Clutch, ClutchCreateCommandProps } from "./clutch.aggregate";
 import { ClutchId } from "./clutch-id.vo";
 import { ToJsonOutput } from "../../../@shared/domain/validators/notification.interface";
-import { Period } from "../../../@shared/domain/vo/period.vo";
-import { DateVo } from "../../../@shared/domain/vo/date.vo";
+import { Period } from "../../../@shared/domain/value-objects/period.vo";
+import { DateVo } from "../../../@shared/domain/value-objects/date.vo";
 
 describe("Clutch Aggregate Unit Tests", function () {
   describe("Clutch Create Constructor", function () {

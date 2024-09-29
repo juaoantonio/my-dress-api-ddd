@@ -2,8 +2,8 @@ import { AggregateRoot } from "../../../@shared/domain/aggregate-root";
 import { ClutchId } from "./clutch-id.vo";
 import { ClutchValidatorFactory } from "./clutch.validator";
 import { IProduct } from "../product.interface";
-import { DateVo } from "../../../@shared/domain/vo/date.vo";
-import { Period } from "../../../@shared/domain/vo/period.vo";
+import { DateVo } from "../../../@shared/domain/value-objects/date.vo";
+import { Period } from "../../../@shared/domain/value-objects/period.vo";
 
 export type ClutchConstructorProps = {
   id: ClutchId;

@@ -2,7 +2,7 @@ import { ClassValidatorFields } from "../../@shared/domain/validators/class-vali
 import { IsPositive, Min } from "class-validator";
 import { INotification } from "../../@shared/domain/validators/notification.interface";
 import { Booking } from "./booking.aggregate";
-import { isLessThanOrEqual } from "../../@shared/domain/validation/custom-class-validator-decorators";
+import { isLessThanOrEqual } from "@core/@shared/domain/custom-decorators/custom-class-validator-decorators";
 
 class BookingRules {
   @isLessThanOrEqual("totalBookingPrice", {

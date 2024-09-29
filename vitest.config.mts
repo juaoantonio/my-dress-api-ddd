@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   test: {
+    globals: true,
     setupFiles: ["./test/vitest.setup.ts"],
     root: "./",
     restoreMocks: true,

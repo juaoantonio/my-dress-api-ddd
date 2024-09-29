@@ -1,8 +1,8 @@
 import { Dress } from "./dress.aggregate";
 import { DressId } from "./dress-id.vo";
 import { describe, expect, it } from "vitest";
-import { DateVo } from "../../../@shared/domain/vo/date.vo";
-import { Period } from "../../../@shared/domain/vo/period.vo";
+import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
+import { Period } from "@core/@shared/domain/value-objects/period.vo";
 
 describe("Dress Aggregate Unit Tests", function () {
   describe("Dress Create Constructor", function () {

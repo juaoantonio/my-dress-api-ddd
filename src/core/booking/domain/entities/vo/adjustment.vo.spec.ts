@@ -1,4 +1,3 @@
-import { expect, it } from "vitest";
 import { Adjustment } from "./adjustment.vo";
 import { InvalidAdjustmentError } from "./adjustment.error";
 
