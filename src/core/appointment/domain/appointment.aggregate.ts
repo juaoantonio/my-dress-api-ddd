@@ -25,6 +25,7 @@ export type AppointmentConstructorProps = {
   customerName: string; // Nome e Sobrenome da cliente
   eventDate: DateVo; // Data do evento
   type: AppointmentType;
+  history?: AppointmentHistory[];
   status?: AppointmentStatus;
 };
 
@@ -55,6 +56,7 @@ export class Appointment extends AggregateRoot<AppointmentId> {
     this.eventDate = props.eventDate;
     this.type = props.type;
     this.status = props.status || AppointmentStatus.SCHEDULED;
+    this.history = props.history || [];
   }
 
   static create(props: AppointmentCreateProps): Appointment {

@@ -3,7 +3,7 @@ import { Identifier } from "../identifier";
 
 export class EntityNotFoundError extends Error {
   constructor(
-    id: any[] | any,
+    id: Identifier[] | Identifier,
     entityClass: new (...args: any[]) => Entity<Identifier>,
   ) {
     const idsMessage = Array.isArray(id) ? id.join(", ") : id;

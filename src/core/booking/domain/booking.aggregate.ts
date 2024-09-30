@@ -19,7 +19,7 @@ export enum BookingStatus {
 
 export type BookingConstructorProps = {
   id: BookingId;
-  customerId: string;
+  customerName: string;
   eventDate: DateVo;
   expectedBookingPeriod: BookingPeriod;
   bookingPeriod?: BookingPeriod;
@@ -30,7 +30,7 @@ export type BookingConstructorProps = {
 
 export type BookingCreateCommandProps = {
   id?: string;
-  customerId: string;
+  customerName: string;
   eventDate: string;
   expectedPickUpDate: string;
   expectedReturnDate: string;
@@ -44,7 +44,7 @@ export type BookingCreateCommandProps = {
 export class BookingId extends Uuid {}
 
 export class Booking extends AggregateRoot<BookingId> {
-  private customerId: string;
+  private customerName: string;
   private eventDate: DateVo;
   private expectedBookingPeriod: BookingPeriod;
   private bookingPeriod?: BookingPeriod;
@@ -55,7 +55,7 @@ export class Booking extends AggregateRoot<BookingId> {
 
   constructor(props: BookingConstructorProps) {
     super(props.id);
-    this.customerId = props.customerId;
+    this.customerName = props.customerName;
     this.eventDate = props.eventDate;
     this.expectedBookingPeriod = props.expectedBookingPeriod;
     this.bookingPeriod = props.bookingPeriod;
@@ -80,7 +80,7 @@ export class Booking extends AggregateRoot<BookingId> {
 
     const newBooking = new Booking({
       id: newInstanceId,
-      customerId: props.customerId,
+      customerName: props.customerName,
       eventDate: DateVo.create(props.eventDate),
       expectedBookingPeriod: new BookingPeriod({
         pickUpDate: DateVo.create(props.expectedPickUpDate),
@@ -172,8 +172,8 @@ export class Booking extends AggregateRoot<BookingId> {
   }
 
   // Getters
-  public getCustomerId(): string {
-    return this.customerId;
+  public getCustomerName(): string {
+    return this.customerName;
   }
 
   public getEventDate(): DateVo {

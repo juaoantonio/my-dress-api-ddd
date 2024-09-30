@@ -1,33 +1,29 @@
-import {
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryKey,
-  Property,
-} from "@mikro-orm/core";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class DressModel {
-  @PrimaryKey({ type: "uuid" })
-  id!: string;
+  @PrimaryColumn({
+    type: "uuid",
+  })
+  id: string;
 
-  @Property()
-  imageUrl!: string;
+  @Column()
+  imageUrl: string;
 
-  @Property({ type: "double precision" })
-  rentPrice!: number;
+  @Column()
+  rentPrice: number;
 
-  @Property()
-  color!: string;
+  @Column()
+  color: string;
 
-  @Property()
-  model!: string;
+  @Column()
+  model: string;
 
-  @Property()
-  fabric!: string;
+  @Column()
+  fabric: string;
 
-  @Property()
-  isPickedUp!: boolean;
+  @Column()
+  isPickedUp: boolean;
 
   @OneToMany(
     () => ReservationPeriodModel,
@@ -35,22 +31,39 @@ export class DressModel {
   )
   reservationPeriods = new Array<ReservationPeriodModel>();
 
-  constructor(id: string) {
-    this.id = id;
+  constructor(props: {
+    id: string;
+    imageUrl: string;
+    rentPrice: number;
+    color: string;
+    model: string;
+    fabric: string;
+    isPickedUp: boolean;
+    reservationPeriods: ReservationPeriodModel[];
+  }) {
+    this.id = props.id;
+    this.imageUrl = props.imageUrl;
+    this.rentPrice = props.rentPrice;
+    this.color = props.color;
+    this.model = props.model;
+    this.fabric = props.fabric;
+    this.isPickedUp = props.isPickedUp;
+    this.reservationPeriods = props.reservationPeriods;
   }
 }
 
-@Entity()
 export class ReservationPeriodModel {
-  @PrimaryKey({ type: "uuid" })
-  id!: string;
+  @PrimaryColumn({
+    type: "uuid",
+  })
+  id: string;
 
-  @Property()
-  startDate!: Date;
+  @Column()
+  startDate: Date;
 
-  @Property()
-  endDate!: Date;
+  @Column()
+  endDate: Date;
 
-  @ManyToOne()
-  dress!: DressModel;
+  @ManyToOne(() => DressModel, (dress) => dress.reservationPeriods)
+  dress: DressModel;
 }

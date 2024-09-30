@@ -8,6 +8,7 @@ import { AggregateRoot } from "@core/@shared/domain/aggregate-root";
 
 class StubAggregate extends AggregateRoot<Uuid> {
   entity_id: any;
+
   toJSON(): Required<any> {
     return {};
   }
@@ -17,7 +18,10 @@ class StubAggregate extends AggregateRoot<Uuid> {
 class StubController {
   @Get()
   index() {
-    throw new EntityNotFoundError("fake id", StubAggregate);
+    throw new EntityNotFoundError(
+      Uuid.create("0b4cca19-6af2-4ea4-b427-a05483c8db2d"),
+      StubAggregate,
+    );
   }
 }
 
@@ -37,7 +41,8 @@ describe("NotFoundErrorFilter Unit Tests", () => {
     return request(app.getHttpServer()).get("/stub").expect(404).expect({
       statusCode: 404,
       error: "Not Found",
-      message: "StubAggregate with id(s) fake id not found",
+      message:
+        "StubAggregate with id(s) 0b4cca19-6af2-4ea4-b427-a05483c8db2d not found",
     });
   });
 });

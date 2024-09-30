@@ -2,18 +2,28 @@ import { Entity } from "../entity";
 import { Identifier } from "../identifier";
 
 export interface IRepository<
-  EntityId extends Identifier,
-  E extends Entity<EntityId>,
+  AggregateId extends Identifier,
+  A extends Entity<AggregateId>,
 > {
-  save(entity: E): Promise<void>;
-  saveMany(entities: E[]): Promise<void>;
-  findById(entityId: EntityId): Promise<E | null>;
-  findMany(): Promise<E[]>;
-  findManyByIds(entityIds: EntityId[]): Promise<E[]>;
-  update(entity: E): Promise<void>;
-  delete(entityId: EntityId): Promise<void>;
-  deleteManyByIds(entityIds: EntityId[]): Promise<void>;
+  save(aggregate: A): Promise<void>;
+
+  saveMany(aggregates: A[]): Promise<void>;
+
+  findById(aggregateId: AggregateId): Promise<A | null>;
+
+  findMany(): Promise<A[]>;
+
+  findManyByIds(aggregateIds: AggregateId[]): Promise<A[]>;
+
+  update(aggregate: A): Promise<void>;
+
+  delete(aggregateId: AggregateId): Promise<void>;
+
+  deleteManyByIds(aggregateIds: AggregateId[]): Promise<void>;
+
   existsById(
-    entityIds: EntityId[],
-  ): Promise<{ exists: EntityId[]; notExists: EntityId[] }>;
+    aggregateIds: AggregateId[],
+  ): Promise<{ exists: AggregateId[]; notExists: AggregateId[] }>;
+
+  getEntity(): new (...args: any[]) => A;
 }

@@ -17,7 +17,7 @@ describe("Booking Aggregate Unit Tests", function () {
     it("should create a valid booking with actual booking period", () => {
       const booking = new Booking({
         id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: DateVo.create("2024-09-01"),
         expectedBookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
@@ -46,7 +46,7 @@ describe("Booking Aggregate Unit Tests", function () {
       expect(booking.getId().getValue()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
-      expect(booking.getCustomerId()).toBe(
+      expect(booking.getCustomerName()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
       expect(booking.getEventDate().getDateFormatted()).toBe("2024-09-01");
@@ -78,7 +78,7 @@ describe("Booking Aggregate Unit Tests", function () {
     it("should create a valid booking without actual booking period", () => {
       const booking = new Booking({
         id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: DateVo.create("2024-09-01"),
         expectedBookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
@@ -103,7 +103,7 @@ describe("Booking Aggregate Unit Tests", function () {
       expect(booking.getId().getValue()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
-      expect(booking.getCustomerId()).toBe(
+      expect(booking.getCustomerName()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
       expect(booking.getEventDate().getDateFormatted()).toBe("2024-09-01");
@@ -127,7 +127,7 @@ describe("Booking Aggregate Unit Tests", function () {
   describe("Booking Create Factory Method", function () {
     it("should create a valid booking with just required fields", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -147,7 +147,7 @@ describe("Booking Aggregate Unit Tests", function () {
         ],
       });
       expect(booking.getId().getValue()).toBeDefined();
-      expect(booking.getCustomerId()).toBe(
+      expect(booking.getCustomerName()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
       expect(booking.getEventDate().getDateFormatted()).toBe("2024-09-01");
@@ -168,7 +168,7 @@ describe("Booking Aggregate Unit Tests", function () {
     it("should create a valid booking with all fields", () => {
       const booking = Booking.create({
         id: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -193,7 +193,7 @@ describe("Booking Aggregate Unit Tests", function () {
       expect(booking.getId().getValue()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
-      expect(booking.getCustomerId()).toBe(
+      expect(booking.getCustomerName()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
       expect(booking.getEventDate().getDateFormatted()).toBe("2024-09-01");
@@ -224,7 +224,7 @@ describe("Booking Aggregate Unit Tests", function () {
   describe("Booking Behavior Methods", function () {
     it("should add an item to the booking", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -257,7 +257,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should remove an item from booking", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -283,7 +283,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should update amount paid", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -309,7 +309,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should mark booking as ready if amountPaid is equal to total booking price", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -334,7 +334,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should update total price when a item is added", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -369,7 +369,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should update total price when a item is removed", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -394,7 +394,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should initialize a booking", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -421,7 +421,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
     it("should cancel booking", () => {
       const booking = Booking.create({
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
@@ -448,7 +448,7 @@ describe("Booking Aggregate Unit Tests", function () {
       vi.setSystemTime(new Date("2024-09-02"));
       const booking = new Booking({
         id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: DateVo.create("2024-09-01"),
         expectedBookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
@@ -484,7 +484,7 @@ describe("Booking Aggregate Unit Tests", function () {
     describe("Validate Booking Behavior Methods", function () {
       it("should validate amountPaid if not positive", () => {
         const booking = Booking.create({
-          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
@@ -514,7 +514,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
       it("should validate amountPaid if is greater than total price", () => {
         const booking = Booking.create({
-          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
@@ -545,7 +545,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
       it("should validate invalid booking items", () => {
         const booking = Booking.create({
-          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
@@ -576,7 +576,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
       it("should validate when adding a invalid booking item", () => {
         const booking = Booking.create({
-          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
@@ -608,7 +608,7 @@ describe("Booking Aggregate Unit Tests", function () {
 
       it("should validate when starting a booking with invalid status", () => {
         const booking = Booking.create({
-          customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
@@ -633,7 +633,7 @@ describe("Booking Aggregate Unit Tests", function () {
     it("should validate when canceling a booking with invalid status", () => {
       const booking = new Booking({
         id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: DateVo.create("2024-09-01"),
         expectedBookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
@@ -663,7 +663,7 @@ describe("Booking Aggregate Unit Tests", function () {
     it("should validate when completing a booking with canceled status", () => {
       const booking = new Booking({
         id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: DateVo.create("2024-09-01"),
         expectedBookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
@@ -693,7 +693,7 @@ describe("Booking Aggregate Unit Tests", function () {
     it("should validate when completing a booking with canceled status", () => {
       const booking = new Booking({
         id: BookingId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        customerId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: DateVo.create("2024-09-01"),
         expectedBookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
