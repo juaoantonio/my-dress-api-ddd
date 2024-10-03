@@ -67,6 +67,7 @@ export class AppointmentTypeormRepository implements IAppointmentRepository {
       where: {
         id: aggregateId.getValue(),
       },
+      loadEagerRelations: true,
     });
     if (!result) {
       return null;
@@ -101,8 +102,16 @@ export class AppointmentTypeormRepository implements IAppointmentRepository {
   }
 
   async update(aggregate: Appointment): Promise<void> {
+    const modelExists = await this.modelRepository.findOne({
+      where: {
+        id: aggregate.getId().getValue(),
+      },
+    });
+    if (!modelExists) {
+      throw new EntityNotFoundError(aggregate.getId(), this.getEntity());
+    }
     const model = this.modelMapper.toModel(aggregate);
-    await this.modelRepository.update(model.id, model);
+    await this.modelRepository.save(model);
   }
 
   getEntity(): { new (...args: any[]): Appointment } {

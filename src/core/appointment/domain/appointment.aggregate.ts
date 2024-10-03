@@ -67,7 +67,7 @@ export class Appointment extends AggregateRoot<AppointmentId> {
       customerName: props.customerName,
       eventDate: props.eventDate,
       type: props.type,
-      bookingId: props.bookingId,
+      bookingId: props.bookingId ?? null,
     });
     appointment.validate();
     return appointment;
@@ -106,7 +106,11 @@ export class Appointment extends AggregateRoot<AppointmentId> {
         date: DateVo.now(),
       }),
     );
-    this.validate(["appointmentDate"]);
+  }
+
+  public changeCustomerName(newName: string): void {
+    this.customerName = newName;
+    this.validate(["customerName"]);
   }
 
   // Getters

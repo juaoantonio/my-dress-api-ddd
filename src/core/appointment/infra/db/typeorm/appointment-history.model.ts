@@ -1,31 +1,27 @@
-import { Column, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AppointmentStatus } from "@core/appointment/domain/appointment.aggregate";
 import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment.model";
 
+@Entity()
 export class AppointmentHistoryModel {
-  @PrimaryColumn({
-    type: "uuid",
-    default: () => "uuid_generate_v4()",
-  })
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @ManyToOne(() => AppointmentModel, (appointment) => appointment.history)
   appointment: AppointmentModel;
 
   @Column({
-    type: "enum",
+    type: "text",
     enum: AppointmentStatus,
   })
   status: AppointmentStatus;
 
   @Column({
-    type: "timestamptz",
+    type: "text",
+    transformer: {
+      to: (value: Date) => value.toISOString(),
+      from: (value: string) => new Date(value),
+    },
   })
   date: Date;
-
-  constructor(props: Omit<AppointmentHistoryModel, "id">) {
-    this.appointment = props.appointment;
-    this.status = props.status;
-    this.date = props.date;
-  }
 }

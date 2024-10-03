@@ -15,7 +15,7 @@ export class AppointmentModelMapper
   toEntity(model: AppointmentModel): Appointment {
     return new Appointment({
       id: AppointmentId.create(model.id),
-      bookingId: BookingId.create(model.bookingId),
+      bookingId: model.bookingId ? BookingId.create(model.bookingId) : null,
       appointmentDate: DateVo.create(model.appointmentDate),
       customerName: model.customerName,
       eventDate: DateVo.create(model.eventDate),
@@ -24,7 +24,7 @@ export class AppointmentModelMapper
       history: model.history.map(
         (history) =>
           new AppointmentHistory({
-            appointmentId: AppointmentId.create(history.appointment.id),
+            appointmentId: AppointmentId.create(model.id),
             status: history.status,
             date: DateVo.create(history.date),
           }),
@@ -42,14 +42,15 @@ export class AppointmentModelMapper
       type: entity.getType(),
       status: entity.getStatus(),
     });
-    appointmentModel.history = entity.getHistory().map(
-      (history) =>
-        new AppointmentHistoryModel({
-          appointment: appointmentModel,
-          status: history.getStatus(),
-          date: history.getDate().getDate(),
-        }),
-    );
+
+    appointmentModel.history = entity.getHistory().map((history) => {
+      const historyModel = new AppointmentHistoryModel();
+      historyModel.date = history.getDate().getDate();
+      historyModel.status = history.getStatus();
+      historyModel.appointment = appointmentModel;
+      return historyModel;
+    });
+
     return appointmentModel;
   }
 }
