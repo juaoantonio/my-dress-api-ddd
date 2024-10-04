@@ -1,8 +1,12 @@
 import { IsNotEmpty, IsUUID } from "class-validator";
 import { IAppointmentRepository } from "@core/appointment/domain/appointment.repository";
 import { IUseCase } from "@core/@shared/application/use-case.interface";
-import { AppointmentId } from "@core/appointment/domain/appointment.aggregate";
+import {
+  Appointment,
+  AppointmentId,
+} from "@core/appointment/domain/appointment.aggregate";
 import { EntityValidationError } from "@core/@shared/domain/validators/validation.error";
+import { EntityNotFoundError } from "@core/@shared/domain/error/entity-not-found.error";
 
 export class CancelAppointmentInput {
   @IsUUID()
@@ -20,12 +24,14 @@ export class CancelAppointmentUseCase
     const appointment =
       await this.appointmentRepository.findById(appointmentId);
     if (!appointment) {
-      throw new Error("Agendamento não encontrado");
+      throw new EntityNotFoundError(appointmentId, Appointment);
     }
     appointment.cancel();
     appointment.validate();
-    if (appointment.notification.hasErrors())
+    if (appointment.notification.hasErrors()) {
+      console.log(appointment.notification.toJSON());
       throw new EntityValidationError(appointment.notification.toJSON());
+    }
     await this.appointmentRepository.update(appointment);
   }
 }

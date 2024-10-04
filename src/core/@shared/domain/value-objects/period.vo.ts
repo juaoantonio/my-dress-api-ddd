@@ -19,15 +19,15 @@ export class Period extends ValueObject {
   }
 
   validate(): void {
-    if (this.startDate.getDate() < new Date()) {
+    if (this.startDate.getValue() < new Date()) {
       throw new Error("Start date cannot be in the past");
     }
 
-    if (this.endDate.getDate() < new Date()) {
+    if (this.endDate.getValue() < new Date()) {
       throw new Error("End date cannot be in the past");
     }
 
-    if (this.startDate.getDate() > this.endDate.getDate()) {
+    if (this.startDate.getValue() > this.endDate.getValue()) {
       throw new Error("Start date cannot be after end date");
     }
   }
@@ -42,7 +42,7 @@ export class Period extends ValueObject {
 
   public getTotalDays(): number {
     const diffTime = Math.abs(
-      this.endDate.getDate().getTime() - this.startDate.getDate().getTime(),
+      this.endDate.getValue().getTime() - this.startDate.getValue().getTime(),
     );
     const milisecondsInADay = 1000 * 60 * 60 * 24;
     const diffDays = Math.ceil(diffTime / milisecondsInADay);
@@ -51,8 +51,8 @@ export class Period extends ValueObject {
 
   public contains(date: DateVo): boolean {
     return (
-      date.getDate() >= this.startDate.getDate() &&
-      date.getDate() <= this.endDate.getDate()
+      date.getValue() >= this.startDate.getValue() &&
+      date.getValue() <= this.endDate.getValue()
     );
   }
 }

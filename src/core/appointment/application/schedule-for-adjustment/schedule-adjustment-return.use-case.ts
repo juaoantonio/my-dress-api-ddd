@@ -18,7 +18,7 @@ export class ScheduleAdjustmentReturnInput {
 
   @IsDateString()
   @IsNotEmpty()
-  returnDate: string;
+  appointmentDate: string;
 }
 
 export class ScheduleAdjustmentReturnUseCase
@@ -37,7 +37,7 @@ export class ScheduleAdjustmentReturnUseCase
     }
     const appointment = Appointment.create({
       bookingId: BookingId.create(input.bookingId),
-      appointmentDate: DateVo.create(input.returnDate),
+      appointmentDate: DateVo.create(input.appointmentDate),
       customerName: booking.getCustomerName(),
       eventDate: booking.getEventDate(),
       type: AppointmentType.RETURN_FOR_ADJUSTMENT,

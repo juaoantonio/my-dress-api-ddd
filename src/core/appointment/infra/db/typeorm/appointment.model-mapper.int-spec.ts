@@ -41,11 +41,11 @@ describe("AppointmentModelMapper", () => {
       expect(appointment).toBeInstanceOf(Appointment);
       expect(appointment.getId().getValue()).toBe(appointmentModel.id);
       expect(appointment.getBookingId()).toBeNull();
-      expect(appointment.getAppointmentDate().getDate()).toEqual(
+      expect(appointment.getAppointmentDate().getValue()).toEqual(
         new Date("2024-10-03T22:51:22.124Z"),
       );
       expect(appointment.getCustomerName()).toBe("John Doe");
-      expect(appointment.getEventDate().getDate()).toEqual(
+      expect(appointment.getEventDate().getValue()).toEqual(
         new Date("2024-10-04T22:51:22.124Z"),
       );
       expect(appointment.getType()).toBe(AppointmentType.INITIAL_VISIT);
@@ -91,11 +91,11 @@ describe("AppointmentModelMapper", () => {
       expect(appointment.getBookingId()?.getValue()).toBe(
         appointmentModel.bookingId,
       );
-      expect(appointment.getAppointmentDate().getDate()).toEqual(
+      expect(appointment.getAppointmentDate().getValue()).toEqual(
         new Date("2024-10-03T22:51:22.124Z"),
       );
       expect(appointment.getCustomerName()).toBe("Jane Smith");
-      expect(appointment.getEventDate().getDate()).toEqual(
+      expect(appointment.getEventDate().getValue()).toEqual(
         new Date("2024-10-04T22:51:22.124Z"),
       );
       expect(appointment.getType()).toBe(AppointmentType.RETURN);
@@ -108,7 +108,7 @@ describe("AppointmentModelMapper", () => {
         appointmentId.getValue(),
       );
       expect(history1.getStatus()).toBe(AppointmentStatus.SCHEDULED);
-      expect(history1.getDate().getDate()).toEqual(
+      expect(history1.getDate().getValue()).toEqual(
         new Date("2024-10-05T10:00:00.000Z"),
       );
 
@@ -118,7 +118,7 @@ describe("AppointmentModelMapper", () => {
         appointmentId.getValue(),
       );
       expect(history2.getStatus()).toBe(AppointmentStatus.COMPLETED);
-      expect(history2.getDate().getDate()).toEqual(
+      expect(history2.getDate().getValue()).toEqual(
         new Date("2024-10-06T12:00:00.000Z"),
       );
     });
@@ -185,11 +185,8 @@ describe("AppointmentModelMapper", () => {
         status: AppointmentStatus.COMPLETED,
         history: [history1, history2],
       });
-
       // Act
       const appointmentModel = mapper.toModel(appointment);
-      console.log(appointmentModel);
-
       // Assert
       expect(appointmentModel).toBeInstanceOf(AppointmentModel);
       expect(appointmentModel.id).toBe(appointment.getId().getValue());

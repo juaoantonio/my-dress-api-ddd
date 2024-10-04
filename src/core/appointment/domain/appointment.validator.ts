@@ -4,7 +4,7 @@ import { INotification } from "../../@shared/domain/validators/notification.inte
 import { IsEnum, IsOptional } from "class-validator";
 
 class AppointmentRules {
-  @IsEnum(["SCHEDULED", "COMPLETED", "CANCELED"], {
+  @IsEnum(["SCHEDULED", "COMPLETED", "CANCELED", "CANCELLED"], {
     message: "Status invalido",
     groups: ["status"],
   })

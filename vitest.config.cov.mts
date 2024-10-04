@@ -6,6 +6,9 @@ export default defineConfig({
   test: {
     globals: true,
     setupFiles: ["./test/vitest.setup.ts"],
+    include: ["**/*.{spec,e2e-spec,int-spec}.ts"],
+    testTimeout: 60000, // 60 seconds
+    hookTimeout: 60000, // 60 seconds
     root: "./",
   },
 

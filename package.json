@@ -16,12 +16,12 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "pnpm run type-check && vitest run",
     "test:watch": "pnpm run type-check && vitest",
-    "test:cov": "pnpm run type-check && vitest run --coverage",
     "test:debug": "pnpm run type-check && vitest --inspect-brk --inspect --logHeapUsage --threads=false",
     "test:e2e": "pnpm run type-check && vitest run --config ./vitest.config.e2e.mts",
     "test:int": "pnpm run type-check && vitest run --config ./vitest.config.int.mts",
     "test:int:watch": "pnpm run type-check && vitest --config ./vitest.config.int.mts",
-    "test:all": "pnpm run type-check && vitest run && vitest run --config ./vitest.config.e2e.mts && vitest run --config ./vitest.config.int.mts"
+    "test:all": "pnpm run type-check && vitest run && vitest run --config ./vitest.config.e2e.mts && vitest run --config ./vitest.config.int.mts",
+    "test:cov": "pnpm run type-check && vitest run --coverage --config ./vitest.config.cov.mts"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.2",

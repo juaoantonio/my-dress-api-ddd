@@ -46,8 +46,8 @@ class ReservationPeriodMapper
 
   toModel(period: Period): ReservationPeriodModel {
     const model = new ReservationPeriodModel();
-    model.startDate = period.getStartDate().getDate();
-    model.endDate = period.getEndDate().getDate();
+    model.startDate = period.getStartDate().getValue();
+    model.endDate = period.getEndDate().getValue();
     return model;
   }
 

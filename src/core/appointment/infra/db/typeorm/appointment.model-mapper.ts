@@ -36,16 +36,16 @@ export class AppointmentModelMapper
     const appointmentModel = new AppointmentModel({
       id: entity.getId().getValue(),
       bookingId: entity.getBookingId()?.getValue(),
-      appointmentDate: entity.getAppointmentDate().getDate(),
+      appointmentDate: entity.getAppointmentDate().getValue(),
       customerName: entity.getCustomerName(),
-      eventDate: entity.getEventDate().getDate(),
+      eventDate: entity.getEventDate().getValue(),
       type: entity.getType(),
       status: entity.getStatus(),
     });
 
     appointmentModel.history = entity.getHistory().map((history) => {
       const historyModel = new AppointmentHistoryModel();
-      historyModel.date = history.getDate().getDate();
+      historyModel.date = history.getDate().getValue();
       historyModel.status = history.getStatus();
       historyModel.appointment = appointmentModel;
       return historyModel;

@@ -16,7 +16,7 @@ export class DateVo extends ValueObject {
     return new DateVo(new Date());
   }
 
-  public getDate(): Date {
+  public getValue(): Date {
     return this.date;
   }
 

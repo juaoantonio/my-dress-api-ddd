@@ -23,15 +23,15 @@ export class BookingPeriod extends ValueObject {
   }
 
   validate(): void {
-    if (this.pickUpDate.getDate() < new Date()) {
+    if (this.pickUpDate.getValue() < new Date()) {
       throw new InvalidBookingPeriodError("Pick up date cannot be in the past");
     }
 
-    if (this.returnDate?.getDate() < new Date()) {
+    if (this.returnDate?.getValue() < new Date()) {
       throw new InvalidBookingPeriodError("Return date cannot be in the past");
     }
 
-    if (this.pickUpDate.getDate() > this.returnDate.getDate()) {
+    if (this.pickUpDate.getValue() > this.returnDate.getValue()) {
       throw new InvalidBookingPeriodError(
         "Pick up date cannot be after return date",
       );
@@ -48,7 +48,8 @@ export class BookingPeriod extends ValueObject {
 
   public getTotalDays(): number {
     const diffTime = Math.abs(
-      this.returnDate.getDate().getTime() - this.pickUpDate.getDate().getTime(),
+      this.returnDate.getValue().getTime() -
+        this.pickUpDate.getValue().getTime(),
     );
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }

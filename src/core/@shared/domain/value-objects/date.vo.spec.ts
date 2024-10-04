@@ -18,7 +18,7 @@ describe("DateVO", () => {
       const dateVO = new DateVo(date);
       // Assert
       expect(dateVO).toBeDefined();
-      expect(dateVO.getDate()).toBe(date);
+      expect(dateVO.getValue()).toBe(date);
       expect(dateVO.getDateFormatted()).toBe("2024-08-30");
     });
   });
@@ -31,7 +31,7 @@ describe("DateVO", () => {
       const dateVO = DateVo.create(date);
       // Assert
       expect(dateVO).toBeDefined();
-      expect(dateVO.getDate()).toEqual(new Date(date));
+      expect(dateVO.getValue()).toEqual(new Date(date));
       expect(dateVO.getDateFormatted()).toBe("2024-08-30");
     });
   });
