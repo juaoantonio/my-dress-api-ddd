@@ -45,7 +45,11 @@ export class AppointmentController {
   })
   @ApiResponse({
     status: 422,
-    description: "Dados inválidos fornecidos.",
+    description: "Entidade inválida fornecida.",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Dados inválidos fornecidos",
   })
   async scheduleInitialVisit(
     @Body() scheduleInitialVisitInput: ScheduleInitialVisitDto,
@@ -71,7 +75,11 @@ export class AppointmentController {
   })
   @ApiResponse({
     status: 422,
-    description: "Dados inválidos fornecidos.",
+    description: "Entidade inválida fornecida.",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Dados inválidos fornecidos",
   })
   @ApiResponse({
     status: 404,
@@ -92,12 +100,16 @@ export class AppointmentController {
   @ApiParam({
     name: "appointmentId",
     description: "ID do agendamento a ser cancelado",
-    type: String,
     example: "123e4567-e89b-12d3-a456-426614174000",
+    type: String,
   })
   @ApiResponse({
     status: 200,
     description: "Agendamento cancelado com sucesso.",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Dados inválidos fornecidos",
   })
   @ApiResponse({ status: 404, description: "Agendamento não encontrado." })
   async cancelAppointment(
@@ -121,6 +133,10 @@ export class AppointmentController {
   @ApiResponse({
     status: 404,
     description: "Agendamento não encontrado.",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Dados inválidos fornecidos",
   })
   async completeAppointment(
     @Param("appointmentId", new ParseUUIDPipe()) appointmentId: string,
