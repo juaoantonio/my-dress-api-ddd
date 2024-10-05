@@ -31,7 +31,7 @@ jobs:
         run: pnpm build
 
       - name: Set env variables
-        run: cp envs/env.test.example envs/.env.test
+        run: cp envs/.env.test.example envs/.env.test
 
       - name: Run unit tests
         run: pnpm run test
