@@ -8,7 +8,7 @@ import { Booking, BookingId } from "@core/booking/domain/booking.aggregate";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
 // Stub of booking repository
-const bookingRepositoryStub: IBookingRepository = {
+export const bookingRepositoryStub: IBookingRepository = {
   findById: vi.fn().mockReturnValue({
     getCustomerName: () => "John Doe",
     getEventDate: () => DateVo.create(new Date()),

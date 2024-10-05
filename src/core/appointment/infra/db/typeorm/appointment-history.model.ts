@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from "typeorm";
 import { AppointmentStatus } from "@core/appointment/domain/appointment.aggregate";
 import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment.model";
 
@@ -8,11 +14,17 @@ export class AppointmentHistoryModel {
   id: string;
 
   @ManyToOne(() => AppointmentModel, (appointment) => appointment.history)
-  appointment: AppointmentModel;
+  appointment: Relation<AppointmentModel>;
 
   @Column({
-    type: "text",
-    enum: AppointmentStatus,
+    type: "varchar",
+    length: 50,
+    nullable: false,
+    transformer: {
+      to: (value: AppointmentStatus) => value,
+      from: (value: string) =>
+        AppointmentStatus[value as keyof typeof AppointmentStatus],
+    },
   })
   status: AppointmentStatus;
 

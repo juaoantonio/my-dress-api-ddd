@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn, Relation } from "typeorm";
 import {
   AppointmentStatus,
   AppointmentType,
@@ -42,14 +42,26 @@ export class AppointmentModel {
   eventDate: Date;
 
   @Column({
-    type: "text",
-    enum: AppointmentType,
+    type: "varchar",
+    length: 50,
+    nullable: false,
+    transformer: {
+      to: (value: AppointmentType) => value,
+      from: (value: string) =>
+        AppointmentType[value as keyof typeof AppointmentType],
+    },
   })
   type: AppointmentType;
 
   @Column({
-    type: "text",
-    enum: AppointmentStatus,
+    type: "varchar",
+    length: 50,
+    nullable: false,
+    transformer: {
+      to: (value: AppointmentStatus) => value,
+      from: (value: string) =>
+        AppointmentStatus[value as keyof typeof AppointmentStatus],
+    },
   })
   status: AppointmentStatus;
 
@@ -57,7 +69,7 @@ export class AppointmentModel {
     eager: true,
     cascade: true,
   })
-  history: AppointmentHistoryModel[];
+  history: Relation<AppointmentHistoryModel>[];
 
   constructor(
     props: Omit<AppointmentModel, "history"> & {
