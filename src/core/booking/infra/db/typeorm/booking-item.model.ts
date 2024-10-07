@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { BookingModel } from "@core/booking/infra/typeorm/booking.model";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 
 @Entity({ name: "booking_items" })
 export class BookingItemModel {

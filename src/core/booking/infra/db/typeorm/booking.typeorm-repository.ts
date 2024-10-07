@@ -4,9 +4,9 @@ import {
   BookingId,
 } from "@core/booking/domain/booking.aggregate-root";
 import { In, Repository } from "typeorm";
-import { BookingModelMapper } from "@core/booking/infra/typeorm/booking.model-mapper";
-import { BookingModel } from "@core/booking/infra/typeorm/booking.model";
 import { EntityNotFoundError } from "@core/@shared/domain/error/entity-not-found.error";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { BookingModelMapper } from "@core/booking/infra/db/typeorm/booking.model-mapper";
 
 export class BookingTypeormRepository implements IBookingRepository {
   constructor(

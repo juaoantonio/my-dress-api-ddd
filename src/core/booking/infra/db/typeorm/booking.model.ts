@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { BookingItemModel } from "@core/booking/infra/typeorm/booking-item.model";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
+import { BookingItemModel } from "./booking-item.model";
 
 @Entity({ name: "bookings" })
 export class BookingModel {
