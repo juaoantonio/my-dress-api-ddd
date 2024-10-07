@@ -1,4 +1,4 @@
-import { Dress } from "./dress.aggregate";
+import { Dress } from "./dress.aggregate-root";
 import { DressId } from "./dress-id.vo";
 import { describe, expect, it } from "vitest";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";

@@ -1,4 +1,4 @@
-import { Dress } from "../../../domain/dress/dress.aggregate";
+import { Dress } from "../../../domain/dress/dress.aggregate-root";
 import { DressModel, ReservationPeriodModel } from "./dress.model";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
