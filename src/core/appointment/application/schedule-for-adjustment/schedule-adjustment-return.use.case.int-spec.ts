@@ -4,7 +4,10 @@ import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
 import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/schedule-for-adjustment/schedule-adjustment-return.use-case";
 import { IBookingRepository } from "@core/booking/domain/booking.repository";
-import { Booking, BookingId } from "@core/booking/domain/booking.aggregate";
+import {
+  Booking,
+  BookingId,
+} from "@core/booking/domain/booking.aggregate-root";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
 // Stub of booking repository

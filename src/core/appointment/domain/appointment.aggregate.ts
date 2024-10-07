@@ -1,6 +1,6 @@
 import { Uuid } from "../../@shared/domain/value-objects/uuid.vo";
 import { AggregateRoot } from "../../@shared/domain/aggregate-root";
-import { BookingId } from "../../booking/domain/booking.aggregate";
+import { BookingId } from "../../booking/domain/booking.aggregate-root";
 import { DateVo } from "../../@shared/domain/value-objects/date.vo";
 import { AppointmentValidatorFactory } from "./appointment.validator";
 import { ValueObject } from "../../@shared/domain/value-object";

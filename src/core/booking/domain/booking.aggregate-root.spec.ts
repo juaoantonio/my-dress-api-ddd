@@ -1,5 +1,5 @@
 import { BookingPeriod } from "./booking-period.vo";
-import { Booking, BookingId, BookingStatus } from "./booking.aggregate";
+import { Booking, BookingId, BookingStatus } from "./booking.aggregate-root";
 import { DateVo } from "../../@shared/domain/value-objects/date.vo";
 import { BookingItem, BookingItemId } from "./entities/booking-item.entity";
 
@@ -506,7 +506,7 @@ describe("Booking Aggregate Unit Tests", function () {
         booking.updatePayment(-50);
         expect(booking.notification).notificationContainsErrorMessages([
           {
-            amountPaid: ["Valor pago deve ser positivo"],
+            amountPaid: ["Valor pago deve ser maior ou igual a 0"],
           },
         ]);
         expect(booking.notification.hasErrors()).toBe(true);

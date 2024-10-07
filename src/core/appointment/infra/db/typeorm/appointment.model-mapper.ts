@@ -5,7 +5,7 @@ import {
   AppointmentId,
 } from "@core/appointment/domain/appointment.aggregate";
 import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment.model";
-import { BookingId } from "@core/booking/domain/booking.aggregate";
+import { BookingId } from "@core/booking/domain/booking.aggregate-root";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
 

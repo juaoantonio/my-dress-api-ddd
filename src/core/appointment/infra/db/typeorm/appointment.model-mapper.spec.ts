@@ -10,7 +10,7 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from "@core/appointment/domain/appointment.aggregate";
-import { BookingId } from "@core/booking/domain/booking.aggregate";
+import { BookingId } from "@core/booking/domain/booking.aggregate-root";
 import { v4 as uuidv4 } from "uuid";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 

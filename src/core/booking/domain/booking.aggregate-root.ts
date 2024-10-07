@@ -171,6 +171,10 @@ export class Booking extends AggregateRoot<BookingId> {
     this.status = BookingStatus.CANCELED;
   }
 
+  public changeCustomerName(newName: string): void {
+    this.customerName = newName;
+  }
+
   // Getters
   public getCustomerName(): string {
     return this.customerName;

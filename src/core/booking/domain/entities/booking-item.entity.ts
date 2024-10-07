@@ -1,5 +1,5 @@
-import { Entity } from "../../../@shared/domain/entity";
-import { Uuid } from "../../../@shared/domain/value-objects/uuid.vo";
+import { Entity } from "@core/@shared/domain/entity";
+import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
 import { Adjustment } from "./vo/adjustment.vo";
 import { BookingItemValidatorFactory } from "./booking-item.validator";
 
@@ -110,5 +110,9 @@ export class BookingItem extends Entity<BookingItemId> {
 
   public getIsCourtesy(): boolean {
     return this.isCourtesy;
+  }
+
+  public getProductId(): string {
+    return this.productId;
   }
 }

@@ -2,7 +2,7 @@ import { AppointmentTypeormRepository } from "@core/appointment/infra/db/typeorm
 import { setupTypeOrmForIntegrationTests } from "@core/@shared/infra/testing/helpers";
 import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment.model";
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
-import { BookingId } from "@core/booking/domain/booking.aggregate";
+import { BookingId } from "@core/booking/domain/booking.aggregate-root";
 import {
   Appointment,
   AppointmentId,

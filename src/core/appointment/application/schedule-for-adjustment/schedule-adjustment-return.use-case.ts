@@ -6,7 +6,10 @@ import {
   Appointment,
   AppointmentType,
 } from "@core/appointment/domain/appointment.aggregate";
-import { Booking, BookingId } from "@core/booking/domain/booking.aggregate";
+import {
+  Booking,
+  BookingId,
+} from "@core/booking/domain/booking.aggregate-root";
 import { EntityValidationError } from "@core/@shared/domain/validators/validation.error";
 import { IBookingRepository } from "@core/booking/domain/booking.repository";
 import { EntityNotFoundError } from "@core/@shared/domain/error/entity-not-found.error";

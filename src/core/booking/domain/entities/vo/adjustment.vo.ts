@@ -1,4 +1,4 @@
-import { ValueObject } from "../../../../@shared/domain/value-object";
+import { ValueObject } from "@core/@shared/domain/value-object";
 
 import { InvalidAdjustmentError } from "./adjustment.error";
 

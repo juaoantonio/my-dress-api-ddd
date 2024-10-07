@@ -5,7 +5,7 @@ import {
 } from "@core/appointment/domain/appointment.aggregate";
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
 
-@Entity()
+@Entity({ name: "appointment" })
 export class AppointmentModel {
   @PrimaryColumn({
     type: "uuid",

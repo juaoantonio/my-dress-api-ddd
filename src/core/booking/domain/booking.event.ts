@@ -1,5 +1,5 @@
 import { IDomainEvent } from "../../@shared/domain/events/domain-event.interface";
-import { BookingId } from "./booking.aggregate";
+import { BookingId } from "./booking.aggregate-root";
 
 export class BookingAmountPaidUpdatedEvent implements IDomainEvent {
   public aggregateId: BookingId;

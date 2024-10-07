@@ -1,13 +1,13 @@
 import { BookingItem, BookingItemId } from "./booking-item.entity";
 import { Adjustment } from "./vo/adjustment.vo";
-import { Uuid } from "../../../@shared/domain/value-objects/uuid.vo";
+import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
 
 describe("BookingItemEntity Unit Test", () => {
   describe("constructor", () => {
     it("should create a new booking item", () => {
       const bookingItem = new BookingItem({
         id: BookingItemId.random(),
-        productId: Uuid.random().value,
+        productId: Uuid.create("60151058-1563-4db3-9270-3c091dce3e82").value,
         type: "dress",
         isCourtesy: false,
         rentPrice: 100,
@@ -17,6 +17,9 @@ describe("BookingItemEntity Unit Test", () => {
       expect(bookingItem.getType()).toBe("dress");
       expect(bookingItem.getRentPrice()).toBe(100);
       expect(bookingItem.getAdjustments()).toEqual([]);
+      expect(bookingItem.getProductId()).toBe(
+        "60151058-1563-4db3-9270-3c091dce3e82",
+      );
       expect(bookingItem.getIsCourtesy()).toBe(false);
     });
   });
