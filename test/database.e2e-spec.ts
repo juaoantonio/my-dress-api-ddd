@@ -2,8 +2,8 @@ import { Test } from "@nestjs/testing";
 import { DatabaseModule } from "@nest/database-module/database.module";
 import { ConfigModule } from "@nest/config-module/config.module";
 import { getDataSourceToken } from "@nestjs/typeorm";
-import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
-import { MySqlContainer } from "@testcontainers/mysql";
+import { PostgreSqlContainer } from "@testcontainers/postgresql";
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 describe("DatabaseModule Unit Tests", () => {
   describe("SQLite Connection", () => {
@@ -40,20 +40,20 @@ describe("DatabaseModule Unit Tests", () => {
     });
   });
 
-  describe("MySQL Connection", async () => {
-    const container = await new MySqlContainer().start();
+  describe("PostgreSQL Connection", async () => {
+    const container = await new PostgreSqlContainer().start();
     const connOptions = {
-      DB_VENDOR: "mysql",
+      DB_VENDOR: "postgres",
       DB_HOST: container.getHost(),
       DB_PORT: container.getPort(),
       DB_USERNAME: container.getUsername(),
-      DB_PASSWORD: container.getUserPassword(),
+      DB_PASSWORD: container.getPassword(),
       DB_DATABASE: container.getDatabase(),
       DB_LOGGING: false,
       DB_AUTO_LOAD_MODELS: true,
     };
 
-    it("should be a mysql connection", async () => {
+    it("should be a postgres connection", async () => {
       const module = await Test.createTestingModule({
         imports: [
           ConfigModule.forRoot({
@@ -68,15 +68,15 @@ describe("DatabaseModule Unit Tests", () => {
       }).compile();
       const app = module.createNestApplication();
       const dataSource = app.get(getDataSourceToken());
-      const options = dataSource.options as MysqlConnectionOptions;
+      const options = dataSource.options as PostgresConnectionOptions;
       expect(dataSource).toBeDefined();
       expect(dataSource.isInitialized).toBe(true);
-      expect(options.type).toBe("mysql");
+      expect(options.type).toBe("postgres");
       expect(options.database).toBe(container.getDatabase());
       expect(options.host).toBe(container.getHost());
       expect(options.port).toBe(container.getPort());
       expect(options.username).toBe(container.getUsername());
-      expect(options.password).toBe(container.getUserPassword());
+      expect(options.password).toBe(container.getPassword());
     });
   });
 });

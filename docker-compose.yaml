@@ -1,10 +1,10 @@
 services:
   db:
-    image: mysql:8-debian
+    image: postgres:16-alpine
     environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: database
+      POSTGRES_DB: database
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
     ports:
-        - "3306:3306"
-    volumes:
-      - /var/lib/mysql
+      - "5432:5432"
+
