@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import "multer";
 
 @ApiTags("dresses")
 @Controller("dresses")

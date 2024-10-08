@@ -1,4 +1,5 @@
 import { FileValidator } from "@nestjs/common";
+import "multer";
 
 interface CustomFileTypeValidatorOptions {
   fileType: string[];
