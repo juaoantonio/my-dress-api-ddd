@@ -5,9 +5,25 @@ import {
   ProductConstructorProps,
   ProductType,
 } from "@core/products/domain/product";
+import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
+import { Period } from "@core/@shared/domain/value-objects/period.vo";
 
 type DressConstructorProps = ProductConstructorProps<DressId> & {
   fabric: string;
+};
+
+type DressCreateCommandProps = {
+  id?: string;
+  imageUrl: string;
+  rentPrice: number;
+  color: string;
+  model: string;
+  fabric: string;
+  isPickedUp?: boolean;
+  reservationPeriods?: {
+    startDate: string;
+    endDate: string;
+  }[];
 };
 
 export class Dress extends Product<DressId> {
@@ -19,14 +35,7 @@ export class Dress extends Product<DressId> {
     this.validate();
   }
 
-  public static create(props: {
-    id?: string;
-    imageUrl: string;
-    rentPrice: number;
-    color: string;
-    model: string;
-    fabric: string;
-  }): Dress {
+  public static create(props: DressCreateCommandProps): Dress {
     const newInstanceId = props.id
       ? DressId.create(props.id)
       : DressId.random();
@@ -37,6 +46,14 @@ export class Dress extends Product<DressId> {
       color: props.color,
       model: props.model,
       fabric: props.fabric,
+      reservationPeriods: props.reservationPeriods.map(
+        (raw) =>
+          new Period({
+            startDate: DateVo.create(raw.startDate),
+            endDate: DateVo.create(raw.endDate),
+          }),
+      ),
+      isPickedUp: props.isPickedUp || false,
     });
   }
 

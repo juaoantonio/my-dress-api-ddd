@@ -1,4 +1,4 @@
-import { Clutch, ClutchCreateCommandProps } from "./clutch.aggregate";
+import { Clutch, ClutchCreateCommandProps } from "./clutch.aggregate-root";
 import { ClutchId } from "./clutch-id.vo";
 import { ToJsonOutput } from "@core/@shared/domain/validators/notification.interface";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";

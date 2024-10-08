@@ -68,6 +68,10 @@ export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
     return this.reservationPeriods;
   }
 
+  public getType(): ProductType {
+    return this.type;
+  }
+
   public abstract getName(): string;
 
   // Behavior Methods

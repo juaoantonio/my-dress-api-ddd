@@ -1,4 +1,4 @@
-import { Clutch } from "@core/products/domain/clutch/clutch.aggregate";
+import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
 import { ClutchId } from "@core/products/domain/clutch/clutch-id.vo";
 import { IProductRepository } from "@core/products/domain/product.repository";
 
