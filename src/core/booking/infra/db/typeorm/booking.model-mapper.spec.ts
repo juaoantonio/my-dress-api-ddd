@@ -1,6 +1,3 @@
-import { BookingModelMapper } from "@core/booking/infra/typeorm/booking.model-mapper";
-import { BookingModel } from "@core/booking/infra/typeorm/booking.model";
-import { BookingItemModel } from "@core/booking/infra/typeorm/booking-item.model";
 import {
   Booking,
   BookingId,
@@ -14,6 +11,9 @@ import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { BookingPeriod } from "@core/booking/domain/booking-period.vo";
 import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
 import { v4 as uuidv4 } from "uuid";
+import { BookingModelMapper } from "@core/booking/infra/db/typeorm/booking.model-mapper";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
 
 describe("BookingModelMapper", () => {
   let mapper: BookingModelMapper;

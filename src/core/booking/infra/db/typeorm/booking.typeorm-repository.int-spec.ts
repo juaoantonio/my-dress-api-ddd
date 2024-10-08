@@ -1,7 +1,5 @@
-import { BookingTypeormRepository } from "@core/booking/infra/typeorm/booking.typeorm-repository";
 import { setupTypeOrmForIntegrationTests } from "@core/@shared/infra/testing/helpers";
-import { BookingModel } from "@core/booking/infra/typeorm/booking.model";
-import { BookingItemModel } from "@core/booking/infra/typeorm/booking-item.model";
+
 import {
   Booking,
   BookingId,
@@ -10,6 +8,9 @@ import {
 import { BookingItem } from "@core/booking/domain/entities/booking-item.entity";
 import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
 import { v4 as uuidv4 } from "uuid";
+import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
+import { BookingTypeormRepository } from "@core/booking/infra/db/typeorm/booking.typeorm-repository";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 
 describe("BookingTypeormRepository Integration Test", () => {
   let repository: BookingTypeormRepository;

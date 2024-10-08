@@ -11,10 +11,11 @@ import {
 } from "@core/appointment/domain/appointment.aggregate";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { CancelAppointmentUseCase } from "@core/appointment/application/cancel/cancel-appointment.use-case";
+import { IAppointmentRepository } from "@core/appointment/domain/appointment.repository";
 
 describe("CancelAppointmentUseCase Integration Test", () => {
   let useCase: CancelAppointmentUseCase;
-  let repository: AppointmentTypeormRepository;
+  let repository: IAppointmentRepository;
 
   const setup = setupTypeOrmForIntegrationTests({
     entities: [AppointmentModel, AppointmentHistoryModel],

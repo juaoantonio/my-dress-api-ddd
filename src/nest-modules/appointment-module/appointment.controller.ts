@@ -13,8 +13,17 @@ import { CancelAppointmentUseCase } from "@core/appointment/application/cancel/c
 import { CompleteAppointmentUseCase } from "@core/appointment/application/complete/complete-appointment.use-case";
 import { RescheduleAppointmentDto } from "@nest/appointment-module/dto/reschedule-appointment.dto";
 import { ScheduleInitialVisitDto } from "@nest/appointment-module/dto/schedule-initial-visit.dto";
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/schedule-for-adjustment/schedule-adjustment-return.use-case";
+import { ScheduleAdjustmentReturnDto } from "@nest/appointment-module/dto/schedule-adjustment-return.dto";
 
+@ApiTags("appointments")
 @Controller("appointments")
 export class AppointmentController {
   @Inject(ScheduleInitialVisitUseCase)
@@ -23,17 +32,16 @@ export class AppointmentController {
   @Inject(RescheduleAppointmentUseCase)
   private rescheduleAppointmentUseCase: RescheduleAppointmentUseCase;
 
+  @Inject(ScheduleAdjustmentReturnUseCase)
+  private scheduleAdjustmentReturnUseCase: ScheduleAdjustmentReturnUseCase;
+
   @Inject(CancelAppointmentUseCase)
   private cancelAppointmentUseCase: CancelAppointmentUseCase;
 
   @Inject(CompleteAppointmentUseCase)
   private completeAppointmentUseCase: CompleteAppointmentUseCase;
 
-  // TODO: Uncomment when the booking repository is implemented
-  // @Inject(ScheduleAdjustmentReturnUseCase)
-  // private scheduleAdjustmentReturnUseCase: ScheduleAdjustmentReturnUseCase;
-
-  @Post()
+  @Post("initial-visit")
   @ApiOperation({ summary: "Agendar uma visita inicial" })
   @ApiBody({
     type: ScheduleInitialVisitDto,
@@ -41,15 +49,11 @@ export class AppointmentController {
   })
   @ApiResponse({
     status: 201,
-    description: "Visita inicial agendada com sucesso.",
+    description: "Visita inicial agendada com sucesso",
   })
   @ApiResponse({
     status: 422,
-    description: "Entidade inválida fornecida.",
-  })
-  @ApiResponse({
-    status: 400,
-    description: "Dados inválidos fornecidos",
+    description: "Entidade inválida",
   })
   async scheduleInitialVisit(
     @Body() scheduleInitialVisitInput: ScheduleInitialVisitDto,
@@ -71,19 +75,15 @@ export class AppointmentController {
   })
   @ApiResponse({
     status: 200,
-    description: "Agendamento reagendado com sucesso.",
+    description: "Agendamento reagendado com sucesso",
   })
   @ApiResponse({
     status: 422,
-    description: "Entidade inválida fornecida.",
-  })
-  @ApiResponse({
-    status: 400,
-    description: "Dados inválidos fornecidos",
+    description: "Entidade inválida",
   })
   @ApiResponse({
     status: 404,
-    description: "Agendamento não encontrado.",
+    description: "Agendamento não encontrado",
   })
   async rescheduleAppointment(
     @Param("appointmentId", new ParseUUIDPipe()) appointmentId: string,
@@ -92,6 +92,33 @@ export class AppointmentController {
     await this.rescheduleAppointmentUseCase.execute({
       appointmentId,
       newDate: input.newDate,
+    });
+  }
+
+  @Post("adjustment-return")
+  @ApiOperation({
+    summary: "Agendar retorno para ajuste a partir de uma reserva",
+  })
+  @ApiBody({
+    type: ScheduleAdjustmentReturnDto,
+    description: "Dados necessários para agendar um retorno para ajuste",
+  })
+  @ApiResponse({
+    status: 201,
+    description: "Retorno para ajuste agendado com sucesso",
+  })
+  @ApiResponse({
+    status: 422,
+    description: "Entidade inválida",
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Reserva não encontrada",
+  })
+  async scheduleAdjustmentReturn(@Body() input: ScheduleAdjustmentReturnDto) {
+    await this.scheduleAdjustmentReturnUseCase.execute({
+      appointmentDate: input.appointmentDate,
+      bookingId: input.bookingId,
     });
   }
 

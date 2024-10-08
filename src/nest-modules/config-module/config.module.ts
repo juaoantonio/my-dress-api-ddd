@@ -18,7 +18,14 @@ type DB_SCHEMA_TYPE = {
   DB_SYNCHRONIZE?: boolean;
 };
 
-export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE;
+type AWS_S3_SCHEMA_TYPE = {
+  AWS_REGION: string;
+  AWS_S3_BUCKET_NAME: string;
+  AWS_SECRET_ACCESS_KEY: string;
+  AWS_ACCESS_KEY_ID: string;
+};
+
+export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE & AWS_S3_SCHEMA_TYPE;
 
 export const CONFIG_DB_SCHEMA: Joi.StrictSchemaMap<DB_SCHEMA_TYPE> = {
   DB_VENDOR: Joi.string().required().valid("postgres", "sqlite"),
@@ -44,6 +51,13 @@ export const CONFIG_DB_SCHEMA: Joi.StrictSchemaMap<DB_SCHEMA_TYPE> = {
   DB_SYNCHRONIZE: Joi.boolean().default(false),
 };
 
+export const CONFIG_AWS_S3_SCHEMA: Joi.StrictSchemaMap<AWS_S3_SCHEMA_TYPE> = {
+  AWS_REGION: Joi.string().required().default("us-east-1"),
+  AWS_S3_BUCKET_NAME: Joi.string().required().default("mydressprod"),
+  AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+  AWS_ACCESS_KEY_ID: Joi.string().required(),
+};
+
 // https://docs.nestjs.com/modules#dynamic-modules
 // https://docs.nestjs.com/techniques/configuration#configuration
 @Module({})
@@ -59,6 +73,7 @@ export class ConfigModule extends NestConfigModule {
       ],
       validationSchema: Joi.object({
         ...CONFIG_DB_SCHEMA,
+        ...CONFIG_AWS_S3_SCHEMA,
       }),
       ...otherOptions,
     });

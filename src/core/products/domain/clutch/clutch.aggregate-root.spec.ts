@@ -1,15 +1,15 @@
-import { Clutch, ClutchCreateCommandProps } from "./clutch.aggregate";
+import { Clutch, ClutchCreateCommandProps } from "./clutch.aggregate-root";
 import { ClutchId } from "./clutch-id.vo";
-import { ToJsonOutput } from "../../../@shared/domain/validators/notification.interface";
-import { Period } from "../../../@shared/domain/value-objects/period.vo";
-import { DateVo } from "../../../@shared/domain/value-objects/date.vo";
+import { ToJsonOutput } from "@core/@shared/domain/validators/notification.interface";
+import { Period } from "@core/@shared/domain/value-objects/period.vo";
+import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
 describe("Clutch Aggregate Unit Tests", function () {
   describe("Clutch Create Constructor", function () {
     it("should create a valid clutch", () => {
       const clutch = new Clutch({
         id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
@@ -18,7 +18,7 @@ describe("Clutch Aggregate Unit Tests", function () {
       expect(clutch.getId().getValue()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
-      expect(clutch.getImageUrl()).toBe("https://example.com/image.jpg");
+      expect(clutch.getImagePath()).toBe("https://example.com/image.jpg");
       expect(clutch.getRentPrice()).toBe(100);
       expect(clutch.getModel()).toBe("Strass fecho de strass");
       expect(clutch.getColor()).toBe("Prata");
@@ -29,7 +29,7 @@ describe("Clutch Aggregate Unit Tests", function () {
     it("should create a valid clutch", () => {
       const clutch = Clutch.create({
         id: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
@@ -38,7 +38,7 @@ describe("Clutch Aggregate Unit Tests", function () {
       expect(clutch.getId().getValue()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
-      expect(clutch.getImageUrl()).toBe("https://example.com/image.jpg");
+      expect(clutch.getImagePath()).toBe("https://example.com/image.jpg");
       expect(clutch.getRentPrice()).toBe(100);
       expect(clutch.getModel()).toBe("Strass fecho de strass");
       expect(clutch.getColor()).toBe("Prata");
@@ -46,14 +46,14 @@ describe("Clutch Aggregate Unit Tests", function () {
 
     it("should create a valid clutch without id", () => {
       const clutch = Clutch.create({
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
       });
 
       expect(clutch.getId().getValue()).not.toBe(null);
-      expect(clutch.getImageUrl()).toBe("https://example.com/image.jpg");
+      expect(clutch.getImagePath()).toBe("https://example.com/image.jpg");
       expect(clutch.getRentPrice()).toBe(100);
       expect(clutch.getModel()).toBe("Strass fecho de strass");
       expect(clutch.getColor()).toBe("Prata");
@@ -64,7 +64,7 @@ describe("Clutch Aggregate Unit Tests", function () {
     it("should pickup a purse", () => {
       const clutch = new Clutch({
         id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
@@ -77,7 +77,7 @@ describe("Clutch Aggregate Unit Tests", function () {
     it("should return a purse", () => {
       const clutch = new Clutch({
         id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
@@ -91,7 +91,7 @@ describe("Clutch Aggregate Unit Tests", function () {
     it("should add a reservation period", () => {
       const clutch = new Clutch({
         id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
@@ -108,7 +108,7 @@ describe("Clutch Aggregate Unit Tests", function () {
     it("should check if a dress is available for rent in a specific date range", () => {
       const clutch = new Clutch({
         id: ClutchId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        imageUrl: "https://example.com/image.jpg",
+        imagePath: "https://example.com/image.jpg",
         rentPrice: 100,
         model: "Strass fecho de strass",
         color: "Prata",
@@ -143,23 +143,20 @@ describe("Clutch Aggregate Unit Tests", function () {
       }[] = [
         {
           data: {
-            imageUrl: "",
+            imagePath: "",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
           },
           errors: [
             {
-              imageUrl: [
-                "Url da imagem não pode ser vazia",
-                "Url da imagem deve ser válida",
-              ],
+              imagePath: ["Path da imagem não pode ser vazio"],
             },
           ],
         },
         {
           data: {
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 0,
             color: "Marsala",
             model: "Tomara que caia",
@@ -172,7 +169,7 @@ describe("Clutch Aggregate Unit Tests", function () {
         },
         {
           data: {
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: -1,
             color: "Marsala",
             model: "Tomara que caia",
@@ -185,7 +182,7 @@ describe("Clutch Aggregate Unit Tests", function () {
         },
         {
           data: {
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 200,
             color: "",
             model: "",
@@ -209,34 +206,31 @@ describe("Clutch Aggregate Unit Tests", function () {
     });
 
     describe("Validate Clutch Behavior Methods", function () {
-      describe("Validate Change Image Url", function () {
-        it("should validate valid imageUrl", () => {
+      describe("Validate Change Image Path", function () {
+        it("should validate valid imagePath", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
           });
 
-          clutch.changeImageUrl("https://example.com/image2.jpg");
+          clutch.changeImagePath("https://example.com/image2.jpg");
           expect(clutch.notification.hasErrors()).toBe(false);
         });
 
-        it("should validate invalid imageUrl", () => {
+        it("should validate invalid imagePath", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
           });
 
-          clutch.changeImageUrl("");
+          clutch.changeImagePath("");
           expect(clutch.notification).notificationContainsErrorMessages([
             {
-              imageUrl: [
-                "Url da imagem não pode ser vazia",
-                "Url da imagem deve ser válida",
-              ],
+              imagePath: ["Path da imagem não pode ser vazio"],
             },
           ]);
           expect(clutch.notification.hasErrors()).toBe(true);
@@ -246,7 +240,7 @@ describe("Clutch Aggregate Unit Tests", function () {
       describe("Validate Change Rent Price", function () {
         it("should validate valid rent price", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
@@ -258,7 +252,7 @@ describe("Clutch Aggregate Unit Tests", function () {
 
         it("should validate invalid rent price", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
@@ -284,7 +278,7 @@ describe("Clutch Aggregate Unit Tests", function () {
       describe("Validate Change Color", function () {
         it("should validate valid color", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
@@ -296,7 +290,7 @@ describe("Clutch Aggregate Unit Tests", function () {
 
         it("should validate invalid color", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
@@ -315,7 +309,7 @@ describe("Clutch Aggregate Unit Tests", function () {
       describe("Validate Change Model", function () {
         it("should validate valid model", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",
@@ -327,7 +321,7 @@ describe("Clutch Aggregate Unit Tests", function () {
 
         it("should validate invalid model", () => {
           const clutch = Clutch.create({
-            imageUrl: "https://example.com/image.jpg",
+            imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
             model: "Strass fecho de strass",
             color: "Prata",

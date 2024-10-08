@@ -18,11 +18,20 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["vitest/globals"],
+    "types": [
+      "vitest/globals"
+    ],
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@nest/*": ["src/nest-modules/*"]
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@nest/*": [
+        "src/nest-modules/*"
+      ]
     }
   },
-  "exclude": ["./node_modules/*", "dist"]
+  "exclude": [
+    "./node_modules/*",
+    "dist"
+  ]
 }

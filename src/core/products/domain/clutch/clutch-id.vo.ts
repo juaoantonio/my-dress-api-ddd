@@ -1,3 +1,3 @@
-import { Uuid } from "../../../@shared/domain/value-objects/uuid.vo";
+import { ProductId } from "@core/products/domain/product";
 
-export class ClutchId extends Uuid {}
+export class ClutchId extends ProductId {}

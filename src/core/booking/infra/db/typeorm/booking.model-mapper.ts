@@ -3,8 +3,7 @@ import {
   Booking,
   BookingId,
 } from "@core/booking/domain/booking.aggregate-root";
-import { BookingModel } from "@core/booking/infra/typeorm/booking.model";
-import { BookingItemModel } from "@core/booking/infra/typeorm/booking-item.model";
+
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { BookingPeriod } from "@core/booking/domain/booking-period.vo";
 import {
@@ -12,6 +11,8 @@ import {
   BookingItemId,
 } from "@core/booking/domain/entities/booking-item.entity";
 import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
 
 export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
   toModel(entity: Booking): BookingModel {

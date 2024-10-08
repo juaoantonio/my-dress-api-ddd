@@ -29,7 +29,6 @@ export class CancelAppointmentUseCase
     appointment.cancel();
     appointment.validate();
     if (appointment.notification.hasErrors()) {
-      console.log(appointment.notification.toJSON());
       throw new EntityValidationError(appointment.notification.toJSON());
     }
     await this.appointmentRepository.update(appointment);
