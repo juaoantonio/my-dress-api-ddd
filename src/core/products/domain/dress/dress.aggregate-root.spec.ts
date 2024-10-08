@@ -332,7 +332,6 @@ describe("Dress Aggregate Unit Tests", function () {
           });
 
           dress.changeImagePath("https://teste.png");
-          console.log(dress.notification);
           expect(dress.notification.hasErrors()).toBe(false);
         });
       });
