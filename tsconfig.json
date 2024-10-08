@@ -19,8 +19,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "types": [
-      "vitest/globals",
-      "Multer"
+      "vitest/globals"
     ],
     "paths": {
       "@core/*": [
