@@ -5,7 +5,7 @@ import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
 
 export type ProductConstructorProps<T> = {
   id: T;
-  imageUrl: string;
+  imagePath: string;
   rentPrice: number;
   color: string;
   model: string;
@@ -21,7 +21,7 @@ export enum ProductType {
 export abstract class ProductId extends Uuid {}
 
 export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
-  protected imageUrl: string;
+  protected imagePath: string;
   protected rentPrice: number;
   protected color: string;
   protected model: string;
@@ -31,7 +31,7 @@ export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
 
   protected constructor(props: ProductConstructorProps<T>, type: ProductType) {
     super(props.id);
-    this.imageUrl = props.imageUrl;
+    this.imagePath = props.imagePath;
     this.rentPrice = props.rentPrice;
     this.color = props.color;
     this.model = props.model;
@@ -44,8 +44,8 @@ export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
   abstract validate(fields?: string[]): void;
 
   // Getters
-  public getImageUrl(): string {
-    return this.imageUrl;
+  public getImagePath(): string {
+    return this.imagePath;
   }
 
   public getRentPrice(): number {
@@ -99,7 +99,7 @@ export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
   }
 
   public changeImageUrl(newImageUrl: string): void {
-    this.imageUrl = newImageUrl;
+    this.imagePath = newImageUrl;
     this.validate(["imageUrl"]);
   }
 

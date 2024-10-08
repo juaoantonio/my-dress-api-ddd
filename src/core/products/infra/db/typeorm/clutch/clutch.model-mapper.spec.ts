@@ -26,7 +26,7 @@ describe("ClutchModelMapper", () => {
       const clutch = mapper.toEntity(clutchModel);
       expect(clutch).toBeInstanceOf(Clutch);
       expect(clutch.getId().getValue()).toBe(clutchModel.id);
-      expect(clutch.getImageUrl()).toBe("https://example.com/clutch.png");
+      expect(clutch.getImagePath()).toBe("https://example.com/clutch.png");
       expect(clutch.getModel()).toBe("Clutch Bag");
       expect(clutch.getColor()).toBe("Black");
       expect(clutch.getRentPrice()).toBe(80.0);
@@ -65,7 +65,7 @@ describe("ClutchModelMapper", () => {
     it("should map Clutch entity to ClutchModel correctly without optional fields", () => {
       const clutch = new Clutch({
         id: ClutchId.create(uuidv4()),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Clutch Bag",
         color: "Black",
         rentPrice: 80.0,
@@ -75,7 +75,7 @@ describe("ClutchModelMapper", () => {
       const clutchModel = mapper.toModel(clutch);
       expect(clutchModel).toBeInstanceOf(ClutchModel);
       expect(clutchModel.id).toBe(clutch.getId().getValue());
-      expect(clutchModel.imageUrl).toBe(clutch.getImageUrl());
+      expect(clutchModel.imageUrl).toBe(clutch.getImagePath());
       expect(clutchModel.model).toBe(clutch.getModel());
       expect(clutchModel.color).toBe(clutch.getColor());
       expect(clutchModel.rentPrice).toBe(clutch.getRentPrice());
@@ -86,7 +86,7 @@ describe("ClutchModelMapper", () => {
     it("should map Clutch entity to ClutchModel correctly with all fields", () => {
       const clutch = new Clutch({
         id: ClutchId.create(uuidv4()),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Clutch Bag",
         color: "Black",
         rentPrice: 80.0,

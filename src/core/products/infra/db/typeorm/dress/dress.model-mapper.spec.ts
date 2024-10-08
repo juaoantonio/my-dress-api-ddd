@@ -29,7 +29,7 @@ describe("DressModelMapper", () => {
       const dress = mapper.toEntity(dressModel);
       expect(dress).toBeInstanceOf(Dress);
       expect(dress.getId().getValue()).toBe(dressModel.id);
-      expect(dress.getImageUrl()).toBe("https://example.com/image.png");
+      expect(dress.getImagePath()).toBe("https://example.com/image.png");
       expect(dress.getModel()).toBe("Evening Dress");
       expect(dress.getColor()).toBe("Red");
       expect(dress.getFabric()).toBe("Silk");
@@ -71,7 +71,7 @@ describe("DressModelMapper", () => {
       // Arrange
       const dress = new Dress({
         id: ClutchId.create(uuidv4()),
-        imageUrl: "https://example.com/image.png",
+        imagePath: "https://example.com/image.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -82,7 +82,7 @@ describe("DressModelMapper", () => {
       const dressModel = mapper.toModel(dress);
       expect(dressModel).toBeInstanceOf(DressModel);
       expect(dressModel.id).toBe(dress.getId().getValue());
-      expect(dressModel.imageUrl).toBe(dress.getImageUrl());
+      expect(dressModel.imageUrl).toBe(dress.getImagePath());
       expect(dressModel.model).toBe(dress.getModel());
       expect(dressModel.color).toBe(dress.getColor());
       expect(dressModel.fabric).toBe(dress.getFabric());
@@ -94,7 +94,7 @@ describe("DressModelMapper", () => {
     it("should map Dress entity to DressModel correctly with all fields", () => {
       const dress = new Dress({
         id: ClutchId.create(uuidv4()),
-        imageUrl: "https://example.com/image.png",
+        imagePath: "https://example.com/image.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",

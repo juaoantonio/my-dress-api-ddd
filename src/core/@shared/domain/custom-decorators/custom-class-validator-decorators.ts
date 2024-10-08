@@ -91,6 +91,7 @@ export function isGreaterThanOrEqual(
     });
   };
 }
+
 export function ValidateObjectFields(
   validationFunction: (object: any) => boolean,
   validationOptions?: ValidationOptions,

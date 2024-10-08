@@ -9,7 +9,7 @@ export class DressModelMapper implements IModelMapper<Dress, DressModel> {
   toEntity(model: DressModel): Dress {
     return new Dress({
       id: DressId.create(model.id),
-      imageUrl: model.imageUrl,
+      imagePath: model.imageUrl,
       model: model.model,
       color: model.color,
       fabric: model.fabric,
@@ -28,7 +28,7 @@ export class DressModelMapper implements IModelMapper<Dress, DressModel> {
   toModel(entity: Dress): DressModel {
     const dressModel = new DressModel();
     dressModel.id = entity.getId().getValue();
-    dressModel.imageUrl = entity.getImageUrl();
+    dressModel.imageUrl = entity.getImagePath();
     dressModel.model = entity.getModel();
     dressModel.color = entity.getColor();
     dressModel.fabric = entity.getFabric();

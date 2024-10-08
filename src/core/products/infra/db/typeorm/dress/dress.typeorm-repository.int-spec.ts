@@ -25,7 +25,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should return all dresses available for the given period", async () => {
       const dress1 = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress1.png",
+        imagePath: "https://example.com/dress1.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -36,7 +36,7 @@ describe("DressTypeormRepository Integration Test", () => {
 
       const dress2 = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress2.png",
+        imagePath: "https://example.com/dress2.png",
         model: "Casual Dress",
         color: "Blue",
         fabric: "Cotton",
@@ -62,7 +62,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should return an empty array when no dresses are available for the given period", async () => {
       const dress = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -93,7 +93,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should return all dresses not available for the given period", async () => {
       const dress = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -120,7 +120,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should return an empty array when all dresses are available for the given period", async () => {
       const dress = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -146,7 +146,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should save a dress entity successfully", async () => {
       const dress = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -165,7 +165,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should delete a dress entity successfully", async () => {
       const dress = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -184,7 +184,7 @@ describe("DressTypeormRepository Integration Test", () => {
     it("should correctly identify existing and non-existing dress ids", async () => {
       const dress = Dress.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",

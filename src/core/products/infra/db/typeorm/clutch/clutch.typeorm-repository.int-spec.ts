@@ -25,7 +25,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should return all clutches available for the given period", async () => {
       const clutch1 = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch1.png",
+        imagePath: "https://example.com/clutch1.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,
@@ -35,7 +35,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
 
       const clutch2 = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch2.png",
+        imagePath: "https://example.com/clutch2.png",
         model: "Casual Clutch",
         color: "Blue",
         rentPrice: 150.0,
@@ -60,7 +60,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should return an empty array when no clutches are available for the given period", async () => {
       const clutch = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,
@@ -90,7 +90,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should return all clutches not available for the given period", async () => {
       const clutch = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,
@@ -119,7 +119,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should return an empty array when all clutches are available for the given period", async () => {
       const clutch = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,
@@ -144,7 +144,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should save a clutch entity successfully", async () => {
       const clutch = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,
@@ -162,7 +162,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should delete a clutch entity successfully", async () => {
       const clutch = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,
@@ -181,7 +181,7 @@ describe("ClutchTypeormRepository Integration Test", () => {
     it("should correctly identify existing and non-existing clutch ids", async () => {
       const clutch = Clutch.create({
         id: uuidv4(),
-        imageUrl: "https://example.com/clutch.png",
+        imagePath: "https://example.com/clutch.png",
         model: "Evening Clutch",
         color: "Red",
         rentPrice: 200.0,

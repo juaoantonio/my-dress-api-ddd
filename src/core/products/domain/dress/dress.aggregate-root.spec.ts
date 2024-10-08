@@ -9,7 +9,7 @@ describe("Dress Aggregate Unit Tests", function () {
     it("should create a Dress with id", function () {
       const dress = new Dress({
         id: DressId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -20,7 +20,7 @@ describe("Dress Aggregate Unit Tests", function () {
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
       expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
-      expect(dress.getImageUrl()).toBe("https://www.google.com");
+      expect(dress.getImagePath()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
       expect(dress.getModel()).toBe("Tomara que caia");
@@ -37,7 +37,7 @@ describe("Dress Aggregate Unit Tests", function () {
     it("should create a Dress with id", function () {
       const dress = Dress.create({
         id: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -48,7 +48,7 @@ describe("Dress Aggregate Unit Tests", function () {
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
       expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
-      expect(dress.getImageUrl()).toBe("https://www.google.com");
+      expect(dress.getImagePath()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
       expect(dress.getReservationPeriods()).toEqual([]);
@@ -57,7 +57,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should create Dress without id", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -66,7 +66,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
       expect(dress.getId()).toBeDefined();
       expect(dress.getName()).toBe("Marsala, Tomara que caia, Tule");
-      expect(dress.getImageUrl()).toBe("https://www.google.com");
+      expect(dress.getImagePath()).toBe("https://www.google.com");
       expect(dress.getIsPickedUp()).toBe(false);
       expect(dress.getRentPrice()).toBe(100);
       expect(dress.getReservationPeriods()).toEqual([]);
@@ -77,7 +77,7 @@ describe("Dress Aggregate Unit Tests", function () {
   describe("Dress Behavioral Methods", function () {
     it("should pickup a Dress", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -94,7 +94,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should return a Dress", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -112,7 +112,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should change price", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -132,7 +132,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should change color", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -146,7 +146,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should change fabric", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -160,7 +160,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should change model", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -174,7 +174,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
     it("should change image url", () => {
       const dress = Dress.create({
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -182,7 +182,7 @@ describe("Dress Aggregate Unit Tests", function () {
       });
 
       dress.changeImageUrl("https://teste.png");
-      expect(dress.getImageUrl()).toBe("https://teste.png");
+      expect(dress.getImagePath()).toBe("https://teste.png");
 
       expect(dress.notification.hasErrors()).toBe(false);
     });
@@ -190,7 +190,7 @@ describe("Dress Aggregate Unit Tests", function () {
     it("should check if a dress is available for rent in a specific date range", () => {
       const dress = new Dress({
         id: DressId.random(),
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -224,7 +224,7 @@ describe("Dress Aggregate Unit Tests", function () {
     it("should add a reservation period", () => {
       const dress = new Dress({
         id: DressId.random(),
-        imageUrl: "https://www.google.com",
+        imagePath: "https://www.google.com",
         rentPrice: 100,
         color: "Marsala",
         model: "Tomara que caia",
@@ -308,7 +308,7 @@ describe("Dress Aggregate Unit Tests", function () {
       describe("Dress Change Image Url", function () {
         it("should validate the change of a Dress Image Url", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -330,7 +330,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
         it("should validate the change of a Dress Image Url", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -346,7 +346,7 @@ describe("Dress Aggregate Unit Tests", function () {
       describe("Dress Change Rent Price", function () {
         it("should validate the change of a Dress Rent Price", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -364,7 +364,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
         it("should validate the change of a Dress Rent Price", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -379,7 +379,7 @@ describe("Dress Aggregate Unit Tests", function () {
       describe("Dress Change Color", function () {
         it("should validate the change of a invalid color", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -397,7 +397,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
         it("should validate the change of a valid color", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -412,7 +412,7 @@ describe("Dress Aggregate Unit Tests", function () {
       describe("Dress Change Fabric", function () {
         it("should validate the change of a invalid fabric", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -430,7 +430,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
         it("should validate the change of a valid fabric", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -445,7 +445,7 @@ describe("Dress Aggregate Unit Tests", function () {
       describe("Dress Change Model", function () {
         it("should validate the change of a invalid model", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -463,7 +463,7 @@ describe("Dress Aggregate Unit Tests", function () {
 
         it("should validate the change of a valid model", () => {
           const dress = Dress.create({
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",

@@ -9,9 +9,10 @@ import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
 export type ClutchConstructorProps = ProductConstructorProps<ClutchId>;
+
 export type ClutchCreateCommandProps = {
   id?: string;
-  imageUrl: string;
+  imagePath: string;
   rentPrice: number;
   color: string;
   model: string;
@@ -31,7 +32,7 @@ export class Clutch extends Product<ClutchId> {
   public static create(props: ClutchCreateCommandProps): Clutch {
     return new Clutch({
       id: props.id ? ClutchId.create(props.id) : ClutchId.random(),
-      imageUrl: props.imageUrl,
+      imagePath: props.imagePath,
       rentPrice: props.rentPrice,
       color: props.color,
       model: props.model,

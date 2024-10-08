@@ -9,7 +9,7 @@ export class ClutchModelMapper implements IModelMapper<Clutch, ClutchModel> {
   toEntity(model: ClutchModel): Clutch {
     return new Clutch({
       id: ClutchId.create(model.id),
-      imageUrl: model.imageUrl,
+      imagePath: model.imageUrl,
       model: model.model,
       color: model.color,
       rentPrice: model.rentPrice,
@@ -27,7 +27,7 @@ export class ClutchModelMapper implements IModelMapper<Clutch, ClutchModel> {
   toModel(entity: Clutch): ClutchModel {
     const clutchModel = new ClutchModel();
     clutchModel.id = entity.getId().getValue();
-    clutchModel.imageUrl = entity.getImageUrl();
+    clutchModel.imageUrl = entity.getImagePath();
     clutchModel.model = entity.getModel();
     clutchModel.color = entity.getColor();
     clutchModel.rentPrice = entity.getRentPrice();

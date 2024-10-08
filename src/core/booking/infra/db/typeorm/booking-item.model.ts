@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, Relation } from "typeorm";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 
 @Entity({ name: "booking_items" })
@@ -22,5 +22,5 @@ export class BookingItemModel {
   isCourtesy: boolean;
 
   @ManyToOne(() => BookingModel, (booking) => booking.items)
-  booking: BookingModel;
+  booking: Relation<BookingModel>;
 }

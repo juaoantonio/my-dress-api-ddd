@@ -1,11 +1,14 @@
-import { IsNotEmpty, IsPositive, IsUrl } from "class-validator";
+import { IsNotEmpty, IsPositive } from "class-validator";
 import { Dress } from "./dress.aggregate-root";
 import { ClassValidatorFields } from "@core/@shared/domain/validators/class-validator-fields";
 import { INotification } from "@core/@shared/domain/validators/notification.interface";
 
 class DressRules {
-  @IsUrl({}, { message: "Url da imagem deve ser válida", groups: ["imageUrl"] })
-  imageUrl: string;
+  @IsNotEmpty({
+    message: "Path da imagem não pode ser vazio",
+    groups: ["imagePath"],
+  })
+  imagePath: string;
 
   @IsPositive({
     message: "Preço de aluguel deve ser positivo",

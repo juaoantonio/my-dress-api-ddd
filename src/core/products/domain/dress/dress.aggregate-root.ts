@@ -14,7 +14,7 @@ type DressConstructorProps = ProductConstructorProps<DressId> & {
 
 type DressCreateCommandProps = {
   id?: string;
-  imageUrl: string;
+  imagePath: string;
   rentPrice: number;
   color: string;
   model: string;
@@ -41,7 +41,7 @@ export class Dress extends Product<DressId> {
       : DressId.random();
     return new Dress({
       id: newInstanceId,
-      imageUrl: props.imageUrl,
+      imagePath: props.imagePath,
       rentPrice: props.rentPrice,
       color: props.color,
       model: props.model,

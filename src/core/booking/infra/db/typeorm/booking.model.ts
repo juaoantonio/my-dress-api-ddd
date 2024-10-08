@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn, Relation } from "typeorm";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
 import { BookingItemModel } from "./booking-item.model";
 
@@ -76,5 +76,5 @@ export class BookingModel {
     eager: true,
     cascade: true,
   })
-  items: BookingItemModel[];
+  items: Relation<BookingItemModel>[];
 }
