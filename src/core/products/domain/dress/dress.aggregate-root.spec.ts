@@ -181,7 +181,7 @@ describe("Dress Aggregate Unit Tests", function () {
         fabric: "Tule",
       });
 
-      dress.changeImageUrl("https://teste.png");
+      dress.changeImagePath("https://teste.png");
       expect(dress.getImagePath()).toBe("https://teste.png");
 
       expect(dress.notification.hasErrors()).toBe(false);
@@ -248,7 +248,7 @@ describe("Dress Aggregate Unit Tests", function () {
       const scenarios = [
         {
           data: {
-            imageUrl: "",
+            imagePath: "",
             rentPrice: 100,
             color: "Marsala",
             model: "Tomara que caia",
@@ -256,16 +256,13 @@ describe("Dress Aggregate Unit Tests", function () {
           },
           errors: [
             {
-              imageUrl: [
-                "Url da imagem não pode ser vazia",
-                "Url da imagem deve ser válida",
-              ],
+              imagePath: ["Path da imagem não pode ser vazio"],
             },
           ],
         },
         {
           data: {
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: 0,
             color: "Marsala",
             model: "Tomara que caia",
@@ -279,7 +276,7 @@ describe("Dress Aggregate Unit Tests", function () {
         },
         {
           data: {
-            imageUrl: "https://www.google.com",
+            imagePath: "https://www.google.com",
             rentPrice: -1,
 
             color: "Marsala",
@@ -315,14 +312,11 @@ describe("Dress Aggregate Unit Tests", function () {
             fabric: "Tule",
           });
 
-          dress.changeImageUrl("");
+          dress.changeImagePath("");
 
           expect(dress.notification).notificationContainsErrorMessages([
             {
-              imageUrl: [
-                "Url da imagem não pode ser vazia",
-                "Url da imagem deve ser válida",
-              ],
+              imagePath: ["Path da imagem não pode ser vazio"],
             },
           ]);
           expect(dress.notification.hasErrors()).toBe(true);
@@ -337,8 +331,8 @@ describe("Dress Aggregate Unit Tests", function () {
             fabric: "Tule",
           });
 
-          dress.changeImageUrl("https://teste.png");
-
+          dress.changeImagePath("https://teste.png");
+          console.log(dress.notification);
           expect(dress.notification.hasErrors()).toBe(false);
         });
       });

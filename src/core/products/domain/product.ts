@@ -98,9 +98,9 @@ export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
     this.validate(["model"]);
   }
 
-  public changeImageUrl(newImageUrl: string): void {
+  public changeImagePath(newImageUrl: string): void {
     this.imagePath = newImageUrl;
-    this.validate(["imageUrl"]);
+    this.validate(["imagePath"]);
   }
 
   public isAvailableFor(date: DateVo): boolean {

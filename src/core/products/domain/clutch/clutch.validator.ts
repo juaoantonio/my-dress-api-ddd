@@ -5,7 +5,7 @@ import { INotification } from "@core/@shared/domain/validators/notification.inte
 
 class ClutchRules {
   @IsNotEmpty({
-    message: "Path da imagem não pode ser vazia",
+    message: "Path da imagem não pode ser vazio",
     groups: ["imagePath"],
   })
   imagePath: string;

@@ -150,10 +150,7 @@ describe("Clutch Aggregate Unit Tests", function () {
           },
           errors: [
             {
-              imageUrl: [
-                "Url da imagem não pode ser vazia",
-                "Url da imagem deve ser válida",
-              ],
+              imagePath: ["Path da imagem não pode ser vazio"],
             },
           ],
         },
@@ -209,8 +206,8 @@ describe("Clutch Aggregate Unit Tests", function () {
     });
 
     describe("Validate Clutch Behavior Methods", function () {
-      describe("Validate Change Image Url", function () {
-        it("should validate valid imageUrl", () => {
+      describe("Validate Change Image Path", function () {
+        it("should validate valid imagePath", () => {
           const clutch = Clutch.create({
             imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
@@ -218,11 +215,11 @@ describe("Clutch Aggregate Unit Tests", function () {
             color: "Prata",
           });
 
-          clutch.changeImageUrl("https://example.com/image2.jpg");
+          clutch.changeImagePath("https://example.com/image2.jpg");
           expect(clutch.notification.hasErrors()).toBe(false);
         });
 
-        it("should validate invalid imageUrl", () => {
+        it("should validate invalid imagePath", () => {
           const clutch = Clutch.create({
             imagePath: "https://example.com/image.jpg",
             rentPrice: 100,
@@ -230,13 +227,10 @@ describe("Clutch Aggregate Unit Tests", function () {
             color: "Prata",
           });
 
-          clutch.changeImageUrl("");
+          clutch.changeImagePath("");
           expect(clutch.notification).notificationContainsErrorMessages([
             {
-              imageUrl: [
-                "Url da imagem não pode ser vazia",
-                "Url da imagem deve ser válida",
-              ],
+              imagePath: ["Path da imagem não pode ser vazio"],
             },
           ]);
           expect(clutch.notification.hasErrors()).toBe(true);
