@@ -46,13 +46,15 @@ export class Dress extends Product<DressId> {
       color: props.color,
       model: props.model,
       fabric: props.fabric,
-      reservationPeriods: props.reservationPeriods.map(
-        (raw) =>
-          new Period({
-            startDate: DateVo.create(raw.startDate),
-            endDate: DateVo.create(raw.endDate),
-          }),
-      ),
+      reservationPeriods: props.reservationPeriods
+        ? props.reservationPeriods.map(
+            (raw) =>
+              new Period({
+                startDate: DateVo.create(raw.startDate),
+                endDate: DateVo.create(raw.endDate),
+              }),
+          )
+        : [],
       isPickedUp: props.isPickedUp || false,
     });
   }

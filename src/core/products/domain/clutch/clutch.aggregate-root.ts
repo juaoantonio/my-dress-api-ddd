@@ -35,13 +35,15 @@ export class Clutch extends Product<ClutchId> {
       rentPrice: props.rentPrice,
       color: props.color,
       model: props.model,
-      reservationPeriods: props.reservationPeriods.map(
-        (raw) =>
-          new Period({
-            startDate: DateVo.create(raw.startDate),
-            endDate: DateVo.create(raw.endDate),
-          }),
-      ),
+      reservationPeriods: props.reservationPeriods
+        ? props.reservationPeriods.map(
+            (raw) =>
+              new Period({
+                startDate: DateVo.create(raw.startDate),
+                endDate: DateVo.create(raw.endDate),
+              }),
+          )
+        : [],
       isPickedUp: props.isPickedUp || false,
     });
   }
