@@ -10,11 +10,11 @@ export class CreateDressUseCase
 {
   constructor(
     private readonly dressRepository: IDressRepository,
-    private readonly uploadService: IImageStorageService,
+    private readonly imageStorageService: IImageStorageService,
   ) {}
 
   async execute(input: CreateDressUseCaseInput): Promise<void> {
-    const imageKey = await this.uploadService.upload(
+    const imageKey = await this.imageStorageService.upload(
       input.imageFileName,
       input.imageBody,
       input.imageMimetype,
@@ -27,7 +27,7 @@ export class CreateDressUseCase
       fabric: input.fabric,
     });
     if (dress.notification.hasErrors()) {
-      await this.uploadService.delete(imageKey);
+      await this.imageStorageService.delete(imageKey);
       throw new EntityValidationError(dress.notification.toJSON());
     }
     await this.dressRepository.save(dress);
