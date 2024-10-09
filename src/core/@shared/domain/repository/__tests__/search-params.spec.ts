@@ -39,9 +39,9 @@ describe("SearchParams Unit Tests", () => {
     { per_page: 10, expected: 10 },
   ])("per_page prop %p", (i) => {
     const params = new SearchParams();
-    expect(params.per_page).toBe(15);
+    expect(params.perPage).toBe(15);
 
-    expect(new SearchParams({ per_page: i.per_page as any }).per_page).toBe(
+    expect(new SearchParams({ perPage: i.per_page as any }).perPage).toBe(
       i.expected,
     );
   });
@@ -77,20 +77,20 @@ describe("SearchParams Unit Tests", () => {
     { sort_dir: "DESC", expected: "desc" },
   ])("sort_dir prop %p", (props) => {
     let params = new SearchParams();
-    expect(params.sort_dir).toBeNull();
+    expect(params.sortDir).toBeNull();
 
     params = new SearchParams({ sort: null });
-    expect(params.sort_dir).toBeNull();
+    expect(params.sortDir).toBeNull();
 
     params = new SearchParams({ sort: undefined });
-    expect(params.sort_dir).toBeNull();
+    expect(params.sortDir).toBeNull();
 
     params = new SearchParams({ sort: "" });
-    expect(params.sort_dir).toBeNull();
+    expect(params.sortDir).toBeNull();
 
     expect(
-      new SearchParams({ sort: "field", sort_dir: props.sort_dir as any })
-        .sort_dir,
+      new SearchParams({ sort: "field", sortDir: props.sort_dir as any })
+        .sortDir,
     ).toBe(props.expected);
   });
 

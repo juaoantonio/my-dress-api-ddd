@@ -20,7 +20,7 @@
     "test:e2e": "pnpm run type-check && vitest run --config ./vitest.config.e2e.mts",
     "test:int": "pnpm run type-check && vitest run --config ./vitest.config.int.mts",
     "test:int:watch": "pnpm run type-check && vitest --config ./vitest.config.int.mts",
-    "test:all": "pnpm run type-check && vitest run && vitest run --config ./vitest.config.e2e.mts && vitest run --config ./vitest.config.int.mts",
+    "test:all": "pnpm run type-check && vitest run && vitest run --config ./vitest.config.int.mts && vitest run --config ./vitest.config.e2e.mts ",
     "test:cov": "pnpm run type-check && vitest run --coverage --config ./vitest.config.cov.mts"
   },
   "dependencies": {

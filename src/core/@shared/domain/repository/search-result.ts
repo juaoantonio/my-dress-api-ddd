@@ -5,8 +5,8 @@ import { ValueObject } from "@core/@shared/domain/value-object";
 type SearchResultConstructorProps<A extends AggregateRoot<Identifier>> = {
   items: A[];
   total: number;
-  current_page: number;
-  per_page: number;
+  currentPage: number;
+  perPage: number;
 };
 
 export class SearchResult<
@@ -14,26 +14,33 @@ export class SearchResult<
 > extends ValueObject {
   readonly items: A[];
   readonly total: number;
-  readonly current_page: number;
-  readonly per_page: number;
-  readonly last_page: number;
+  readonly currentPage: number;
+  readonly perPage: number;
+  readonly lastPage: number;
+  readonly isFirstPage: boolean;
+  readonly isLastPage: boolean;
 
   constructor(props: SearchResultConstructorProps<A>) {
     super();
     this.items = props.items;
     this.total = props.total;
-    this.current_page = props.current_page;
-    this.per_page = props.per_page;
-    this.last_page = Math.ceil(this.total / this.per_page);
+    this.currentPage = props.currentPage;
+    this.perPage = props.perPage;
+    this.isFirstPage = props.currentPage === 1;
+    this.isLastPage =
+      props.currentPage === Math.ceil(props.total / props.perPage);
+    this.lastPage = Math.ceil(this.total / this.perPage);
   }
 
   toJSON() {
     return {
       items: this.items,
       total: this.total,
-      current_page: this.current_page,
-      per_page: this.per_page,
-      last_page: this.last_page,
+      currentPage: this.currentPage,
+      perPage: this.perPage,
+      lastPage: this.lastPage,
+      isFirstPage: this.isFirstPage,
+      isLastPage: this.isLastPage,
     };
   }
 }

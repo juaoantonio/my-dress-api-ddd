@@ -3,12 +3,13 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 import { Type } from "class-transformer";
 
-export class GetPaginatedDressesDto extends GetPaginatedDressesUseCaseInput {
+export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput {
   @ApiProperty({
     name: "page",
     required: false,
     type: "number",
     description: "Número da página",
+    default: 1,
   })
   @IsOptional()
   @Type(() => Number)
@@ -19,6 +20,7 @@ export class GetPaginatedDressesDto extends GetPaginatedDressesUseCaseInput {
     required: false,
     type: "number",
     description: "Número de itens por página",
+    default: 10,
   })
   @IsOptional()
   @Type(() => Number)

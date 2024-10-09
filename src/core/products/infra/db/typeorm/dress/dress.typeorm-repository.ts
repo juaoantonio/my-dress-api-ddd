@@ -101,11 +101,11 @@ export class DressTypeormRepository
   }
 
   async search(props: SearchParams<DressFilter>): Promise<SearchResult<Dress>> {
-    const { page, per_page, sort, sort_dir, filter } = props;
+    const { page, perPage, sort, sortDir, filter } = props;
 
     // Cálculo do offset e limit para paginação
-    const offset = (page - 1) * per_page;
-    const limit = per_page;
+    const offset = (page - 1) * perPage;
+    const limit = perPage;
 
     // Construção da consulta dinâmica conforme os filtros
     const where: FindOptionsWhere<DressModel> = {};
@@ -131,7 +131,7 @@ export class DressTypeormRepository
       [key: string]: "ASC" | "DESC";
     } = {};
     if (sort && this.sortableFields.includes(sort)) {
-      order[sort] = sort_dir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
+      order[sort] = sortDir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
     } else {
       order["createdAt"] = "DESC"; // Ordenação padrão
     }
@@ -150,9 +150,9 @@ export class DressTypeormRepository
     // Retornando o resultado da busca com paginação
     return new SearchResult({
       items,
-      per_page,
+      perPage: perPage,
       total: count,
-      current_page: page,
+      currentPage: page,
     });
   }
 }

@@ -28,9 +28,10 @@ import {
 import "multer";
 import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
 import { GetPaginatedDressesUseCase } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
-import { GetPaginatedDressesDto } from "@nest/dress-module/dto/get-paginated-dresses.dto";
+import { GetPaginatedDressesInputDto } from "@nest/dress-module/dto/get-paginated-dresses-input.dto";
+import { GetPaginatedDressesOutputDto } from "@nest/dress-module/dto/get-paginated-dresses-output.dto";
 
-@ApiTags("dresses")
+@ApiTags("Vestidos")
 @Controller("dresses")
 export class DressController {
   @Inject(CreateDressUseCase)
@@ -120,9 +121,12 @@ export class DressController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Vestidos listados com sucesso",
+    type: GetPaginatedDressesOutputDto,
   })
   @Get()
-  async getPaginatedDresses(@Query() query: GetPaginatedDressesDto) {
+  async getPaginatedDresses(
+    @Query() query: GetPaginatedDressesInputDto,
+  ): Promise<GetPaginatedDressesOutputDto> {
     const page = query.page || 1;
     const limit = query.limit || 15;
     return await this.getPaginatedDressesUseCase.execute({

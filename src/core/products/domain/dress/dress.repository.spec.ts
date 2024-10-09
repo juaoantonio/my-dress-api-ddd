@@ -8,9 +8,9 @@ describe("DressSearchParams", () => {
       expect(searchParams).toBeInstanceOf(DressSearchParams);
       expect(searchParams.filter).toBeNull();
       expect(searchParams.page).toBe(1);
-      expect(searchParams.per_page).toBe(15);
+      expect(searchParams.perPage).toBe(15);
       expect(searchParams.sort).toBeNull();
-      expect(searchParams.sort_dir).toBeNull();
+      expect(searchParams.sortDir).toBeNull();
     });
 
     it("should create a new instance with provided filter values", () => {
@@ -22,9 +22,9 @@ describe("DressSearchParams", () => {
       const searchParams = DressSearchParams.create({
         filter,
         page: 2,
-        per_page: 10,
+        perPage: 10,
         sort: "model",
-        sort_dir: "desc",
+        sortDir: "desc",
       });
 
       expect(searchParams).toBeInstanceOf(DressSearchParams);
@@ -34,9 +34,9 @@ describe("DressSearchParams", () => {
         rentPrice: 100,
       });
       expect(searchParams.page).toBe(2);
-      expect(searchParams.per_page).toBe(10);
+      expect(searchParams.perPage).toBe(10);
       expect(searchParams.sort).toBe("model");
-      expect(searchParams.sort_dir).toBe("desc");
+      expect(searchParams.sortDir).toBe("desc");
     });
 
     it("should create a new instance and ignore invalid filter values", () => {

@@ -23,7 +23,7 @@ import {
 import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/schedule-for-adjustment/schedule-adjustment-return.use-case";
 import { ScheduleAdjustmentReturnDto } from "@nest/appointment-module/dto/schedule-adjustment-return.dto";
 
-@ApiTags("appointments")
+@ApiTags("Agendamentos")
 @Controller("appointments")
 export class AppointmentController {
   @Inject(ScheduleInitialVisitUseCase)

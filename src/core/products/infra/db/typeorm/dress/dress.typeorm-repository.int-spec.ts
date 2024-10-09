@@ -249,9 +249,9 @@ describe("DressTypeormRepository Integration Test", () => {
       // Criando os parâmetros de busca com paginação e ordenação
       const searchParams = DressSearchParams.create({
         page: 1,
-        per_page: 2,
+        perPage: 2,
         sort: "model",
-        sort_dir: "asc",
+        sortDir: "asc",
         filter: {
           color: "Red", // Testando com filtro por cor
         },
@@ -268,8 +268,8 @@ describe("DressTypeormRepository Integration Test", () => {
 
       // Verificando as propriedades da paginação
       expect(searchResult.total).toBe(1); // Apenas um item corresponde ao filtro
-      expect(searchResult.current_page).toBe(1);
-      expect(searchResult.per_page).toBe(2);
+      expect(searchResult.currentPage).toBe(1);
+      expect(searchResult.perPage).toBe(2);
     });
 
     it("should return dresses sorted by rentPrice in descending order", async () => {
@@ -311,9 +311,9 @@ describe("DressTypeormRepository Integration Test", () => {
       // Criando os parâmetros de busca com ordenação por preço
       const searchParams = DressSearchParams.create({
         page: 1,
-        per_page: 3,
+        perPage: 3,
         sort: "rentPrice",
-        sort_dir: "desc",
+        sortDir: "desc",
       });
 
       // Realizando a busca
@@ -344,7 +344,7 @@ describe("DressTypeormRepository Integration Test", () => {
       // Criando os parâmetros de busca com um filtro que não existe
       const searchParams = DressSearchParams.create({
         page: 1,
-        per_page: 10,
+        perPage: 10,
         filter: {
           color: "Green", // Nenhum vestido tem a cor "Green"
         },
