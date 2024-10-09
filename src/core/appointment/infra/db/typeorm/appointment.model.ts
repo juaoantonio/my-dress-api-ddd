@@ -1,17 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryColumn, Relation } from "typeorm";
+import { Column, Entity, OneToMany, Relation } from "typeorm";
 import {
   AppointmentStatus,
   AppointmentType,
 } from "@core/appointment/domain/appointment.aggregate";
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
+import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
 
 @Entity("appointment")
-export class AppointmentModel {
-  @PrimaryColumn({
-    type: "uuid",
-  })
-  id: string;
-
+export class AppointmentModel extends BaseModel {
   @Column({
     type: "uuid",
     nullable: true,
@@ -72,10 +68,11 @@ export class AppointmentModel {
   history: Relation<AppointmentHistoryModel>[];
 
   constructor(
-    props: Omit<AppointmentModel, "history"> & {
+    props: Omit<AppointmentModel, "history" | "createdAt" | "updatedAt"> & {
       history?: AppointmentHistoryModel[];
     },
   ) {
+    super();
     if (!props) return;
     this.id = props.id;
     this.bookingId = props.bookingId;

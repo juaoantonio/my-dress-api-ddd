@@ -7,11 +7,15 @@ import {
 import { Repository } from "typeorm";
 import { BaseTypeormRepository } from "@core/@shared/infra/db/typeorm/base.typeorm-repository";
 import { AppointmentModelMapper } from "@core/appointment/infra/db/typeorm/appointment.model-mapper";
+import { SearchParams } from "@core/@shared/domain/repository/search-params";
+import { SearchResult } from "@core/@shared/domain/repository/search-result";
 
 export class AppointmentTypeormRepository
   extends BaseTypeormRepository<AppointmentId, Appointment, AppointmentModel>
   implements IAppointmentRepository
 {
+  sortableFields: string[];
+
   constructor(
     private readonly appointmentModelRepository: Repository<AppointmentModel>,
   ) {
@@ -24,5 +28,9 @@ export class AppointmentTypeormRepository
 
   getEntity(): { new (...args: any[]): Appointment } {
     return Appointment;
+  }
+
+  search(props: SearchParams<string>): Promise<SearchResult<Appointment>> {
+    return Promise.resolve(undefined);
   }
 }
