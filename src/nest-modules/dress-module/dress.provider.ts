@@ -7,16 +7,18 @@ import { IDressRepository } from "@core/products/domain/dress/dress.repository";
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import { S3ImageStorage } from "@core/@shared/infra/s3/s3.image-storage";
 import { ProviderType } from "@nest/shared-module/types/provider.type";
+import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
+import { GetPaginatedDressesUseCase } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
 
 export const REPOSITORIES: ProviderType = {
-  DEFAULT_EXAMPLE_REPOSITORY: {
+  DEFAULT_DRESS_REPOSITORY: {
     provide: "IDressRepository",
     useExisting: DressTypeormRepository,
   },
-  TYPEORM_APPOINTMENT_REPOSITORY: {
+  TYPEORM_DRESS_REPOSITORY: {
     provide: DressTypeormRepository,
-    useFactory: (exampleRepository: Repository<DressModel>) => {
-      return new DressTypeormRepository(exampleRepository);
+    useFactory: (dressRepository: Repository<DressModel>) => {
+      return new DressTypeormRepository(dressRepository);
     },
     inject: [getRepositoryToken(DressModel)],
   },
@@ -39,7 +41,35 @@ export const USE_CASES: ProviderType = {
       return new CreateDressUseCase(dressRepository, uploadService);
     },
     inject: [
-      REPOSITORIES.DEFAULT_EXAMPLE_REPOSITORY.provide,
+      REPOSITORIES.DEFAULT_DRESS_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
+  },
+
+  DELETE_DRESS_USE_CASE: {
+    provide: DeleteDressUseCase,
+    useFactory: (
+      dressRepository: IDressRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new DeleteDressUseCase(dressRepository, uploadService);
+    },
+    inject: [
+      REPOSITORIES.DEFAULT_DRESS_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
+  },
+
+  GET_PAGINATED_DRESSES_USE_CASE: {
+    provide: GetPaginatedDressesUseCase,
+    useFactory: (
+      dressRepository: IDressRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new GetPaginatedDressesUseCase(dressRepository, uploadService);
+    },
+    inject: [
+      REPOSITORIES.DEFAULT_DRESS_REPOSITORY.provide,
       SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
     ],
   },

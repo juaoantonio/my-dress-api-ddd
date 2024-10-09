@@ -3,5 +3,5 @@ export interface IImageStorageService {
 
   delete(fileKey: string): Promise<void>;
 
-  getPreSignedUrl(fileKey: string, expiresInSeconds: number): Promise<string>;
+  getPreSignedUrl(fileKey: string, expiresInSeconds?: number): Promise<string>;
 }

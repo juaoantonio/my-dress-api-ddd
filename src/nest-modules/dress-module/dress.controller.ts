@@ -1,10 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
+  HttpCode,
   HttpStatus,
   Inject,
+  Param,
   ParseFilePipeBuilder,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
@@ -21,12 +26,21 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
+import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
+import { GetPaginatedDressesUseCase } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
+import { GetPaginatedDressesDto } from "@nest/dress-module/dto/get-paginated-dresses.dto";
 
 @ApiTags("dresses")
 @Controller("dresses")
 export class DressController {
   @Inject(CreateDressUseCase)
   private createDressUseCase: CreateDressUseCase;
+
+  @Inject(DeleteDressUseCase)
+  private deleteDressUseCase: DeleteDressUseCase;
+
+  @Inject(GetPaginatedDressesUseCase)
+  private getPaginatedDressesUseCase: GetPaginatedDressesUseCase;
 
   @ApiOperation({
     summary: "Cadastrar um vestido",
@@ -78,6 +92,42 @@ export class DressController {
       fabric: input.fabric,
       model: input.model,
       rentPrice: input.rentPrice,
+    });
+  }
+
+  @ApiOperation({
+    summary: "Deletar um vestido",
+  })
+  @ApiParam({
+    name: "id",
+    required: true,
+    type: "string",
+    description: "Identificador do vestido",
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: "Vestido deletado com sucesso",
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(":id")
+  async deleteDress(@Param("id") id: string) {
+    await this.deleteDressUseCase.execute({ id });
+  }
+
+  @ApiOperation({
+    summary: "Listar vestidos com paginação",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Vestidos listados com sucesso",
+  })
+  @Get()
+  async getPaginatedDresses(@Query() query: GetPaginatedDressesDto) {
+    const page = query.page || 1;
+    const limit = query.limit || 15;
+    return await this.getPaginatedDressesUseCase.execute({
+      page,
+      limit,
     });
   }
 }
