@@ -1,17 +1,24 @@
-import { IRepository } from "@core/@shared/domain/repository/repository.interface";
+import { ISearchableRepository } from "@core/@shared/domain/repository/repository.interface";
 import { AggregateRoot } from "@core/@shared/domain/aggregate-root";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { IModelMapper } from "@core/@shared/infra/db/model.mapper.interface";
 import { EntityNotFoundError } from "@core/@shared/domain/error/entity-not-found.error";
 import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
 import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
+import { SearchParams } from "@core/@shared/domain/repository/search-params";
+import { SearchResult } from "@core/@shared/domain/repository/search-result";
 
 export abstract class BaseTypeormRepository<
   Id extends Uuid,
   A extends AggregateRoot<Id>,
   M extends BaseModel,
-> implements IRepository<Id, A>
+  Filter = string,
+  SearchInput extends SearchParams<Filter> = SearchParams<Filter>,
+  SearchOutput extends SearchResult<A> = SearchResult<A>,
+> implements ISearchableRepository<Id, A, Filter, SearchInput, SearchOutput>
 {
+  abstract sortableFields: string[];
+
   constructor(
     protected readonly modelRepository: Repository<M>,
     protected readonly modelMapper: IModelMapper<A, M>,
@@ -113,4 +120,6 @@ export abstract class BaseTypeormRepository<
   }
 
   abstract getEntity(): { new (...args: any[]): A };
+
+  abstract search(props: SearchInput): Promise<SearchOutput>;
 }

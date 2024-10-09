@@ -6,6 +6,10 @@ import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { v4 as uuidv4 } from "uuid";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { DressId } from "@core/products/domain/dress/dress-id.vo";
+import {
+  DressSearchParams,
+  DressSearchResult,
+} from "@core/products/domain/dress/dress.repository";
 
 describe("DressTypeormRepository Integration Test", () => {
   let repository: DressTypeormRepository;
@@ -201,6 +205,158 @@ describe("DressTypeormRepository Integration Test", () => {
       ]);
       expect(result.exists).toContainEqual(dress.getId());
       expect(result.notExists).toHaveLength(1);
+    });
+  });
+
+  describe("search", () => {
+    it("should return dresses with pagination and sorting", async () => {
+      // Criando três registros no banco de dados
+      const dress1 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress1.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      const dress2 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress2.png",
+        model: "Casual Dress",
+        color: "Blue",
+        fabric: "Cotton",
+        rentPrice: 150.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      const dress3 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress3.png",
+        model: "Summer Dress",
+        color: "Yellow",
+        fabric: "Linen",
+        rentPrice: 180.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      await repository.saveMany([dress1, dress2, dress3]);
+
+      // Criando os parâmetros de busca com paginação e ordenação
+      const searchParams = DressSearchParams.create({
+        page: 1,
+        per_page: 2,
+        sort: "model",
+        sort_dir: "asc",
+        filter: {
+          color: "Red", // Testando com filtro por cor
+        },
+      });
+
+      // Realizando a busca
+      const searchResult: DressSearchResult =
+        await repository.search(searchParams);
+
+      // Verificando o resultado da busca
+      expect(searchResult.items).toHaveLength(1); // Só um vestido tem a cor "Red"
+      expect(searchResult.items[0].getModel()).toBe("Evening Dress");
+      expect(searchResult.items[0].getColor()).toBe("Red");
+
+      // Verificando as propriedades da paginação
+      expect(searchResult.total).toBe(1); // Apenas um item corresponde ao filtro
+      expect(searchResult.current_page).toBe(1);
+      expect(searchResult.per_page).toBe(2);
+    });
+
+    it("should return dresses sorted by rentPrice in descending order", async () => {
+      const dress1 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress1.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      const dress2 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress2.png",
+        model: "Casual Dress",
+        color: "Blue",
+        fabric: "Cotton",
+        rentPrice: 150.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      const dress3 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress3.png",
+        model: "Summer Dress",
+        color: "Yellow",
+        fabric: "Linen",
+        rentPrice: 180.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      await repository.saveMany([dress1, dress2, dress3]);
+
+      // Criando os parâmetros de busca com ordenação por preço
+      const searchParams = DressSearchParams.create({
+        page: 1,
+        per_page: 3,
+        sort: "rentPrice",
+        sort_dir: "desc",
+      });
+
+      // Realizando a busca
+      const searchResult: DressSearchResult =
+        await repository.search(searchParams);
+
+      // Verificando a ordenação dos itens
+      expect(searchResult.items).toHaveLength(3);
+      expect(searchResult.items[0].getRentPrice()).toBe(200.0); // Maior preço
+      expect(searchResult.items[1].getRentPrice()).toBe(180.0);
+      expect(searchResult.items[2].getRentPrice()).toBe(150.0); // Menor preço
+    });
+
+    it("should return no dresses if filter does not match", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      await repository.save(dress);
+
+      // Criando os parâmetros de busca com um filtro que não existe
+      const searchParams = DressSearchParams.create({
+        page: 1,
+        per_page: 10,
+        filter: {
+          color: "Green", // Nenhum vestido tem a cor "Green"
+        },
+      });
+
+      // Realizando a busca
+      const searchResult: DressSearchResult =
+        await repository.search(searchParams);
+
+      // Verificando que nenhum item foi retornado
+      expect(searchResult.items).toHaveLength(0);
+      expect(searchResult.total).toBe(0);
     });
   });
 });

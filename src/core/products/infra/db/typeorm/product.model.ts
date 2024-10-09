@@ -1,10 +1,8 @@
-import { Column, PrimaryColumn } from "typeorm";
+import { Column } from "typeorm";
 import { ProductType } from "@core/products/domain/product";
+import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
 
-export class ProductModel {
-  @PrimaryColumn("uuid")
-  id: string;
-
+export class ProductModel extends BaseModel {
   @Column("text")
   imageUrl: string;
 

@@ -1,12 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryColumn, Relation } from "typeorm";
+import { Column, Entity, OneToMany, Relation } from "typeorm";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
 import { BookingItemModel } from "./booking-item.model";
+import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
 
 @Entity({ name: "bookings" })
-export class BookingModel {
-  @PrimaryColumn({ type: "uuid" })
-  id: string;
-
+export class BookingModel extends BaseModel {
   @Column()
   customerName: string;
 

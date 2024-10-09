@@ -1,5 +1,8 @@
 import { Entity } from "../entity";
 import { Identifier } from "../identifier";
+import { AggregateRoot } from "@core/@shared/domain/aggregate-root";
+import { SearchResult } from "@core/@shared/domain/repository/search-result";
+import { SearchParams } from "@core/@shared/domain/repository/search-params";
 
 export interface IRepository<
   AggregateId extends Identifier,
@@ -26,4 +29,16 @@ export interface IRepository<
   ): Promise<{ exists: AggregateId[]; notExists: AggregateId[] }>;
 
   getEntity(): new (...args: any[]) => A;
+}
+
+export interface ISearchableRepository<
+  AggregateId extends Identifier,
+  A extends AggregateRoot<AggregateId>,
+  Filter = string,
+  SearchInput extends SearchParams<Filter> = SearchParams<Filter>,
+  SearchOutput extends SearchResult<A> = SearchResult<A>,
+> extends IRepository<AggregateId, A> {
+  sortableFields: string[];
+
+  search(props: SearchInput): Promise<SearchOutput>;
 }

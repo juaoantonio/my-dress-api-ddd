@@ -6,11 +6,15 @@ import { ClutchId } from "@core/products/domain/clutch/clutch-id.vo";
 import { ProductTypeormRepository } from "@core/products/infra/db/typeorm/product.typeorm-repository";
 import { Repository } from "typeorm";
 import { ClutchModelMapper } from "@core/products/infra/db/typeorm/clutch/clutch.model-mapper";
+import { SearchParams } from "@core/@shared/domain/repository/search-params";
+import { SearchResult } from "@core/@shared/domain/repository/search-result";
 
 export class ClutchTypeormRepository
   extends ProductTypeormRepository<ClutchId, Clutch, ClutchModel>
   implements IClutchRepository
 {
+  sortableFields: string[];
+
   constructor(private readonly clutchRepository: Repository<ClutchModel>) {
     super(clutchRepository, new ClutchModelMapper(), ClutchId);
   }
@@ -91,5 +95,9 @@ export class ClutchTypeormRepository
 
   getEntity(): { new (...args: any[]): Clutch } {
     return Clutch;
+  }
+
+  search(props: SearchParams<string>): Promise<SearchResult<Clutch>> {
+    return Promise.resolve(undefined);
   }
 }

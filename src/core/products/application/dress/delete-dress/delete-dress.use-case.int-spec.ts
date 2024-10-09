@@ -1,10 +1,8 @@
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
-import { CreateDressUseCase } from "@core/products/application/dress/create-dress/create-dress.use.case";
 import { IDressRepository } from "@core/products/domain/dress/dress.repository";
 import { setupTypeOrmForIntegrationTests } from "@core/@shared/infra/testing/helpers";
 import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
 import { DressTypeormRepository } from "@core/products/infra/db/typeorm/dress/dress.typeorm-repository";
-import { ImageUploadError } from "@core/@shared/infra/errors/image-upload.error";
 import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
 import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { DressId } from "@core/products/domain/dress/dress-id.vo";
