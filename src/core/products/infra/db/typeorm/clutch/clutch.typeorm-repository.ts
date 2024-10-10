@@ -8,6 +8,10 @@ import { Repository } from "typeorm";
 import { ClutchModelMapper } from "@core/products/infra/db/typeorm/clutch/clutch.model-mapper";
 import { SearchParams } from "@core/@shared/domain/repository/search-params";
 import { SearchResult } from "@core/@shared/domain/repository/search-result";
+import {
+  getAvailableForPeriodQuery,
+  getNotAvailableForPeriodQuery,
+} from "@core/products/infra/db/typeorm/common/queries";
 
 export class ClutchTypeormRepository
   extends ProductTypeormRepository<ClutchId, Clutch, ClutchModel>
@@ -22,28 +26,7 @@ export class ClutchTypeormRepository
   async getAllAvailableForPeriod(period: Period): Promise<Clutch[]> {
     const dbType = this.modelRepository.manager.connection.options.type;
 
-    let query: string;
-    if (dbType === "postgres") {
-      query = `
-      NOT EXISTS (
-        SELECT 1
-        FROM jsonb_array_elements(clutch.reservationPeriods) AS period
-        WHERE (period->>'startDate')::timestamp <= :endDate
-        AND (period->>'endDate')::timestamp >= :startDate
-      )
-    `;
-    } else if (dbType === "sqlite") {
-      query = `
-      NOT EXISTS (
-        SELECT 1
-        FROM json_each(clutch.reservationPeriods) AS period
-        WHERE json_extract(period.value, '$.startDate') <= :endDate
-        AND json_extract(period.value, '$.endDate') >= :startDate
-      )
-    `;
-    } else {
-      throw new Error("Unsupported database type");
-    }
+    const query = getAvailableForPeriodQuery(dbType, "clutch");
 
     const availableClutches = await this.modelRepository
       .createQueryBuilder("clutch")
@@ -59,28 +42,7 @@ export class ClutchTypeormRepository
   async getAllNotAvailableForPeriod(period: Period): Promise<Clutch[]> {
     const dbType = this.modelRepository.manager.connection.options.type;
 
-    let query: string;
-    if (dbType === "postgres") {
-      query = `
-      EXISTS (
-        SELECT 1
-        FROM jsonb_array_elements(clutch.reservationPeriods) AS period
-        WHERE (period->>'startDate')::timestamp <= :endDate
-        AND (period->>'endDate')::timestamp >= :startDate
-      )
-    `;
-    } else if (dbType === "sqlite") {
-      query = `
-      EXISTS (
-        SELECT 1
-        FROM json_each(clutch.reservationPeriods) AS period
-        WHERE json_extract(period.value, '$.startDate') <= :endDate
-        AND json_extract(period.value, '$.endDate') >= :startDate
-      )
-    `;
-    } else {
-      throw new Error("Unsupported database type");
-    }
+    const query = getNotAvailableForPeriodQuery(dbType, "clutch");
 
     const unavailableClutches = await this.modelRepository
       .createQueryBuilder("clutch")

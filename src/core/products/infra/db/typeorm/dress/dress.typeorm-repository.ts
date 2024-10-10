@@ -11,6 +11,10 @@ import { FindOptionsWhere, ILike, Repository } from "typeorm";
 import { DressModelMapper } from "@core/products/infra/db/typeorm/dress/dress.model-mapper";
 import { SearchParams } from "@core/@shared/domain/repository/search-params";
 import { SearchResult } from "@core/@shared/domain/repository/search-result";
+import {
+  getAvailableForPeriodQuery,
+  getNotAvailableForPeriodQuery,
+} from "@core/products/infra/db/typeorm/common/queries";
 
 export class DressTypeormRepository
   extends ProductTypeormRepository<DressId, Dress, DressModel, DressFilter>
@@ -25,28 +29,7 @@ export class DressTypeormRepository
   async getAllAvailableForPeriod(period: Period): Promise<Dress[]> {
     const dbType = this.modelRepository.manager.connection.options.type;
 
-    let query: string;
-    if (dbType === "postgres") {
-      query = `
-      NOT EXISTS (
-        SELECT 1
-        FROM jsonb_array_elements(dress.reservationPeriods) AS period
-        WHERE (period->>'startDate')::timestamp <= :endDate
-        AND (period->>'endDate')::timestamp >= :startDate
-      )
-    `;
-    } else if (dbType === "sqlite") {
-      query = `
-      NOT EXISTS (
-        SELECT 1
-        FROM json_each(dress.reservationPeriods) AS period
-        WHERE json_extract(period.value, '$.startDate') <= :endDate
-        AND json_extract(period.value, '$.endDate') >= :startDate
-      )
-    `;
-    } else {
-      throw new Error("Unsupported database type");
-    }
+    const query: string = getAvailableForPeriodQuery(dbType, "dress");
 
     const availableDresses = await this.modelRepository
       .createQueryBuilder("dress")
@@ -62,28 +45,7 @@ export class DressTypeormRepository
   async getAllNotAvailableForPeriod(period: Period): Promise<Dress[]> {
     const dbType = this.modelRepository.manager.connection.options.type;
 
-    let query: string;
-    if (dbType === "postgres") {
-      query = `
-      EXISTS (
-        SELECT 1
-        FROM jsonb_array_elements(dress.reservationPeriods) AS period
-        WHERE (period->>'startDate')::timestamp <= :endDate
-        AND (period->>'endDate')::timestamp >= :startDate
-      )
-    `;
-    } else if (dbType === "sqlite") {
-      query = `
-      EXISTS (
-        SELECT 1
-        FROM json_each(dress.reservationPeriods) AS period
-        WHERE json_extract(period.value, '$.startDate') <= :endDate
-        AND json_extract(period.value, '$.endDate') >= :startDate
-      )
-    `;
-    } else {
-      throw new Error("Unsupported database type");
-    }
+    const query: string = getNotAvailableForPeriodQuery(dbType, "dress");
 
     const unavailableDresses = await this.modelRepository
       .createQueryBuilder("dress")

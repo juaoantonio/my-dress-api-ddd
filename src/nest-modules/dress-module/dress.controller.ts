@@ -28,8 +28,21 @@ import {
 import "multer";
 import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
 import { GetPaginatedDressesUseCase } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
-import { GetPaginatedDressesInputDto } from "@nest/dress-module/dto/get-paginated-dresses-input.dto";
-import { GetPaginatedDressesOutputDto } from "@nest/dress-module/dto/get-paginated-dresses-output.dto";
+import {
+  GetPaginatedDressesInputDto,
+  GetPaginatedDressesOutputDto,
+} from "@nest/dress-module/dto/get-paginated-dresses.dto";
+import {
+  GetAllAvailableForPeriodInputDto,
+  GetAllAvailableForPeriodOutputDto,
+} from "@nest/dress-module/dto/get-all-avaliable-for-period.dto";
+import { GetAllAvailableForPeriodUseCase } from "@core/products/application/dress/get-all-available-for-period/get-all-available-for-period.use-case";
+import { DressDto } from "@nest/dress-module/dto/dress.dto";
+import { GetAllNotAvailableForPeriodUseCase } from "@core/products/application/dress/get-all-not-available-for-period/get-all-not-available-for-period.use.case";
+import {
+  GetAllNotAvailableForPeriodInputDto,
+  GetAllNotAvailableForPeriodOutputDto,
+} from "@nest/dress-module/dto/get-all-not-avaliable-for-period.dto";
 
 @ApiTags("Vestidos")
 @Controller("dresses")
@@ -42,6 +55,12 @@ export class DressController {
 
   @Inject(GetPaginatedDressesUseCase)
   private getPaginatedDressesUseCase: GetPaginatedDressesUseCase;
+
+  @Inject(GetAllAvailableForPeriodUseCase)
+  private getAllAvailableForPeriodUseCase: GetAllAvailableForPeriodUseCase;
+
+  @Inject(GetAllNotAvailableForPeriodUseCase)
+  private getAllNotAvailableForPeriodUseCase: GetAllNotAvailableForPeriodUseCase;
 
   @ApiOperation({
     summary: "Cadastrar um vestido",
@@ -133,5 +152,37 @@ export class DressController {
       page,
       limit,
     });
+  }
+
+  @ApiOperation({
+    summary: "Listar vestidos disponíveis para um período",
+  })
+  @ApiResponse({
+    isArray: true,
+    description: "Vestidos disponíveis para o período",
+    type: DressDto,
+    status: HttpStatus.OK,
+  })
+  @Get("available")
+  async getAllAvailableForPeriod(
+    @Query() input: GetAllAvailableForPeriodInputDto,
+  ): Promise<GetAllAvailableForPeriodOutputDto> {
+    return await this.getAllAvailableForPeriodUseCase.execute(input);
+  }
+
+  @ApiOperation({
+    summary: "Listar vestidos não disponíveis para um período",
+  })
+  @ApiResponse({
+    isArray: true,
+    description: "Vestidos não disponíveis para o período",
+    type: DressDto,
+    status: HttpStatus.OK,
+  })
+  @Get("not-available")
+  async getAllNotAvailableForPeriod(
+    @Query() input: GetAllNotAvailableForPeriodInputDto,
+  ): Promise<GetAllNotAvailableForPeriodOutputDto> {
+    return await this.getAllNotAvailableForPeriodUseCase.execute(input);
   }
 }

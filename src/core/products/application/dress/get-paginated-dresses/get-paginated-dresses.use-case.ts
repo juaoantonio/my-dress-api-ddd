@@ -5,7 +5,16 @@ import {
 } from "@core/products/domain/dress/dress.repository";
 import { IsPositive } from "class-validator";
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
-import { CommonPaginatedResponseOutput } from "@core/@shared/application/common-paginated-response.output";
+import {
+  DressOutput,
+  DressOutputMapper,
+} from "@core/products/application/dress/common/dress.output-mapper";
+import {
+  PaginationOutput,
+  PaginationOutputMapper,
+} from "@core/@shared/application/pagination-output";
+import { UrlPresignerService } from "@core/@shared/application/url-presigner.service";
+import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 
 export class GetPaginatedDressesUseCase
   implements
@@ -17,6 +26,9 @@ export class GetPaginatedDressesUseCase
   constructor(
     private readonly dressRepository: IDressRepository,
     private readonly imageStorageService: IImageStorageService,
+    private readonly urlPresignerService: UrlPresignerService = new UrlPresignerService(
+      this.imageStorageService,
+    ),
   ) {}
 
   async execute(
@@ -28,31 +40,16 @@ export class GetPaginatedDressesUseCase
       sortDir: "desc",
     });
     const result = await this.dressRepository.search(searchParams);
-    const dresses: OutputDress[] = await Promise.all(
-      result.items.map(async (dress) => {
-        const imageUrl = await this.imageStorageService.getPreSignedUrl(
-          dress.getImagePath(),
-        );
-        return {
-          id: dress.getId().value,
-          rentPrice: dress.getRentPrice(),
-          name: dress.getName(),
-          color: dress.getColor(),
-          model: dress.getModel(),
-          fabric: dress.getFabric(),
-          isPickedUp: dress.getIsPickedUp(),
-          imageUrl,
-          type: dress.getType(),
-        };
-      }),
+    const dressesWithPreSignedUrl =
+      await this.urlPresignerService.signMany<Dress>(
+        result.items,
+        "imagePath" as keyof Dress,
+      );
+    const dressesOutput = DressOutputMapper.toOutputMany(
+      dressesWithPreSignedUrl,
     );
-    return {
-      items: dresses,
-      total: result.total,
-      currentPage: result.currentPage,
-      perPage: result.perPage,
-      lastPage: result.lastPage,
-    };
+
+    return PaginationOutputMapper.toOutput(dressesOutput, result);
   }
 }
 
@@ -64,22 +61,4 @@ export class GetPaginatedDressesUseCaseInput {
   limit: number;
 }
 
-export class OutputDress {
-  id: string;
-  rentPrice: number;
-  name: string;
-  color: string;
-  model: string;
-  fabric: string;
-  isPickedUp: boolean;
-  imageUrl: string;
-  type: string;
-}
-
-export class GetPaginatedDressesUseCaseOutput extends CommonPaginatedResponseOutput<OutputDress> {
-  declare items: OutputDress[];
-  declare total: number;
-  declare currentPage: number;
-  declare perPage: number;
-  declare lastPage: number;
-}
+export type GetPaginatedDressesUseCaseOutput = PaginationOutput<DressOutput>;
