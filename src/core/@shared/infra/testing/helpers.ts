@@ -1,15 +1,14 @@
-import { DataSource } from "typeorm";
-import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { Config } from "@core/@shared/infra/config";
 
 export function setupTypeOrmForIntegrationTests(
-  options?: Partial<SqliteConnectionOptions>,
+  options?: Partial<DataSourceOptions>,
 ) {
   let _dataSource: DataSource;
 
   beforeAll(async () => {
     _dataSource = new DataSource({
-      ...(Config.database() as SqliteConnectionOptions),
+      ...(Config.database() as any),
       ...options,
     });
     await _dataSource.initialize();
@@ -20,7 +19,7 @@ export function setupTypeOrmForIntegrationTests(
   });
 
   afterAll(async () => {
-    await _dataSource.destroy();
+    if (_dataSource.isInitialized) await _dataSource.destroy();
   });
 
   return {

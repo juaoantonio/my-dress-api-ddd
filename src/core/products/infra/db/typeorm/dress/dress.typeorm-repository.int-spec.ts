@@ -10,23 +10,32 @@ import {
   DressSearchParams,
   DressSearchResult,
 } from "@core/products/domain/dress/dress.repository";
+import { PostgreSqlContainer } from "@testcontainers/postgresql";
+import { it } from "vitest";
 
-describe("DressTypeormRepository Integration Test", () => {
+describe("DressTypeormRepository Integration Test", async () => {
   let repository: DressTypeormRepository;
+  const container = await new PostgreSqlContainer().start();
   const setup = setupTypeOrmForIntegrationTests({
+    type: "postgres",
+    host: container.getHost(),
+    port: container.getPort(),
+    username: container.getUsername(),
+    password: container.getPassword(),
+    database: container.getDatabase(),
     entities: [DressModel],
   });
 
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2024-10-01T00:00:00.000Z"));
+    vi.setSystemTime(new Date("2024-10-01"));
 
     const modelRepository = setup.dataSource.getRepository(DressModel);
     repository = new DressTypeormRepository(modelRepository);
   });
 
   describe("getAllAvailableForPeriod", () => {
-    it("should return all dresses available for the given period", async () => {
+    it("should return all dresses available when no reservation periods are set", async () => {
       const dress1 = Dress.create({
         id: uuidv4(),
         imagePath: "https://example.com/dress1.png",
@@ -52,8 +61,8 @@ describe("DressTypeormRepository Integration Test", () => {
       await repository.saveMany([dress1, dress2]);
 
       const period = new Period({
-        startDate: DateVo.create("2024-10-01T00:00:00.000Z"),
-        endDate: DateVo.create("2024-10-05T00:00:00.000Z"),
+        startDate: DateVo.create("2024-10-01"),
+        endDate: DateVo.create("2024-10-05"),
       });
 
       const availableDresses =
@@ -63,7 +72,7 @@ describe("DressTypeormRepository Integration Test", () => {
       expect(availableDresses[1].equals(dress2)).toBe(true);
     });
 
-    it("should return an empty array when no dresses are available for the given period", async () => {
+    it("should return all dresses available when the requested period is before the first reservation period", async () => {
       const dress = Dress.create({
         id: uuidv4(),
         imagePath: "https://example.com/dress.png",
@@ -74,8 +83,12 @@ describe("DressTypeormRepository Integration Test", () => {
         isPickedUp: false,
         reservationPeriods: [
           {
-            startDate: new Date("2024-10-01T00:00:00.000Z").toISOString(),
-            endDate: new Date("2024-10-10T00:00:00.000Z").toISOString(),
+            startDate: new Date("2024-10-10").toISOString(),
+            endDate: new Date("2024-10-15").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16").toISOString(),
+            endDate: new Date("2024-10-20").toISOString(),
           },
         ],
       });
@@ -83,10 +96,183 @@ describe("DressTypeormRepository Integration Test", () => {
       await repository.save(dress);
 
       const period = new Period({
-        startDate: DateVo.create("2024-10-01T00:00:00.000Z"),
-        endDate: DateVo.create("2024-10-05T00:00:00.000Z"),
+        startDate: DateVo.create("2024-10-07"),
+        endDate: DateVo.create("2024-10-09"),
       });
 
+      const availableDresses =
+        await repository.getAllAvailableForPeriod(period);
+      expect(availableDresses).toHaveLength(1);
+      expect(availableDresses[0].equals(dress)).toBe(true);
+    });
+
+    it("should return an empty array when no dresses are available for the given period in between the each of reservation periods", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-01").toISOString(),
+            endDate: new Date("2024-10-10").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-01"),
+        endDate: DateVo.create("2024-10-05"),
+      });
+
+      const availableDresses =
+        await repository.getAllAvailableForPeriod(period);
+      expect(availableDresses).toHaveLength(0);
+    });
+
+    it("should return no dresses available for the given period when the reservation starts before the requested period and ends within the requested period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10").toISOString(),
+            endDate: new Date("2024-10-15").toISOString(),
+          },
+        ],
+      });
+      await repository.save(dress);
+      const period = new Period({
+        startDate: DateVo.create("2024-10-09"),
+        endDate: DateVo.create("2024-10-11"),
+      });
+      const availableDresses =
+        await repository.getAllAvailableForPeriod(period);
+      expect(availableDresses).toHaveLength(0);
+    });
+
+    it("should return no dresses available for the given period when the reservation starts within the requested period and ends after the requested period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10").toISOString(),
+            endDate: new Date("2024-10-15").toISOString(),
+          },
+        ],
+      });
+      await repository.save(dress);
+      const period = new Period({
+        startDate: DateVo.create("2024-10-11"),
+        endDate: DateVo.create("2024-10-20"),
+      });
+      const availableDresses =
+        await repository.getAllAvailableForPeriod(period);
+      expect(availableDresses).toHaveLength(0);
+    });
+
+    it("should return no dresses available when the requested period endDate is the same as the reservation startDate", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-15T00:00:00Z").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-20T00:00:00Z").toISOString(),
+          },
+        ],
+      });
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-08T00:00:00Z"),
+        endDate: DateVo.create("2024-10-10T00:00:00Z"),
+      });
+
+      const availableDresses =
+        await repository.getAllAvailableForPeriod(period);
+      expect(availableDresses).toHaveLength(0);
+    });
+
+    it("should return no dresses available when the requested period startDate is the same as the reservation endDate", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-15T00:00:00Z").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-20T00:00:00Z").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-19T00:00:00Z"),
+        endDate: DateVo.create("2024-10-21T00:00:00Z"),
+      });
+
+      const availableDresses =
+        await repository.getAllAvailableForPeriod(period);
+      expect(availableDresses).toHaveLength(0);
+    });
+
+    it("should return no dresses available for the given period when the reservation starts before the requested period and ends after the requested period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10").toISOString(),
+            endDate: new Date("2024-10-15").toISOString(),
+          },
+        ],
+      });
+      await repository.save(dress);
+      const period = new Period({
+        startDate: DateVo.create("2024-10-09"),
+        endDate: DateVo.create("2024-10-20"),
+      });
       const availableDresses =
         await repository.getAllAvailableForPeriod(period);
       expect(availableDresses).toHaveLength(0);
@@ -94,37 +280,10 @@ describe("DressTypeormRepository Integration Test", () => {
   });
 
   describe("getAllNotAvailableForPeriod", () => {
-    it("should return all dresses not available for the given period", async () => {
-      const dress = Dress.create({
+    it("should return an empty array when no reservation periods are set", async () => {
+      const dress1 = Dress.create({
         id: uuidv4(),
-        imagePath: "https://example.com/dress.png",
-        model: "Evening Dress",
-        color: "Red",
-        fabric: "Silk",
-        rentPrice: 200.0,
-        isPickedUp: false,
-        reservationPeriods: [
-          {
-            startDate: new Date("2024-10-01T00:00:00.000Z").toISOString(),
-            endDate: new Date("2024-10-10T00:00:00.000Z").toISOString(),
-          },
-        ],
-      });
-      await repository.save(dress);
-      const period = new Period({
-        startDate: DateVo.create("2024-10-01T00:00:00.000Z"),
-        endDate: DateVo.create("2024-10-05T00:00:00.000Z"),
-      });
-      const unavailableDresses =
-        await repository.getAllNotAvailableForPeriod(period);
-      expect(unavailableDresses).toHaveLength(1);
-      expect(unavailableDresses[0].equals(dress)).toBe(true);
-    });
-
-    it("should return an empty array when all dresses are available for the given period", async () => {
-      const dress = Dress.create({
-        id: uuidv4(),
-        imagePath: "https://example.com/dress.png",
+        imagePath: "https://example.com/dress1.png",
         model: "Evening Dress",
         color: "Red",
         fabric: "Silk",
@@ -133,16 +292,252 @@ describe("DressTypeormRepository Integration Test", () => {
         reservationPeriods: [],
       });
 
-      await repository.save(dress);
+      const dress2 = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress2.png",
+        model: "Casual Dress",
+        color: "Blue",
+        fabric: "Cotton",
+        rentPrice: 150.0,
+        isPickedUp: false,
+        reservationPeriods: [],
+      });
+
+      await repository.saveMany([dress1, dress2]);
 
       const period = new Period({
-        startDate: DateVo.create("2024-10-01T00:00:00.000Z"),
-        endDate: DateVo.create("2024-10-05T00:00:00.000Z"),
+        startDate: DateVo.create("2024-10-01"),
+        endDate: DateVo.create("2024-10-05"),
       });
 
       const unavailableDresses =
         await repository.getAllNotAvailableForPeriod(period);
       expect(unavailableDresses).toHaveLength(0);
+    });
+
+    it("should return an empty array when the requested period is before any reservation period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10").toISOString(),
+            endDate: new Date("2024-10-15").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16").toISOString(),
+            endDate: new Date("2024-10-20").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-07"),
+        endDate: DateVo.create("2024-10-09"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(0);
+    });
+
+    it("should return the dresses as unavailable when the requested period overlaps with a reservation period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10").toISOString(),
+            endDate: new Date("2024-10-15").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16").toISOString(),
+            endDate: new Date("2024-10-20").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-12"),
+        endDate: DateVo.create("2024-10-18"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(1);
+      expect(unavailableDresses[0].equals(dress)).toBe(true);
+    });
+
+    it("should return the dresses as unavailable when reservation starts before and ends within the requested period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-07").toISOString(),
+            endDate: new Date("2024-10-09").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-08"),
+        endDate: DateVo.create("2024-10-10"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(1);
+      expect(unavailableDresses[0].equals(dress)).toBe(true);
+    });
+
+    it("should return the dresses as unavailable when reservation starts within and ends after the requested period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-09").toISOString(),
+            endDate: new Date("2024-10-12").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-10"),
+        endDate: DateVo.create("2024-10-11"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(1);
+      expect(unavailableDresses[0].equals(dress)).toBe(true);
+    });
+
+    it("should return the dresses as unavailable when the requested period endDate is the same as the reservation startDate", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-15T00:00:00Z").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-20T00:00:00Z").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-08T00:00:00Z"),
+        endDate: DateVo.create("2024-10-10T00:00:00Z"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(1);
+      expect(unavailableDresses[0].equals(dress)).toBe(true);
+    });
+
+    it("should return the dresses as unavailable when the requested period startDate is the same as the reservation endDate", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-10T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-15T00:00:00Z").toISOString(),
+          },
+          {
+            startDate: new Date("2024-10-16T00:00:00Z").toISOString(),
+            endDate: new Date("2024-10-20T00:00:00Z").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-15T00:00:00Z"),
+        endDate: DateVo.create("2024-10-17T00:00:00Z"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(1);
+      expect(unavailableDresses[0].equals(dress)).toBe(true);
+    });
+
+    it("should return the dresses as unavailable when reservation starts before and ends after the requested period", async () => {
+      const dress = Dress.create({
+        id: uuidv4(),
+        imagePath: "https://example.com/dress.png",
+        model: "Evening Dress",
+        color: "Red",
+        fabric: "Silk",
+        rentPrice: 200.0,
+        isPickedUp: false,
+        reservationPeriods: [
+          {
+            startDate: new Date("2024-10-09").toISOString(),
+            endDate: new Date("2024-10-21").toISOString(),
+          },
+        ],
+      });
+
+      await repository.save(dress);
+
+      const period = new Period({
+        startDate: DateVo.create("2024-10-10"),
+        endDate: DateVo.create("2024-10-20"),
+      });
+
+      const unavailableDresses =
+        await repository.getAllNotAvailableForPeriod(period);
+      expect(unavailableDresses).toHaveLength(1);
+      expect(unavailableDresses[0].equals(dress)).toBe(true);
     });
   });
 

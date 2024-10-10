@@ -34,8 +34,8 @@ export class DressTypeormRepository
     const availableDresses = await this.modelRepository
       .createQueryBuilder("dress")
       .where(query, {
-        startDate: period.getStartDate().getValue(),
-        endDate: period.getEndDate().getValue(),
+        startDate: period.getStartDate().getValue().toISOString(),
+        endDate: period.getEndDate().getValue().toISOString(),
       })
       .getMany();
 
@@ -50,8 +50,8 @@ export class DressTypeormRepository
     const unavailableDresses = await this.modelRepository
       .createQueryBuilder("dress")
       .where(query, {
-        startDate: period.getStartDate().getValue(),
-        endDate: period.getEndDate().getValue(),
+        startDate: period.getStartDate().getValue().toISOString(),
+        endDate: period.getEndDate().getValue().toISOString(),
       })
       .getMany();
 

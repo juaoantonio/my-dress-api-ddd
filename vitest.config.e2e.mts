@@ -11,6 +11,7 @@ export default defineConfig({
     exclude: ["src/**/*.spec.ts", "test/**/*.spec.ts"],
     testTimeout: 60000, // 60 seconds
     hookTimeout: 60000, // 60 seconds
+    fileParallelism: false,
   },
 
   plugins: [

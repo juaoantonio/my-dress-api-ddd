@@ -42,6 +42,7 @@ describe("DatabaseModule Unit Tests", () => {
 
   describe("PostgreSQL Connection", async () => {
     const container = await new PostgreSqlContainer().start();
+
     const connOptions = {
       DB_VENDOR: "postgres",
       DB_HOST: container.getHost(),

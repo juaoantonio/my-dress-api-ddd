@@ -31,8 +31,8 @@ export class ClutchTypeormRepository
     const availableClutches = await this.modelRepository
       .createQueryBuilder("clutch")
       .where(query, {
-        startDate: period.getStartDate().getValue(),
-        endDate: period.getEndDate().getValue(),
+        startDate: period.getStartDate().getValue().toISOString(),
+        endDate: period.getEndDate().getValue().toISOString(),
       })
       .getMany();
 
@@ -47,8 +47,8 @@ export class ClutchTypeormRepository
     const unavailableClutches = await this.modelRepository
       .createQueryBuilder("clutch")
       .where(query, {
-        startDate: period.getStartDate().getValue(),
-        endDate: period.getEndDate().getValue(),
+        startDate: period.getStartDate().getValue().toISOString(),
+        endDate: period.getEndDate().getValue().toISOString(),
       })
       .getMany();
 
