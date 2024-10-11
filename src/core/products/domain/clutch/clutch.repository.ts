@@ -53,7 +53,7 @@ export class ClutchSearchParams extends SearchParams<ClutchFilter> {
     } = {},
   ) {
     if (
-      props.filter?.available &&
+      props.filter?.available !== undefined &&
       (!props.filter?.startDate || !props.filter?.endDate)
     ) {
       throw new InvalidSearchParamsError([

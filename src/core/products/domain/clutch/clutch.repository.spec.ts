@@ -100,32 +100,9 @@ describe("ClutchSearchParams", () => {
         ClutchSearchParams.create({
           filter: {
             available: true,
-            // startDate e endDate estão faltando
           },
         }),
       ).toThrow(InvalidSearchParamsError);
-    });
-
-    it("deve criar uma nova instância com available=false sem período", () => {
-      const searchParams = ClutchSearchParams.create({
-        filter: {
-          available: false,
-          // período não é necessário quando available é false
-        },
-        page: 3,
-        perPage: 5,
-        sort: "color",
-        sortDir: "asc",
-      });
-
-      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
-      expect(searchParams.filter).toEqual({
-        available: false,
-      });
-      expect(searchParams.page).toBe(3);
-      expect(searchParams.perPage).toBe(5);
-      expect(searchParams.sort).toBe("color");
-      expect(searchParams.sortDir).toBe("asc");
     });
 
     it("deve criar uma nova instância com available=false e período fornecido", () => {

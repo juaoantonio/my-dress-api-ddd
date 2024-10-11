@@ -97,31 +97,14 @@ describe("DressSearchParams", () => {
       expect(() =>
         DressSearchParams.create({
           filter: {
-            available: true,
+            available: false,
           },
+          page: 3,
+          perPage: 5,
+          sort: "color",
+          sortDir: "asc",
         }),
       ).toThrow(InvalidSearchParamsError);
-    });
-
-    it("should create a new instance with available false without period", () => {
-      const searchParams = DressSearchParams.create({
-        filter: {
-          available: false,
-        },
-        page: 3,
-        perPage: 5,
-        sort: "color",
-        sortDir: "asc",
-      });
-
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
-      expect(searchParams.filter).toEqual({
-        available: false,
-      });
-      expect(searchParams.page).toBe(3);
-      expect(searchParams.perPage).toBe(5);
-      expect(searchParams.sort).toBe("color");
-      expect(searchParams.sortDir).toBe("asc");
     });
 
     it("should create a new instance with available false and period provided", () => {

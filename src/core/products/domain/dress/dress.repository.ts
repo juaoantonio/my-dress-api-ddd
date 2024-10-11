@@ -55,7 +55,7 @@ export class DressSearchParams extends SearchParams<DressFilter> {
     } = {},
   ) {
     if (
-      props.filter?.available &&
+      props.filter?.available !== undefined &&
       (!props.filter?.startDate || !props.filter?.endDate)
     ) {
       throw new InvalidSearchParamsError([

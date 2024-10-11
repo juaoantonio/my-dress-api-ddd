@@ -13,11 +13,11 @@ import {
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
-import { CreateDressUseCase } from "@core/products/application/dress/create-dress/create-dress.use.case";
+import { CreateClutchUseCase } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Express } from "express";
 import { CustomFileTypeValidator } from "@nest/shared-module/validators/custom-file.validator";
-import { CreateDressDto } from "@nest/dress-module/dto/create-dress.dto";
+import { CreateClutchDto } from "@nest/clutch-module/dto/create-clutch.dto";
 import {
   ApiBody,
   ApiConsumes,
@@ -27,27 +27,27 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
-import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
-import { GetPaginatedDressesUseCase } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
+import { DeleteClutchUseCase } from "@core/products/application/clutch/delete-clutch/delete-clutch.use-case";
+import { GetPaginatedClutchesUseCase } from "@core/products/application/clutch/get-paginated-clutches/get-paginated-clutches.use-case";
 import {
-  GetPaginatedDressesInputDto,
-  GetPaginatedDressesOutputDto,
-} from "@nest/dress-module/dto/get-paginated-dresses.dto";
+  GetPaginatedClutchesInputDto,
+  GetPaginatedClutchesOutputDto,
+} from "@nest/clutch-module/dto/get-paginated-clutches.dto";
 
-@ApiTags("Vestidos")
-@Controller("dresses")
-export class DressController {
-  @Inject(CreateDressUseCase)
-  private createDressUseCase: CreateDressUseCase;
+@ApiTags("Bolsas")
+@Controller("clutches")
+export class ClutchController {
+  @Inject(CreateClutchUseCase)
+  private createClutchUseCase: CreateClutchUseCase;
 
-  @Inject(DeleteDressUseCase)
-  private deleteDressUseCase: DeleteDressUseCase;
+  @Inject(DeleteClutchUseCase)
+  private deleteClutchUseCase: DeleteClutchUseCase;
 
-  @Inject(GetPaginatedDressesUseCase)
-  private getPaginatedDressesUseCase: GetPaginatedDressesUseCase;
+  @Inject(GetPaginatedClutchesUseCase)
+  private getPaginatedClutchesUseCase: GetPaginatedClutchesUseCase;
 
   @ApiOperation({
-    summary: "Cadastrar um vestido",
+    summary: "Cadastrar um bolsa",
   })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
@@ -58,36 +58,31 @@ export class DressController {
       properties: {
         color: {
           type: "string",
-          description: "Cor do vestido",
-          example: "Branco",
-        },
-        fabric: {
-          type: "string",
-          description: "Tecido do vestido",
-          example: "Seda",
+          description: "Cor da bolsa",
+          example: "Prata",
         },
         model: {
           type: "string",
-          description: "Modelo do vestido",
-          example: "Decote V",
+          description: "Modelo da bolsa",
+          example: "Sem alça",
         },
         rentPrice: {
           type: "number",
-          description: "Preço de aluguel do vestido",
+          description: "Preço de aluguel da bolsa",
           example: 200.0,
         },
         file: {
           type: "string",
           format: "binary",
-          description: "Imagem do vestido",
+          description: "Imagem da bolsa",
         },
       },
-      required: ["color", "fabric", "model", "rentPrice", "file"],
+      required: ["color", "model", "rentPrice", "file"],
     },
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: "Vestido cadastrado com sucesso",
+    description: "Bolsa cadastrado com sucesso",
   })
   @ApiResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -95,7 +90,7 @@ export class DressController {
   })
   @Post()
   @UseInterceptors(FileInterceptor("file"))
-  async createDress(
+  async createClutch(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addValidator(
@@ -112,57 +107,52 @@ export class DressController {
         }),
     )
     file: Express.Multer.File,
-    @Body() input: CreateDressDto,
+    @Body() input: CreateClutchDto,
   ) {
-    await this.createDressUseCase.execute({
+    await this.createClutchUseCase.execute({
       imageFileName: file.originalname,
       imageBody: file.buffer,
       imageMimetype: file.mimetype,
       color: input.color,
-      fabric: input.fabric,
       model: input.model,
       rentPrice: input.rentPrice,
     });
   }
 
   @ApiOperation({
-    summary: "Deletar um vestido",
+    summary: "Deletar um bolsa",
   })
   @ApiParam({
     name: "id",
     required: true,
     type: "string",
-    description: "Identificador do vestido",
+    description: "Identificador do bolsa",
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: "Vestido deletado com sucesso",
+    description: "Bolsa deletado com sucesso",
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  async deleteDress(@Param("id") id: string) {
-    await this.deleteDressUseCase.execute({ id });
+  async deleteClutch(@Param("id") id: string) {
+    await this.deleteClutchUseCase.execute({ id });
   }
 
   @ApiOperation({
-    summary: "Listar vestidos com paginação",
-  })
-  @ApiBody({
-    type: GetPaginatedDressesInputDto,
-    description: "Dados necessários para listar vestidos com paginação",
+    summary: "Listar bolsas com paginação",
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "Vestidos listados com sucesso",
-    type: GetPaginatedDressesOutputDto,
+    description: "Bolsas listados com sucesso",
+    type: GetPaginatedClutchesOutputDto,
   })
   @Get()
-  async getPaginatedDresses(
-    @Query() query: GetPaginatedDressesInputDto,
-  ): Promise<GetPaginatedDressesOutputDto> {
+  async getPaginatedClutches(
+    @Query() query: GetPaginatedClutchesInputDto,
+  ): Promise<GetPaginatedClutchesOutputDto> {
     const page = query.page || 1;
     const limit = query.limit || 15;
-    return await this.getPaginatedDressesUseCase.execute({
+    return await this.getPaginatedClutchesUseCase.execute({
       page,
       limit,
       available: query.available,
