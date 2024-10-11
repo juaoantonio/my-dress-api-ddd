@@ -57,7 +57,7 @@ export class ClutchSearchParams extends SearchParams<ClutchFilter> {
       (!props.filter?.startDate || !props.filter?.endDate)
     ) {
       throw new InvalidSearchParamsError([
-        'as datas de "startDate" e "endDate" são obrigatórias quando "available" é passado',
+        "as datas de 'startDate' e 'endDate' são obrigatórias quando 'available' é passado",
       ]);
     }
     return new ClutchSearchParams({

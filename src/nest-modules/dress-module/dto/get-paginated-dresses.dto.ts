@@ -4,7 +4,7 @@ import {
 } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { DressDto } from "@nest/dress-module/dto/dress.dto";
 
 export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput {
@@ -29,6 +29,39 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
   @IsOptional()
   @Type(() => Number)
   declare limit: number;
+
+  @ApiProperty({
+    name: "available",
+    required: false,
+    description:
+      "Se passado como true, retorna apenas os vestidos disponíveis, se passado como false, retorna apenas os vestidos indisponíveis, se não passado, retorna todos os vestidos",
+  })
+  @Transform(({ value }) => {
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+      return value.toLowerCase() === "true";
+    }
+    return Boolean(value);
+  })
+  declare available: boolean;
+
+  @ApiProperty({
+    name: "startDate",
+    required: false,
+    type: "string",
+    description:
+      "Data de início do intervalo de datas. É obrigatória se for passada a propriedade available",
+  })
+  declare startDate: string;
+
+  @ApiProperty({
+    name: "endDate",
+    required: false,
+    type: "string",
+    description:
+      "Data de fim do intervalo de datas. É obrigatória se for passada a propriedade available",
+  })
+  declare endDate: string;
 }
 
 export class GetPaginatedDressesOutputDto

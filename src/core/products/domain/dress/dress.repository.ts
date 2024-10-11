@@ -59,7 +59,7 @@ export class DressSearchParams extends SearchParams<DressFilter> {
       (!props.filter?.startDate || !props.filter?.endDate)
     ) {
       throw new InvalidSearchParamsError([
-        'as datas de "startDate" e "endDate" são obrigatórias quando "available" é passado',
+        "as datas de 'startDate' e 'endDate' são obrigatórias quando 'available' é passado",
       ]);
     }
     return new DressSearchParams({

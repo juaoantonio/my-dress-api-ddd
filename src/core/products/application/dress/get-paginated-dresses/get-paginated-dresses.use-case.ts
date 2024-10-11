@@ -3,7 +3,12 @@ import {
   DressSearchParams,
   IDressRepository,
 } from "@core/products/domain/dress/dress.repository";
-import { IsBoolean, IsDateString, IsPositive } from "class-validator";
+import {
+  IsBoolean,
+  IsDateString,
+  IsOptional,
+  IsPositive,
+} from "class-validator";
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import {
   DressOutput,
@@ -23,13 +28,14 @@ export class GetPaginatedDressesUseCase
       Promise<GetPaginatedDressesUseCaseOutput>
     >
 {
+  readonly urlPresignerService: UrlPresignerService;
+
   constructor(
     private readonly dressRepository: IDressRepository,
-    private readonly imageStorageService: IImageStorageService,
-    private readonly urlPresignerService: UrlPresignerService = new UrlPresignerService(
-      this.imageStorageService,
-    ),
-  ) {}
+    readonly imageStorageService: IImageStorageService,
+  ) {
+    this.urlPresignerService = new UrlPresignerService(imageStorageService);
+  }
 
   async execute(
     input: GetPaginatedDressesUseCaseInput,
@@ -65,12 +71,15 @@ export class GetPaginatedDressesUseCaseInput {
   @IsPositive()
   limit: number;
 
+  @IsOptional()
   @IsBoolean()
   available: boolean;
 
+  @IsOptional()
   @IsDateString()
   startDate: string;
 
+  @IsOptional()
   @IsDateString()
   endDate: string;
 }

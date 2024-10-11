@@ -1,5 +1,6 @@
 import { ValueObject } from "../value-object";
 import { DateVo } from "./date.vo";
+import { InvalidVoFields } from "@core/@shared/domain/error/invalid-vo-params";
 
 export class Period extends ValueObject {
   private readonly startDate: DateVo;
@@ -20,15 +21,30 @@ export class Period extends ValueObject {
 
   validate(): void {
     if (this.startDate.getValue() < new Date()) {
-      throw new Error("Start date cannot be in the past");
+      throw new InvalidVoFields([
+        {
+          startDate: ["Data de início não pode ser no passado"],
+        },
+      ]);
     }
 
     if (this.endDate.getValue() < new Date()) {
-      throw new Error("End date cannot be in the past");
+      throw new InvalidVoFields([
+        {
+          endDate: ["Data de término não pode ser no passado"],
+        },
+      ]);
     }
 
     if (this.startDate.getValue() > this.endDate.getValue()) {
-      throw new Error("Start date cannot be after end date");
+      throw new InvalidVoFields([
+        {
+          startDate: [
+            "Data de início não pode ser maior que a data de término",
+          ],
+          endDate: ["Data de término não pode ser menor que a data de início"],
+        },
+      ]);
     }
   }
 

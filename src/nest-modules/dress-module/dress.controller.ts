@@ -12,6 +12,8 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
 import { CreateDressUseCase } from "@core/products/application/dress/create-dress/create-dress.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -120,17 +122,23 @@ export class DressController {
   @ApiOperation({
     summary: "Listar vestidos com paginação",
   })
+  @ApiBody({
+    type: GetPaginatedDressesInputDto,
+    description: "Dados necessários para listar vestidos com paginação",
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Vestidos listados com sucesso",
     type: GetPaginatedDressesOutputDto,
   })
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true }))
   async getPaginatedDresses(
     @Query() query: GetPaginatedDressesInputDto,
   ): Promise<GetPaginatedDressesOutputDto> {
     const page = query.page || 1;
     const limit = query.limit || 15;
+    console.log(query);
     return await this.getPaginatedDressesUseCase.execute({
       page,
       limit,

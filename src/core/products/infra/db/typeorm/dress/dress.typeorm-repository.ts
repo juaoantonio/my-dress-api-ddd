@@ -31,21 +31,21 @@ export class DressTypeormRepository
     const { page, perPage, sort, sortDir, filter } = props;
     const offset = (page - 1) * perPage;
     const limit = perPage;
-    const qb = this.modelRepository.createQueryBuilder("clutch");
+    const qb = this.modelRepository.createQueryBuilder("dress");
     if (filter?.model) {
-      qb.andWhere("clutch.model ILIKE :model", { model: `%${filter.model}%` });
+      qb.andWhere("dress.model ILIKE :model", { model: `%${filter.model}%` });
     }
     if (filter?.color) {
-      qb.andWhere("clutch.color ILIKE :color", { color: `%${filter.color}%` });
+      qb.andWhere("dress.color ILIKE :color", { color: `%${filter.color}%` });
     }
     if (filter?.rentPrice !== undefined) {
-      qb.andWhere("clutch.rentPrice = :rentPrice", {
+      qb.andWhere("dress.rentPrice = :rentPrice", {
         rentPrice: filter.rentPrice,
       });
     }
     if (filter?.available !== undefined) {
       const dbType = this.modelRepository.manager.connection.options.type;
-      const alias = "clutch";
+      const alias = "dress";
       const condition = getAvailabilityCondition(
         dbType,
         alias,
@@ -58,11 +58,11 @@ export class DressTypeormRepository
     }
     if (sort && this.sortableFields.includes(sort)) {
       qb.orderBy(
-        `clutch.${sort}`,
+        `dress.${sort}`,
         sortDir?.toUpperCase() === "DESC" ? "DESC" : "ASC",
       );
     } else {
-      qb.orderBy("clutch.createdAt", "DESC");
+      qb.orderBy("dress.createdAt", "DESC");
     }
     qb.skip(offset).take(limit);
     const [models, count] = await qb.getManyAndCount();
