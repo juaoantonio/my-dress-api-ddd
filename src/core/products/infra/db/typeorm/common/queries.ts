@@ -1,30 +1,47 @@
-const postgresBaseQuery = (tableName: string) => `
-EXISTS (
-  SELECT 1
-  FROM json_array_elements("${tableName}"."reservationPeriods") AS period
-  WHERE (
-    ((period ->> 'startDate')::timestamp <= :startDate::timestamp AND (period ->> 'endDate')::timestamp >= :endDate::timestamp)
-    OR (period ->> 'startDate')::timestamp BETWEEN :startDate::timestamp AND :endDate::timestamp
-    OR (period ->> 'endDate')::timestamp BETWEEN :startDate::timestamp AND :endDate::timestamp
-  )
-)`;
+// clutch.typeorm-repository.helpers.ts
 
-export function getNotAvailableForPeriodQuery(
+/**
+ * Retorna a condição SQL para disponibilidade com base no driver e no valor de 'available'.
+ * @param dbType Tipo do banco de dados (e.g., 'postgres', 'sqlite')
+ * @param alias Alias da tabela (e.g., 'clutch')
+ * @param available Booleano indicando se deve filtrar clutches disponíveis (true) ou indisponíveis (false)
+ */
+export function getAvailabilityCondition(
   dbType: string,
-  tableName: string,
+  alias: string,
+  available: boolean,
 ): string {
-  if (dbType === "postgres") {
-    return postgresBaseQuery(tableName);
-  }
-  throw new Error("Unsupported database type");
-}
+  const existsCondition = `
+    EXISTS (
+      SELECT 1
+      FROM ${
+        dbType === "postgres" ? "json_array_elements" : "json_each"
+      }(${alias}.reservationPeriods) AS period
+      WHERE (
+        ${
+          dbType === "postgres"
+            ? "(period->>'startDate')::timestamptz <= :endDate AND (period->>'endDate')::timestamptz >= :startDate"
+            : "json_extract(value, '$.startDate') <= :endDate AND json_extract(value, '$.endDate') >= :startDate"
+        }
+        OR 
+        ${
+          dbType === "postgres"
+            ? "(period->>'startDate')::timestamptz BETWEEN :startDate AND :endDate"
+            : "json_extract(value, '$.startDate') BETWEEN :startDate AND :endDate"
+        }
+        OR 
+        ${
+          dbType === "postgres"
+            ? "(period->>'endDate')::timestamptz BETWEEN :startDate AND :endDate"
+            : "json_extract(value, '$.endDate') BETWEEN :startDate AND :endDate"
+        }
+      )
+    )
+  `;
 
-export function getAvailableForPeriodQuery(
-  dbType: string,
-  tableName: string,
-): string {
-  if (dbType === "postgres") {
-    return `NOT ${postgresBaseQuery(tableName)}`;
+  if (available) {
+    return `NOT ${existsCondition}`;
+  } else {
+    return existsCondition;
   }
-  throw new Error("Unsupported database type");
 }

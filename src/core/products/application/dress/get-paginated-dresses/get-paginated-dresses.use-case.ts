@@ -3,7 +3,7 @@ import {
   DressSearchParams,
   IDressRepository,
 } from "@core/products/domain/dress/dress.repository";
-import { IsPositive } from "class-validator";
+import { IsBoolean, IsDateString, IsPositive } from "class-validator";
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import {
   DressOutput,
@@ -38,6 +38,11 @@ export class GetPaginatedDressesUseCase
       page: input.page,
       perPage: input.limit,
       sortDir: "desc",
+      filter: {
+        available: input.available,
+        startDate: input.startDate,
+        endDate: input.endDate,
+      },
     });
     const result = await this.dressRepository.search(searchParams);
     const dressesWithPreSignedUrl =
@@ -59,6 +64,15 @@ export class GetPaginatedDressesUseCaseInput {
 
   @IsPositive()
   limit: number;
+
+  @IsBoolean()
+  available: boolean;
+
+  @IsDateString()
+  startDate: string;
+
+  @IsDateString()
+  endDate: string;
 }
 
 export type GetPaginatedDressesUseCaseOutput = PaginationOutput<DressOutput>;

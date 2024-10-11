@@ -6,35 +6,7 @@ import { DressTypeormRepository } from "@core/products/infra/db/typeorm/dress/dr
 import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
 import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { DressId } from "@core/products/domain/dress/dress-id.vo";
-
-class ImageStorageServiceMock implements IImageStorageService {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async upload(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fileName: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    file: Buffer,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    mimetype: string,
-  ): Promise<string> {
-    return "images/image.jpg";
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async delete(fileKey: string): Promise<void> {
-    return;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getPreSignedUrl(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fileKey: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    expiresInSeconds: number,
-  ): Promise<string> {
-    return "https://image.com/images/image.jpg";
-  }
-}
+import { ImageStorageServiceMock } from "@core/@shared/infra/testing/image-storage-mock";
 
 describe("DeleteDressUseCase Integration Test", () => {
   let useCase: DeleteDressUseCase;

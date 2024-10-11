@@ -1,19 +1,24 @@
-import { DressFilter, DressSearchParams } from "./dress.repository";
+// clutch.search-params.spec.ts
+
 import { describe, expect, it } from "vitest";
+import {
+  ClutchFilter,
+  ClutchSearchParams,
+} from "@core/products/domain/clutch/clutch.repository";
 import { InvalidSearchParamsError } from "@core/@shared/domain/error/invalid-search-params.error";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
-describe("DressSearchParams", () => {
+describe("ClutchSearchParams", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2024-07-01T00:00:00.000Z"));
+    vi.setSystemTime(new Date("2024-10-01T00:00:00.000Z"));
   });
   describe("create", () => {
-    it("should create a new instance with default values", () => {
-      const searchParams = DressSearchParams.create();
+    it("deve criar uma nova instância com valores padrão quando nenhum filtro é fornecido", () => {
+      const searchParams = ClutchSearchParams.create();
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toBeNull();
       expect(searchParams.page).toBe(1);
       expect(searchParams.perPage).toBe(15);
@@ -21,14 +26,13 @@ describe("DressSearchParams", () => {
       expect(searchParams.sortDir).toBeNull();
     });
 
-    it("should create a new instance with provided filter values", () => {
-      const filter: DressFilter = {
-        color: "Red",
-        model: "Evening Gown",
-        fabric: "Silk",
-        rentPrice: 100,
+    it("deve criar uma nova instância com valores de filtro fornecidos", () => {
+      const filter: ClutchFilter = {
+        color: "Preto",
+        model: "Clutch Elegante",
+        rentPrice: 250.0,
       };
-      const searchParams = DressSearchParams.create({
+      const searchParams = ClutchSearchParams.create({
         filter,
         page: 2,
         perPage: 10,
@@ -36,12 +40,11 @@ describe("DressSearchParams", () => {
         sortDir: "desc",
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
-        color: "Red",
-        model: "Evening Gown",
-        fabric: "Silk",
-        rentPrice: 100,
+        color: "Preto",
+        model: "Clutch Elegante",
+        rentPrice: 250.0,
       });
       expect(searchParams.page).toBe(2);
       expect(searchParams.perPage).toBe(10);
@@ -49,25 +52,24 @@ describe("DressSearchParams", () => {
       expect(searchParams.sortDir).toBe("desc");
     });
 
-    it("should create a new instance and ignore invalid filter values", () => {
-      const filter: DressFilter = {
+    it("deve ignorar valores de filtro inválidos e retornar filter como null", () => {
+      const filter: ClutchFilter = {
         color: "",
         model: "",
-        fabric: "",
         rentPrice: 0,
       };
-      const searchParams = DressSearchParams.create({
+      const searchParams = ClutchSearchParams.create({
         filter,
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toBeNull();
     });
 
     // **Novos Testes Adicionados**
 
-    it("should create a new instance with available true and valid period", () => {
-      const searchParams = DressSearchParams.create({
+    it("deve criar uma nova instância com available=true e período válido", () => {
+      const searchParams = ClutchSearchParams.create({
         filter: {
           available: true,
           startDate: "2024-10-01T00:00:00.000Z",
@@ -79,7 +81,7 @@ describe("DressSearchParams", () => {
         sortDir: "asc",
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
         available: true,
         period: Period.create({
@@ -93,20 +95,22 @@ describe("DressSearchParams", () => {
       expect(searchParams.sortDir).toBe("asc");
     });
 
-    it("should throw InvalidSearchParamsError when available is true but period dates are missing", () => {
+    it("deve lançar InvalidSearchParamsError quando available=true mas startDate ou endDate estão faltando", () => {
       expect(() =>
-        DressSearchParams.create({
+        ClutchSearchParams.create({
           filter: {
             available: true,
+            // startDate e endDate estão faltando
           },
         }),
       ).toThrow(InvalidSearchParamsError);
     });
 
-    it("should create a new instance with available false without period", () => {
-      const searchParams = DressSearchParams.create({
+    it("deve criar uma nova instância com available=false sem período", () => {
+      const searchParams = ClutchSearchParams.create({
         filter: {
           available: false,
+          // período não é necessário quando available é false
         },
         page: 3,
         perPage: 5,
@@ -114,7 +118,7 @@ describe("DressSearchParams", () => {
         sortDir: "asc",
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
         available: false,
       });
@@ -124,8 +128,8 @@ describe("DressSearchParams", () => {
       expect(searchParams.sortDir).toBe("asc");
     });
 
-    it("should create a new instance with available false and period provided", () => {
-      const searchParams = DressSearchParams.create({
+    it("deve criar uma nova instância com available=false e período fornecido", () => {
+      const searchParams = ClutchSearchParams.create({
         filter: {
           available: false,
           startDate: "2024-11-01T00:00:00.000Z",
@@ -137,7 +141,7 @@ describe("DressSearchParams", () => {
         sortDir: "desc",
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
         available: false,
         period: Period.create({
@@ -151,21 +155,21 @@ describe("DressSearchParams", () => {
       expect(searchParams.sortDir).toBe("desc");
     });
 
-    it("should handle period directly provided in the filter", () => {
+    it("deve lidar com período fornecido diretamente no filtro", () => {
       const period = Period.create({
-        startDate: DateVo.create("2024-07-01T00:00:00.000Z"),
-        endDate: DateVo.create("2024-07-15T00:00:00.000Z"),
+        startDate: DateVo.create("2024-12-01T00:00:00.000Z"),
+        endDate: DateVo.create("2024-12-15T00:00:00.000Z"),
       });
 
-      const searchParams = DressSearchParams.create({
+      const searchParams = ClutchSearchParams.create({
         filter: {
           available: true,
-          startDate: "2024-07-01T00:00:00.000Z",
-          endDate: "2024-07-15T00:00:00.000Z",
+          startDate: period.getStartDate().getValue().toISOString(),
+          endDate: period.getEndDate().getValue().toISOString(),
         },
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
         available: true,
         period,
@@ -176,13 +180,13 @@ describe("DressSearchParams", () => {
       expect(searchParams.sortDir).toBeNull();
     });
 
-    it("should create a new instance with partial valid filter values including available and period", () => {
-      const searchParams = DressSearchParams.create({
+    it("deve criar uma nova instância com valores de filtro parcialmente válidos incluindo available e período", () => {
+      const searchParams = ClutchSearchParams.create({
         filter: {
-          model: "Summer Dress",
+          model: "Clutch de Verão",
           available: true,
-          startDate: "2024-07-01T00:00:00.000Z",
-          endDate: "2024-07-15T00:00:00.000Z",
+          startDate: "2024-10-01T00:00:00.000Z",
+          endDate: "2024-10-15T00:00:00.000Z",
         },
         page: 2,
         perPage: 10,
@@ -190,13 +194,13 @@ describe("DressSearchParams", () => {
         sortDir: "desc",
       });
 
-      expect(searchParams).toBeInstanceOf(DressSearchParams);
+      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
-        model: "Summer Dress",
+        model: "Clutch de Verão",
         available: true,
         period: Period.create({
-          startDate: DateVo.create("2024-07-01T00:00:00.000Z"),
-          endDate: DateVo.create("2024-07-15T00:00:00.000Z"),
+          startDate: DateVo.create("2024-10-01T00:00:00.000Z"),
+          endDate: DateVo.create("2024-10-15T00:00:00.000Z"),
         }),
       });
       expect(searchParams.page).toBe(2);

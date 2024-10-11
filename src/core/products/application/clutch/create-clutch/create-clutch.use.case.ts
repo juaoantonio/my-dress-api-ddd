@@ -1,40 +1,39 @@
-import { IUseCase } from "@core/@shared/application/use-case.interface";
-import { IDressRepository } from "@core/products/domain/dress/dress.repository";
-import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
-import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { IsNotEmpty, IsPositive, IsString } from "class-validator";
+import { IUseCase } from "@core/@shared/application/use-case.interface";
+import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import { EntityValidationError } from "@core/@shared/domain/validators/validation.error";
+import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
+import { IClutchRepository } from "@core/products/domain/clutch/clutch.repository";
 
-export class CreateDressUseCase
-  implements IUseCase<CreateDressUseCaseInput, Promise<void>>
+export class CreateClutchUseCase
+  implements IUseCase<CreateClutchUseCaseInput, Promise<void>>
 {
   constructor(
-    private readonly dressRepository: IDressRepository,
+    private readonly clutchRepository: IClutchRepository,
     private readonly imageStorageService: IImageStorageService,
   ) {}
 
-  async execute(input: CreateDressUseCaseInput): Promise<void> {
+  async execute(input: CreateClutchUseCaseInput): Promise<void> {
     const imageKey = await this.imageStorageService.upload(
       input.imageFileName,
       input.imageBody,
       input.imageMimetype,
     );
-    const dress = Dress.create({
+    const clutch = Clutch.create({
       imagePath: imageKey,
       rentPrice: input.rentPrice,
       color: input.color,
       model: input.model,
-      fabric: input.fabric,
     });
-    if (dress.notification.hasErrors()) {
+    if (clutch.notification.hasErrors()) {
       await this.imageStorageService.delete(imageKey);
-      throw new EntityValidationError(dress.notification.toJSON());
+      throw new EntityValidationError(clutch.notification.toJSON());
     }
-    await this.dressRepository.save(dress);
+    await this.clutchRepository.save(clutch);
   }
 }
 
-export class CreateDressUseCaseInput {
+export class CreateClutchUseCaseInput {
   @IsNotEmpty()
   imageBody: Buffer;
 
@@ -56,8 +55,4 @@ export class CreateDressUseCaseInput {
   @IsNotEmpty()
   @IsString()
   model: string;
-
-  @IsNotEmpty()
-  @IsString()
-  fabric: string;
 }
