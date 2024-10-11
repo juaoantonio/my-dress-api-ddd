@@ -7,6 +7,7 @@ import {
 } from "@core/products/domain/product";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
+import { ClutchFakeBuilder } from "@core/products/domain/clutch/clutch-fake.builder";
 
 export type ClutchConstructorProps = ProductConstructorProps<ClutchId>;
 
@@ -47,6 +48,10 @@ export class Clutch extends Product<ClutchId> {
         : [],
       isPickedUp: props.isPickedUp || false,
     });
+  }
+
+  static fake(): typeof ClutchFakeBuilder {
+    return ClutchFakeBuilder;
   }
 
   validate(fields?: string[]): void {

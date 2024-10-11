@@ -3,8 +3,14 @@ import { DressId } from "./dress-id.vo";
 import { describe, expect, it } from "vitest";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
+import { DressFakeBuilder } from "@core/products/domain/dress/dress-fake.builder";
 
 describe("Dress Aggregate Unit Tests", function () {
+  it("should have fake static method", () => {
+    expect(Dress.fake).toBeDefined();
+    expect(Dress.fake()).toBe(DressFakeBuilder);
+  });
+
   describe("Dress Create Constructor", function () {
     it("should create a Dress with id", function () {
       const dress = new Dress({
@@ -28,7 +34,6 @@ describe("Dress Aggregate Unit Tests", function () {
       expect(dress.getFabric()).toBe("Tule");
       expect(dress.notification.hasErrors()).toBe(false);
       expect(dress.getReservationPeriods()).toEqual([]);
-
       expect(dress.notification.hasErrors()).toBe(false);
     });
   });

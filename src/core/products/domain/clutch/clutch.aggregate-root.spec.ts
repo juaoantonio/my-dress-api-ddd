@@ -3,8 +3,14 @@ import { ClutchId } from "./clutch-id.vo";
 import { ToJsonOutput } from "@core/@shared/domain/validators/notification.interface";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
+import { expect, it } from "vitest";
+import { ClutchFakeBuilder } from "@core/products/domain/clutch/clutch-fake.builder";
 
 describe("Clutch Aggregate Unit Tests", function () {
+  it("should have fake static method", () => {
+    expect(Clutch.fake).toBeDefined();
+    expect(Clutch.fake()).toBe(ClutchFakeBuilder);
+  });
   describe("Clutch Create Constructor", function () {
     it("should create a valid clutch", () => {
       const clutch = new Clutch({

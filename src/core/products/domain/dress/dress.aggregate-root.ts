@@ -7,6 +7,7 @@ import {
 } from "@core/products/domain/product";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
+import { DressFakeBuilder } from "@core/products/domain/dress/dress-fake.builder";
 
 type DressConstructorProps = ProductConstructorProps<DressId> & {
   fabric: string;
@@ -57,6 +58,10 @@ export class Dress extends Product<DressId> {
         : [],
       isPickedUp: props.isPickedUp || false,
     });
+  }
+
+  static fake(): typeof DressFakeBuilder {
+    return DressFakeBuilder;
   }
 
   validate(fields?: string[]): void {
