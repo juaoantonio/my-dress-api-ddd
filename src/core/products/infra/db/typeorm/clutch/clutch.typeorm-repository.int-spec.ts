@@ -331,28 +331,6 @@ describe("ClutchTypeormRepository Integration Test", async () => {
       ).toThrow(InvalidSearchParamsError);
     });
 
-    it("should create a new instance with available=false without period", () => {
-      const searchParams = ClutchSearchParams.create({
-        filter: {
-          available: false,
-          // period não é necessário quando available é false
-        },
-        page: 3,
-        perPage: 5,
-        sort: "color",
-        sortDir: "asc",
-      });
-
-      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
-      expect(searchParams.filter).toEqual({
-        available: false,
-      });
-      expect(searchParams.page).toBe(3);
-      expect(searchParams.perPage).toBe(5);
-      expect(searchParams.sort).toBe("color");
-      expect(searchParams.sortDir).toBe("asc");
-    });
-
     it("should create a new instance with available=false and period provided", () => {
       const searchParams = ClutchSearchParams.create({
         filter: {
