@@ -28,7 +28,9 @@ describe("Period Value Object Unit Tests", () => {
 
     expect(() => {
       Period.create({ startDate, endDate });
-    }).toThrow("Start date cannot be in the past");
+    }).toThrow(
+      "Parâmetros inválidos: startDate: Data de início não pode ser no passado.",
+    );
   });
 
   it("should throw error if end date is in the past", () => {
@@ -37,7 +39,9 @@ describe("Period Value Object Unit Tests", () => {
 
     expect(() => {
       Period.create({ startDate, endDate });
-    }).toThrow("End date cannot be in the past");
+    }).toThrow(
+      "Parâmetros inválidos: endDate: Data de término não pode ser no passado.",
+    );
   });
 
   it("should throw error if start date is after end date", () => {
@@ -46,7 +50,9 @@ describe("Period Value Object Unit Tests", () => {
 
     expect(() => {
       Period.create({ startDate, endDate });
-    }).toThrow("Start date cannot be after end date");
+    }).toThrow(
+      "Parâmetros inválidos: startDate: Data de início não pode ser maior que a data de término. endDate: Data de término não pode ser menor que a data de início.",
+    );
   });
 
   it("should correctly calculate the number of days in the period", () => {
