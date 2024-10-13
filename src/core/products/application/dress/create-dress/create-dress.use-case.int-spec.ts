@@ -6,6 +6,7 @@ import { DressTypeormRepository } from "@core/products/infra/db/typeorm/dress/dr
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import { ImageUploadError } from "@core/@shared/infra/errors/image-upload.error";
 import { ImageStorageServiceMock } from "@core/@shared/infra/testing/image-storage-mock";
+import { ImageMockBuilder } from "@core/@shared/infra/testing/mocks/file";
 
 describe("CreateDressUseCase Integration Test", () => {
   let useCase: CreateDressUseCase;
@@ -30,9 +31,7 @@ describe("CreateDressUseCase Integration Test", () => {
 
   it("should create a dress", async () => {
     const input = {
-      imageFileName: "image.jpg",
-      imageMimetype: "image/jpeg",
-      imageBody: Buffer.from("image"),
+      image: new ImageMockBuilder().build(),
       rentPrice: 100,
       color: "blue",
       model: "model",
@@ -53,9 +52,7 @@ describe("CreateDressUseCase Integration Test", () => {
 
   it("should not create a dress with invalid input", async () => {
     const input = {
-      imageFileName: "image.jpg",
-      imageMimetype: "image/jpeg",
-      imageBody: Buffer.from("image"),
+      image: new ImageMockBuilder().build(),
       rentPrice: -100,
       color: "",
       model: "",
@@ -69,9 +66,7 @@ describe("CreateDressUseCase Integration Test", () => {
       throw new ImageUploadError();
     });
     const input = {
-      imageFileName: "image.jpg",
-      imageMimetype: "image/jpeg",
-      imageBody: Buffer.from("image"),
+      image: new ImageMockBuilder().build(),
       rentPrice: 100,
       color: "blue",
       model: "model",
