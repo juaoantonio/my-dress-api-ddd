@@ -35,9 +35,6 @@ importers:
       '@testcontainers/postgresql':
         specifier: ^10.13.2
         version: 10.13.2
-      '@types/lodash':
-        specifier: ^4.17.7
-        version: 4.17.7
       aws-sdk:
         specifier: ^2.1691.0
         version: 2.1691.0
@@ -102,6 +99,9 @@ importers:
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@types/lodash':
+        specifier: ^4.17.7
+        version: 4.17.7
       '@types/multer':
         specifier: ^1.4.12
         version: 1.4.12
