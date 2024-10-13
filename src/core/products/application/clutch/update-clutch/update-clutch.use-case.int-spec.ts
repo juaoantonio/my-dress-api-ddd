@@ -27,14 +27,14 @@ describe("UpdateClutchUseCase Integration Test", () => {
       clutchRepository,
       new ImageStorageServiceMock(),
     );
-    const clutche = Clutch.fake()
+    const clutch = Clutch.fake()
       .aClutch()
       .withId(ClutchId.create("fd9f1084-a992-427b-9fb4-d113b96c8e00"))
       .withColor("Prata")
       .withModel("Com alça")
       .withRentPrice(100)
       .build();
-    await clutchRepository.save(clutche);
+    await clutchRepository.save(clutch);
   });
 
   it("should be defined", () => {

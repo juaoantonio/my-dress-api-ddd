@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { CustomFileTypeValidator } from "@nest/shared-module/validators/custom-file.validator";
 import { FileInterceptor } from "@nestjs/platform-express";
+import "multer";
 
 export type ImageFile = Express.Multer.File;
 

@@ -4,6 +4,7 @@ import { IImageStorageService } from "@core/@shared/application/image-storage-se
 import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { IsNotEmpty, IsPositive, IsString } from "class-validator";
 import { EntityValidationError } from "@core/@shared/domain/validators/validation.error";
+import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
 
 export class CreateDressUseCase
   implements IUseCase<CreateDressUseCaseInput, Promise<void>>
@@ -15,9 +16,9 @@ export class CreateDressUseCase
 
   async execute(input: CreateDressUseCaseInput): Promise<void> {
     const imageKey = await this.imageStorageService.upload(
-      input.imageFileName,
-      input.imageBody,
-      input.imageMimetype,
+      input.image.originalname,
+      input.image.buffer,
+      input.image.mimetype,
     );
     const dress = Dress.create({
       imagePath: imageKey,
@@ -36,15 +37,7 @@ export class CreateDressUseCase
 
 export class CreateDressUseCaseInput {
   @IsNotEmpty()
-  imageBody: Buffer;
-
-  @IsNotEmpty()
-  @IsString()
-  imageMimetype: string;
-
-  @IsNotEmpty()
-  @IsString()
-  imageFileName: string;
+  image: ImageFile;
 
   @IsPositive()
   rentPrice: number;

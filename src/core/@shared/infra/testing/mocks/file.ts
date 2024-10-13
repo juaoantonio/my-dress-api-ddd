@@ -1,10 +1,10 @@
-import { Express } from "express";
+import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
 
 export class ImageMockBuilder {
-  private file: Express.Multer.File;
+  private readonly image: ImageFile;
 
-  constructor(props: Partial<Express.Multer.File> = {}) {
-    this.file = {
+  constructor(props: Partial<ImageFile> = {}) {
+    this.image = {
       fieldname: props.fieldname ?? "image",
       originalname: props.originalname ?? "test",
       encoding: props.encoding ?? "7bit",
@@ -19,56 +19,56 @@ export class ImageMockBuilder {
   }
 
   public withFieldname(fieldname: string): this {
-    this.file.fieldname = fieldname;
+    this.image.fieldname = fieldname;
     return this;
   }
 
   public withOriginalname(originalname: string): this {
-    this.file.originalname = originalname;
+    this.image.originalname = originalname;
     return this;
   }
 
   public withEncoding(encoding: string): this {
-    this.file.encoding = encoding;
+    this.image.encoding = encoding;
     return this;
   }
 
   public withMimetype(mimetype: string): this {
-    this.file.mimetype = mimetype;
+    this.image.mimetype = mimetype;
     return this;
   }
 
   public withDestination(destination: string): this {
-    this.file.destination = destination;
+    this.image.destination = destination;
     return this;
   }
 
   public withFilename(filename: string): this {
-    this.file.filename = filename;
+    this.image.filename = filename;
     return this;
   }
 
   public withSize(size: number): this {
-    this.file.size = size;
+    this.image.size = size;
     return this;
   }
 
   public withStream(stream: any): this {
-    this.file.stream = stream;
+    this.image.stream = stream;
     return this;
   }
 
   public withPath(path: string): this {
-    this.file.path = path;
+    this.image.path = path;
     return this;
   }
 
   public withBuffer(buffer: Buffer): this {
-    this.file.buffer = buffer;
+    this.image.buffer = buffer;
     return this;
   }
 
-  public build(): Express.Multer.File {
-    return this.file;
+  public build(): ImageFile {
+    return this.image;
   }
 }

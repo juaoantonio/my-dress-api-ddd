@@ -4,6 +4,7 @@ import { IImageStorageService } from "@core/@shared/application/image-storage-se
 import { EntityValidationError } from "@core/@shared/domain/validators/validation.error";
 import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
 import { IClutchRepository } from "@core/products/domain/clutch/clutch.repository";
+import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
 
 export class CreateClutchUseCase
   implements IUseCase<CreateClutchUseCaseInput, Promise<void>>
@@ -35,7 +36,7 @@ export class CreateClutchUseCase
 
 export class CreateClutchUseCaseInput {
   @IsNotEmpty()
-  image: Express.Multer.File;
+  image: ImageFile;
 
   @IsPositive()
   rentPrice: number;

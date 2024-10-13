@@ -1,5 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from "class-validator";
+import { Type } from "class-transformer";
 
 export class DressDto extends DressOutput {
   @ApiProperty({
@@ -55,4 +63,81 @@ export class DressDto extends DressOutput {
     example: "dress",
   })
   declare type: string;
+}
+
+export class CreateDressDto {
+  @ApiProperty({
+    description: "Cor do vestido",
+    example: "Branco",
+  })
+  @IsString()
+  @IsNotEmpty()
+  color: string;
+
+  @ApiProperty({
+    description: "Tecido do vestido",
+    example: "Seda",
+  })
+  @IsString()
+  @IsNotEmpty()
+  fabric: string;
+
+  @ApiProperty({
+    description: "Modelo do vestido",
+    example: "Decote V",
+  })
+  @IsString()
+  @IsNotEmpty()
+  model: string;
+
+  @ApiProperty({
+    description: "Preço de aluguel do vestido",
+    example: 200.0,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  rentPrice: number;
+}
+
+export class UpdateDressDto {
+  @ApiProperty({
+    description: "ID do vestido",
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  })
+  @IsUUID()
+  id: string;
+
+  @ApiProperty({
+    description: "Cor do vestido",
+    example: "Branco",
+  })
+  @IsString()
+  @IsOptional()
+  color: string;
+
+  @ApiProperty({
+    description: "Modelo do vestido",
+    example: "Decote V",
+  })
+  @IsString()
+  @IsOptional()
+  model: string;
+
+  @ApiProperty({
+    description: "Tecido do vestido",
+    example: "Seda",
+  })
+  @IsString()
+  @IsOptional()
+  fabric: string;
+
+  @ApiProperty({
+    description: "Preço de aluguel do vestido",
+    example: 200.0,
+  })
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  rentPrice: number;
 }

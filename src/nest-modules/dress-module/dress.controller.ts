@@ -7,17 +7,13 @@ import {
   HttpStatus,
   Inject,
   Param,
-  ParseFilePipeBuilder,
+  Patch,
   Post,
   Query,
-  UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
 import { CreateDressUseCase } from "@core/products/application/dress/create-dress/create-dress.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Express } from "express";
-import { CustomFileTypeValidator } from "@nest/shared-module/validators/custom-file.validator";
-import { CreateDressDto } from "@nest/dress-module/dto/create-dress.dto";
 import {
   ApiBody,
   ApiConsumes,
@@ -33,6 +29,15 @@ import {
   GetPaginatedDressesInputDto,
   GetPaginatedDressesOutputDto,
 } from "@nest/dress-module/dto/get-paginated-dresses.dto";
+import {
+  ImageFile,
+  UploadedImage,
+} from "@nest/shared-module/decorators/uploaded-image-file.decorator";
+import { UpdateDressUseCase } from "@core/products/application/dress/update-dress/update-dress.use-case";
+import {
+  CreateDressDto,
+  UpdateDressDto,
+} from "@nest/dress-module/dto/dress.dto";
 
 @ApiTags("Vestidos")
 @Controller("dresses")
@@ -42,6 +47,9 @@ export class DressController {
 
   @Inject(DeleteDressUseCase)
   private deleteDressUseCase: DeleteDressUseCase;
+
+  @Inject(UpdateDressUseCase)
+  private updateDressUseCase: UpdateDressUseCase;
 
   @Inject(GetPaginatedDressesUseCase)
   private getPaginatedDressesUseCase: GetPaginatedDressesUseCase;
@@ -94,30 +102,13 @@ export class DressController {
     description: "Entidade inválida",
   })
   @Post()
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor("image"))
   async createDress(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addValidator(
-          new CustomFileTypeValidator({
-            fileType: ["image/jpeg", "image/png"],
-          }),
-        )
-        .addMaxSizeValidator({
-          maxSize: 3 * 1024 * 1024, // 3MB
-          message: "O arquivo excede o tamanho máximo permitido de 3MB",
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    file: Express.Multer.File,
+    @UploadedImage("image") image: ImageFile,
     @Body() input: CreateDressDto,
   ) {
     await this.createDressUseCase.execute({
-      imageFileName: file.originalname,
-      imageBody: file.buffer,
-      imageMimetype: file.mimetype,
+      image,
       color: input.color,
       fabric: input.fabric,
       model: input.model,
@@ -142,6 +133,71 @@ export class DressController {
   @Delete(":id")
   async deleteDress(@Param("id") id: string) {
     await this.deleteDressUseCase.execute({ id });
+  }
+
+  @ApiOperation({
+    summary: "Atualizar um vestido",
+  })
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    description: "Dados necessários para atualizar um vestido",
+    required: true,
+    schema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "Identificador de um vestido",
+          example: "123e4567-e89b-12d3-a456-426614174000",
+        },
+        color: {
+          type: "string",
+          description: "Cor do vestido",
+          example: "Prata",
+        },
+        model: {
+          type: "string",
+          description: "Modelo do vestido",
+          example: "Sem alça",
+        },
+        fabric: {
+          type: "string",
+          description: "Tecido do vestido",
+          example: "Seda",
+        },
+        rentPrice: {
+          type: "number",
+          description: "Preço de aluguel do vestido",
+          example: 200.0,
+        },
+        file: {
+          type: "string",
+          format: "binary",
+          description: "Imagem do vestido",
+        },
+      },
+      required: ["id"],
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: "Vestido atualizado com sucesso",
+  })
+  @Patch(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseInterceptors(FileInterceptor("image"))
+  async updateClutch(
+    @UploadedImage("image", false) image: ImageFile,
+    @Body() input: UpdateDressDto,
+  ) {
+    await this.updateDressUseCase.execute({
+      image,
+      id: input.id,
+      color: input.color,
+      model: input.model,
+      fabric: input.fabric,
+      rentPrice: input.rentPrice,
+    });
   }
 
   @ApiOperation({

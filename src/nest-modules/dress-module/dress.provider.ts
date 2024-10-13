@@ -9,6 +9,7 @@ import { S3ImageStorage } from "@core/@shared/infra/s3/s3.image-storage";
 import { ProviderType } from "@nest/shared-module/types/provider.type";
 import { DeleteDressUseCase } from "@core/products/application/dress/delete-dress/delete-dress.use-case";
 import { GetPaginatedDressesUseCase } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
+import { UpdateDressUseCase } from "@core/products/application/dress/update-dress/update-dress.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_DRESS_REPOSITORY: {
@@ -67,6 +68,20 @@ export const USE_CASES: ProviderType = {
       uploadService: IImageStorageService,
     ) => {
       return new GetPaginatedDressesUseCase(dressRepository, uploadService);
+    },
+    inject: [
+      REPOSITORIES.DEFAULT_DRESS_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
+  },
+
+  UPDATE_DRESS_USE_CASE: {
+    provide: UpdateDressUseCase,
+    useFactory: (
+      dressRepository: IDressRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new UpdateDressUseCase(dressRepository, uploadService);
     },
     inject: [
       REPOSITORIES.DEFAULT_DRESS_REPOSITORY.provide,
