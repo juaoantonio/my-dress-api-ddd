@@ -38,6 +38,7 @@ import {
   CreateClutchDto,
   UpdateClutchDto,
 } from "@nest/clutch-module/dto/clutch.dto";
+import { GetClutchUseCase } from "@core/products/application/clutch/get-clutch/get-clutch.use-case";
 
 @ApiTags("Bolsas")
 @Controller("clutches")
@@ -50,6 +51,9 @@ export class ClutchController {
 
   @Inject(UpdateClutchUseCase)
   private updateClutchUseCase: UpdateClutchUseCase;
+
+  @Inject(GetClutchUseCase)
+  private getClutchUseCase: GetClutchUseCase;
 
   @Inject(GetPaginatedClutchesUseCase)
   private getPaginatedClutchesUseCase: GetPaginatedClutchesUseCase;
@@ -186,6 +190,28 @@ export class ClutchController {
       model: input.model,
       rentPrice: input.rentPrice,
     });
+  }
+
+  @ApiOperation({
+    summary: "Buscar uma bolsa",
+  })
+  @ApiParam({
+    name: "id",
+    required: true,
+    type: "string",
+    description: "Identificador da bolsa",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Bolsa buscada com sucesso",
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Bolsa não encontrada",
+  })
+  @Get(":id")
+  async getClutch(@Param("id") id: string) {
+    return await this.getClutchUseCase.execute({ id });
   }
 
   @ApiOperation({

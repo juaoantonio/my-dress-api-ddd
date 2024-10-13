@@ -19,6 +19,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
@@ -38,6 +39,8 @@ import {
   CreateDressDto,
   UpdateDressDto,
 } from "@nest/dress-module/dto/dress.dto";
+import { GetDressUseCase } from "@core/products/application/dress/get-dress/get-dress.use-case";
+import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
 
 @ApiTags("Vestidos")
 @Controller("dresses")
@@ -50,6 +53,9 @@ export class DressController {
 
   @Inject(UpdateDressUseCase)
   private updateDressUseCase: UpdateDressUseCase;
+
+  @Inject(GetDressUseCase)
+  private getDressUseCase: GetDressUseCase;
 
   @Inject(GetPaginatedDressesUseCase)
   private getPaginatedDressesUseCase: GetPaginatedDressesUseCase;
@@ -198,6 +204,29 @@ export class DressController {
       fabric: input.fabric,
       rentPrice: input.rentPrice,
     });
+  }
+
+  @ApiOperation({
+    summary: "Buscar um vestido",
+  })
+  @ApiQuery({
+    name: "id",
+    required: true,
+    type: "string",
+    description: "Identificador do vestido",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Vestido encontrado com sucesso",
+    type: DressOutput,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Vestido não encontrado",
+  })
+  @Get(":id")
+  async getDress(@Param("id") id: string) {
+    return await this.getDressUseCase.execute({ id });
   }
 
   @ApiOperation({
