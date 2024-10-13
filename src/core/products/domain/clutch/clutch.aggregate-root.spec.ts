@@ -1,10 +1,10 @@
 import { Clutch, ClutchCreateCommandProps } from "./clutch.aggregate-root";
 import { ClutchId } from "./clutch-id.vo";
-import { ToJsonOutput } from "@core/@shared/domain/validators/notification.interface";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { expect, it } from "vitest";
 import { ClutchFakeBuilder } from "@core/products/domain/clutch/clutch-fake.builder";
+import { FieldsErrors } from "@core/@shared/domain/validators/validator-fields.interface";
 
 describe("Clutch Aggregate Unit Tests", function () {
   it("should have fake static method", () => {
@@ -145,7 +145,7 @@ describe("Clutch Aggregate Unit Tests", function () {
     describe("Validate Clutch Creation", function () {
       const scenarios: {
         data: ClutchCreateCommandProps;
-        errors: ToJsonOutput;
+        errors: FieldsErrors[];
       }[] = [
         {
           data: {

@@ -1,5 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ClutchOutput } from "@core/products/application/clutch/common/clutch.output-mapper";
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from "class-validator";
+import { Type } from "class-transformer";
 
 export class ClutchDto extends ClutchOutput {
   @ApiProperty({
@@ -49,4 +57,65 @@ export class ClutchDto extends ClutchOutput {
     example: "dress",
   })
   declare type: string;
+}
+
+export class CreateClutchDto {
+  @ApiProperty({
+    description: "Cor da bolsa",
+    example: "Branco",
+  })
+  @IsString()
+  @IsNotEmpty()
+  color: string;
+
+  @ApiProperty({
+    description: "Modelo da bolsa",
+    example: "Decote V",
+  })
+  @IsString()
+  @IsNotEmpty()
+  model: string;
+
+  @ApiProperty({
+    description: "Preço de aluguel da bolsa",
+    example: 200.0,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  rentPrice: number;
+}
+
+export class UpdateClutchDto {
+  @ApiProperty({
+    description: "ID da bolsa",
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  })
+  @IsUUID()
+  id: string;
+
+  @ApiProperty({
+    description: "Cor da bolsa",
+    example: "Branco",
+  })
+  @IsString()
+  @IsOptional()
+  color: string;
+
+  @ApiProperty({
+    description: "Modelo da bolsa",
+    example: "Decote V",
+  })
+  @IsString()
+  @IsOptional()
+  model: string;
+
+  @ApiProperty({
+    description: "Preço de aluguel da bolsa",
+    example: 200.0,
+  })
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  rentPrice: number;
 }

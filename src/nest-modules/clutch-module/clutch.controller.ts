@@ -7,17 +7,13 @@ import {
   HttpStatus,
   Inject,
   Param,
-  ParseFilePipeBuilder,
+  Patch,
   Post,
   Query,
-  UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
 import { CreateClutchUseCase } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Express } from "express";
-import { CustomFileTypeValidator } from "@nest/shared-module/validators/custom-file.validator";
-import { CreateClutchDto } from "@nest/clutch-module/dto/create-clutch.dto";
 import {
   ApiBody,
   ApiConsumes,
@@ -33,6 +29,15 @@ import {
   GetPaginatedClutchesInputDto,
   GetPaginatedClutchesOutputDto,
 } from "@nest/clutch-module/dto/get-paginated-clutches.dto";
+import { UpdateClutchUseCase } from "@core/products/application/clutch/update-clutch/update-clutch.use-case";
+import {
+  ImageFile,
+  UploadedImage,
+} from "@nest/shared-module/decorators/uploaded-image-file.decorator";
+import {
+  CreateClutchDto,
+  UpdateClutchDto,
+} from "@nest/clutch-module/dto/clutch.dto";
 
 @ApiTags("Bolsas")
 @Controller("clutches")
@@ -43,15 +48,18 @@ export class ClutchController {
   @Inject(DeleteClutchUseCase)
   private deleteClutchUseCase: DeleteClutchUseCase;
 
+  @Inject(UpdateClutchUseCase)
+  private updateClutchUseCase: UpdateClutchUseCase;
+
   @Inject(GetPaginatedClutchesUseCase)
   private getPaginatedClutchesUseCase: GetPaginatedClutchesUseCase;
 
   @ApiOperation({
-    summary: "Cadastrar um bolsa",
+    summary: "Cadastrar uma bolsa",
   })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    description: "Dados necessários para cadastrar um vestido",
+    description: "Dados necessários para cadastrar uma bolsa",
     required: true,
     schema: {
       type: "object",
@@ -82,7 +90,7 @@ export class ClutchController {
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: "Bolsa cadastrado com sucesso",
+    description: "Bolsa cadastrada com sucesso",
   })
   @ApiResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -91,28 +99,11 @@ export class ClutchController {
   @Post()
   @UseInterceptors(FileInterceptor("file"))
   async createClutch(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addValidator(
-          new CustomFileTypeValidator({
-            fileType: ["image/jpeg", "image/png"],
-          }),
-        )
-        .addMaxSizeValidator({
-          maxSize: 3 * 1024 * 1024, // 3MB
-          message: "O arquivo excede o tamanho máximo permitido de 3MB",
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    file: Express.Multer.File,
+    @UploadedImage("image") image: ImageFile,
     @Body() input: CreateClutchDto,
   ) {
     await this.createClutchUseCase.execute({
-      imageFileName: file.originalname,
-      imageBody: file.buffer,
-      imageMimetype: file.mimetype,
+      image,
       color: input.color,
       model: input.model,
       rentPrice: input.rentPrice,
@@ -120,17 +111,17 @@ export class ClutchController {
   }
 
   @ApiOperation({
-    summary: "Deletar um bolsa",
+    summary: "Deletar uma bolsa",
   })
   @ApiParam({
     name: "id",
     required: true,
     type: "string",
-    description: "Identificador do bolsa",
+    description: "Identificador da bolsa",
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: "Bolsa deletado com sucesso",
+    description: "Bolsa deletada com sucesso",
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
@@ -139,11 +130,70 @@ export class ClutchController {
   }
 
   @ApiOperation({
+    summary: "Atualizar uma bolsa",
+  })
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    description: "Dados necessários para atualizar uma bolsa",
+    required: true,
+    schema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "Identificador da bolsa",
+          example: "123e4567-e89b-12d3-a456-426614174000",
+        },
+        color: {
+          type: "string",
+          description: "Cor da bolsa",
+          example: "Prata",
+        },
+        model: {
+          type: "string",
+          description: "Modelo da bolsa",
+          example: "Sem alça",
+        },
+        rentPrice: {
+          type: "number",
+          description: "Preço de aluguel da bolsa",
+          example: 200.0,
+        },
+        file: {
+          type: "string",
+          format: "binary",
+          description: "Imagem da bolsa",
+        },
+      },
+      required: ["id"],
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: "Bolsa atualizada com sucesso",
+  })
+  @Patch(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseInterceptors(FileInterceptor("image"))
+  async updateClutch(
+    @UploadedImage("image", false) image: ImageFile,
+    @Body() input: UpdateClutchDto,
+  ) {
+    await this.updateClutchUseCase.execute({
+      id: input.id,
+      image,
+      color: input.color,
+      model: input.model,
+      rentPrice: input.rentPrice,
+    });
+  }
+
+  @ApiOperation({
     summary: "Listar bolsas com paginação",
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "Bolsas listados com sucesso",
+    description: "Bolsas listadas com sucesso",
     type: GetPaginatedClutchesOutputDto,
   })
   @Get()

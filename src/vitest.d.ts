@@ -1,8 +1,8 @@
 import "vitest";
-import { ToJsonOutput } from "@core/@shared/domain/validators/notification.interface";
+import { FieldsErrors } from "@core/@shared/domain/validators/validator-fields.interface";
 
 interface CustomMatchers<R = unknown> {
-  notificationContainsErrorMessages: (expected: ToJsonOutput) => R;
+  notificationContainsErrorMessages: (expected: FieldsErrors[]) => R;
 }
 
 declare module "vitest" {
@@ -12,7 +12,7 @@ declare module "vitest" {
 declare global {
   namespace Vitest {
     interface Expect {
-      notificationContainsErrorMessages(expected: ToJsonOutput): this;
+      notificationContainsErrorMessages(expected: FieldsErrors[]): this;
     }
   }
 }

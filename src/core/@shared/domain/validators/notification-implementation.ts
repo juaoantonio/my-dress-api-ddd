@@ -1,4 +1,5 @@
-import { INotification, ToJsonOutput } from "./notification.interface";
+import { INotification } from "./notification.interface";
+import { FieldsErrors } from "@core/@shared/domain/validators/validator-fields.interface";
 
 export class NotificationImplementation implements INotification {
   errors = new Map<string, string[] | string>();
@@ -40,7 +41,7 @@ export class NotificationImplementation implements INotification {
   }
 
   toJSON(): any {
-    const errors: ToJsonOutput = [];
+    const errors: FieldsErrors[] = [];
 
     for (const [field, error] of this.errors.entries()) {
       if (typeof error === "string") errors.push(error);

@@ -9,6 +9,7 @@ import { S3ImageStorage } from "@core/@shared/infra/s3/s3.image-storage";
 import { ProviderType } from "@nest/shared-module/types/provider.type";
 import { DeleteClutchUseCase } from "@core/products/application/clutch/delete-clutch/delete-clutch.use-case";
 import { GetPaginatedClutchesUseCase } from "@core/products/application/clutch/get-paginated-clutches/get-paginated-clutches.use-case";
+import { UpdateClutchUseCase } from "@core/products/application/clutch/update-clutch/update-clutch.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_CLUTCH_REPOSITORY: {
@@ -67,6 +68,20 @@ export const USE_CASES: ProviderType = {
       uploadService: IImageStorageService,
     ) => {
       return new GetPaginatedClutchesUseCase(clutchRepository, uploadService);
+    },
+    inject: [
+      REPOSITORIES.DEFAULT_CLUTCH_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
+  },
+
+  UPDATE_CLUTCH_USE_CASE: {
+    provide: UpdateClutchUseCase,
+    useFactory: (
+      clutchRepository: IClutchRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new UpdateClutchUseCase(clutchRepository, uploadService);
     },
     inject: [
       REPOSITORIES.DEFAULT_CLUTCH_REPOSITORY.provide,

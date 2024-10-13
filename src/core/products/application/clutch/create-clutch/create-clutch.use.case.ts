@@ -15,9 +15,9 @@ export class CreateClutchUseCase
 
   async execute(input: CreateClutchUseCaseInput): Promise<void> {
     const imageKey = await this.imageStorageService.upload(
-      input.imageFileName,
-      input.imageBody,
-      input.imageMimetype,
+      input.image.originalname,
+      input.image.buffer,
+      input.image.mimetype,
     );
     const clutch = Clutch.create({
       imagePath: imageKey,
@@ -35,15 +35,7 @@ export class CreateClutchUseCase
 
 export class CreateClutchUseCaseInput {
   @IsNotEmpty()
-  imageBody: Buffer;
-
-  @IsNotEmpty()
-  @IsString()
-  imageMimetype: string;
-
-  @IsNotEmpty()
-  @IsString()
-  imageFileName: string;
+  image: Express.Multer.File;
 
   @IsPositive()
   rentPrice: number;

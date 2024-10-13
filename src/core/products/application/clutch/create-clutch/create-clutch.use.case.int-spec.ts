@@ -6,6 +6,7 @@ import { setupTypeOrmForIntegrationTests } from "@core/@shared/infra/testing/hel
 import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model";
 import { ClutchTypeormRepository } from "@core/products/infra/db/typeorm/clutch/clutch.typeorm-repository";
 import { ImageUploadError } from "@core/@shared/infra/errors/image-upload.error";
+import { ImageMockBuilder } from "@core/@shared/infra/testing/mocks/file";
 
 describe("CreateClutchUseCase Integration Test", () => {
   let useCase: CreateClutchUseCase;
@@ -30,9 +31,7 @@ describe("CreateClutchUseCase Integration Test", () => {
 
   it("should create a clutch", async () => {
     const input = {
-      imageFileName: "image.jpg",
-      imageMimetype: "image/jpeg",
-      imageBody: Buffer.from("image"),
+      image: new ImageMockBuilder().build(),
       rentPrice: 100,
       color: "blue",
       model: "model",
@@ -51,9 +50,7 @@ describe("CreateClutchUseCase Integration Test", () => {
 
   it("should not create a clutch with invalid input", async () => {
     const input = {
-      imageFileName: "image.jpg",
-      imageMimetype: "image/jpeg",
-      imageBody: Buffer.from("image"),
+      image: new ImageMockBuilder().build(),
       rentPrice: -100,
       color: "",
       model: "",
@@ -66,9 +63,7 @@ describe("CreateClutchUseCase Integration Test", () => {
       throw new ImageUploadError();
     });
     const input = {
-      imageFileName: "image.jpg",
-      imageMimetype: "image/jpeg",
-      imageBody: Buffer.from("image"),
+      image: new ImageMockBuilder().build(),
       rentPrice: 100,
       color: "blue",
       model: "model",

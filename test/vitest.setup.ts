@@ -1,11 +1,11 @@
 import { expect } from "vitest";
 import { NotificationImplementation } from "@core/@shared/domain/validators/notification-implementation";
-import { ToJsonOutput } from "@core/@shared/domain/validators/notification.interface";
+import { FieldsErrors } from "@core/@shared/domain/validators/validator-fields.interface";
 
 expect.extend({
   notificationContainsErrorMessages(
     expected: NotificationImplementation,
-    received: ToJsonOutput,
+    received: FieldsErrors[],
   ) {
     const every = received.every((error) => {
       if (typeof error === "string") {
