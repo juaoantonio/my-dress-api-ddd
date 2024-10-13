@@ -14,6 +14,7 @@ import { CompleteAppointmentUseCase } from "@core/appointment/application/comple
 import { RescheduleAppointmentDto } from "@nest/appointment-module/dto/reschedule-appointment.dto";
 import { ScheduleInitialVisitDto } from "@nest/appointment-module/dto/schedule-initial-visit.dto";
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiParam,
@@ -23,6 +24,7 @@ import {
 import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/schedule-for-adjustment/schedule-adjustment-return.use-case";
 import { ScheduleAdjustmentReturnDto } from "@nest/appointment-module/dto/schedule-adjustment-return.dto";
 
+@ApiBearerAuth()
 @ApiTags("Agendamentos")
 @Controller("appointments")
 export class AppointmentController {

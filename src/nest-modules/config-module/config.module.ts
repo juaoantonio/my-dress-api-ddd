@@ -4,7 +4,8 @@ import {
   ConfigModuleOptions,
 } from "@nestjs/config";
 import { join } from "path";
-import Joi from "joi";
+import Joi, { ArraySchema } from "joi";
+import { CommonUser } from "../../users/users.service";
 
 type DB_SCHEMA_TYPE = {
   DB_VENDOR: "postgres" | "sqlite";
@@ -25,7 +26,18 @@ type AWS_S3_SCHEMA_TYPE = {
   AWS_ACCESS_KEY_ID: string;
 };
 
-export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE & AWS_S3_SCHEMA_TYPE;
+type JWT_SCHEMA_TYPE = {
+  JWT_SECRET: string;
+};
+
+type USERS_SCHEMA_TYPE = {
+  USERS: CommonUser[];
+};
+
+export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE &
+  AWS_S3_SCHEMA_TYPE &
+  USERS_SCHEMA_TYPE &
+  JWT_SCHEMA_TYPE;
 
 export const CONFIG_DB_SCHEMA: Joi.StrictSchemaMap<DB_SCHEMA_TYPE> = {
   DB_VENDOR: Joi.string().required().valid("postgres", "sqlite"),
@@ -58,6 +70,42 @@ export const CONFIG_AWS_S3_SCHEMA: Joi.StrictSchemaMap<AWS_S3_SCHEMA_TYPE> = {
   AWS_ACCESS_KEY_ID: Joi.string().required(),
 };
 
+export const CONFIG_JWT_SCHEMA: Joi.StrictSchemaMap<JWT_SCHEMA_TYPE> = {
+  JWT_SECRET: Joi.string().required(),
+};
+
+const COMMON_USER_SCHEMA: Joi.StrictSchemaMap<CommonUser> = {
+  userId: Joi.string().required(),
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+};
+
+export const CONFIG_USERS_SCHEMA: Joi.StrictSchemaMap<USERS_SCHEMA_TYPE> = {
+  USERS: Joi.string()
+    .custom((value, helpers) => {
+      try {
+        // Tenta fazer o parse da string para JSON
+        const parsedValue = JSON.parse(value);
+        if (!Array.isArray(parsedValue)) {
+          return helpers.error("any.invalid", { value });
+        }
+        const { error } = Joi.array()
+          .items(COMMON_USER_SCHEMA)
+          .validate(parsedValue);
+        if (error) {
+          return helpers.error("any.invalid", { value });
+        }
+        return parsedValue as CommonUser[];
+      } catch (err) {
+        return helpers.error("any.invalid", { value }); // Erro caso não seja um JSON válido
+      }
+    })
+    .messages({
+      "any.invalid":
+        "USERS precisa ser uma string JSON que represente um array válido de usuários",
+    }) as unknown as ArraySchema<CommonUser[]>,
+};
+
 // https://docs.nestjs.com/modules#dynamic-modules
 // https://docs.nestjs.com/techniques/configuration#configuration
 @Module({})
@@ -74,6 +122,8 @@ export class ConfigModule extends NestConfigModule {
       validationSchema: Joi.object({
         ...CONFIG_DB_SCHEMA,
         ...CONFIG_AWS_S3_SCHEMA,
+        ...CONFIG_USERS_SCHEMA,
+        ...CONFIG_JWT_SCHEMA,
       }),
       ...otherOptions,
     });

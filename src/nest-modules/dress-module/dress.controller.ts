@@ -15,6 +15,7 @@ import {
 import { CreateDressUseCase } from "@core/products/application/dress/create-dress/create-dress.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -42,6 +43,7 @@ import {
 import { GetDressUseCase } from "@core/products/application/dress/get-dress/get-dress.use-case";
 import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
 
+@ApiBearerAuth()
 @ApiTags("Vestidos")
 @Controller("dresses")
 export class DressController {

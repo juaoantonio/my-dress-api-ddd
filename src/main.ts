@@ -25,6 +25,7 @@ async function bootstrap() {
     .setDescription(
       "API de gerenciamento de reservas para a loja de aluguel de vestidos e bolsas My Dress",
     )
+    .addBearerAuth()
     .setVersion("1.0")
     .build();
   const document = SwaggerModule.createDocument(app, config);

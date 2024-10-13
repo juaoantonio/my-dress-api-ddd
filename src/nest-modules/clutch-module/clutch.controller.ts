@@ -15,6 +15,7 @@ import {
 import { CreateClutchUseCase } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -40,6 +41,7 @@ import {
 } from "@nest/clutch-module/dto/clutch.dto";
 import { GetClutchUseCase } from "@core/products/application/clutch/get-clutch/get-clutch.use-case";
 
+@ApiBearerAuth()
 @ApiTags("Bolsas")
 @Controller("clutches")
 export class ClutchController {
