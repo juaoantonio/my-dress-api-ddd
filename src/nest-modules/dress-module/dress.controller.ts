@@ -66,41 +66,6 @@ export class DressController {
     summary: "Cadastrar um vestido",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para cadastrar um vestido",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        color: {
-          type: "string",
-          description: "Cor do vestido",
-          example: "Branco",
-        },
-        fabric: {
-          type: "string",
-          description: "Tecido do vestido",
-          example: "Seda",
-        },
-        model: {
-          type: "string",
-          description: "Modelo do vestido",
-          example: "Decote V",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel do vestido",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem do vestido",
-        },
-      },
-      required: ["color", "fabric", "model", "rentPrice", "file"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "Vestido cadastrado com sucesso",
@@ -147,46 +112,6 @@ export class DressController {
     summary: "Atualizar um vestido",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para atualizar um vestido",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-          description: "Identificador de um vestido",
-          example: "123e4567-e89b-12d3-a456-426614174000",
-        },
-        color: {
-          type: "string",
-          description: "Cor do vestido",
-          example: "Prata",
-        },
-        model: {
-          type: "string",
-          description: "Modelo do vestido",
-          example: "Sem alça",
-        },
-        fabric: {
-          type: "string",
-          description: "Tecido do vestido",
-          example: "Seda",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel do vestido",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem do vestido",
-        },
-      },
-      required: ["id"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: "Vestido atualizado com sucesso",

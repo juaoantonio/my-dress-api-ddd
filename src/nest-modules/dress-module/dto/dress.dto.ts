@@ -1,13 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
+import { CreateDressUseCaseInput } from "@core/products/application/dress/create-dress/create-dress.use.case";
+import { UpdateDressUseCaseInput } from "@core/products/application/dress/update-dress/update-dress.use-case";
 
 export class DressDto extends DressOutput {
   @ApiProperty({
@@ -65,14 +62,19 @@ export class DressDto extends DressOutput {
   declare type: string;
 }
 
-export class CreateDressDto {
+export class CreateDressDto extends CreateDressUseCaseInput {
+  @ApiProperty({
+    description: "Imagem do vestido",
+    type: "string",
+    format: "binary",
+  })
+  declare image: ImageFile;
+
   @ApiProperty({
     description: "Cor do vestido",
     example: "Branco",
   })
-  @IsString()
-  @IsNotEmpty()
-  color: string;
+  declare color: string;
 
   @ApiProperty({
     description: "Tecido do vestido",
@@ -80,7 +82,7 @@ export class CreateDressDto {
   })
   @IsString()
   @IsNotEmpty()
-  fabric: string;
+  declare fabric: string;
 
   @ApiProperty({
     description: "Modelo do vestido",
@@ -88,7 +90,7 @@ export class CreateDressDto {
   })
   @IsString()
   @IsNotEmpty()
-  model: string;
+  declare model: string;
 
   @ApiProperty({
     description: "Preço de aluguel do vestido",
@@ -97,47 +99,45 @@ export class CreateDressDto {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  rentPrice: number;
+  declare rentPrice: number;
 }
 
-export class UpdateDressDto {
+export class UpdateDressDto extends UpdateDressUseCaseInput {
+  @ApiProperty({
+    description: "Imagem do vestido",
+    type: "string",
+    format: "binary",
+  })
+  declare image: ImageFile;
+
   @ApiProperty({
     description: "ID do vestido",
     example: "123e4567-e89b-12d3-a456-426614174000",
   })
-  @IsUUID()
-  id: string;
+  declare id: string;
 
   @ApiProperty({
     description: "Cor do vestido",
     example: "Branco",
   })
-  @IsString()
-  @IsOptional()
-  color: string;
+  declare color: string;
 
   @ApiProperty({
     description: "Modelo do vestido",
     example: "Decote V",
   })
-  @IsString()
-  @IsOptional()
-  model: string;
+  declare model: string;
 
   @ApiProperty({
     description: "Tecido do vestido",
     example: "Seda",
   })
-  @IsString()
-  @IsOptional()
-  fabric: string;
+  declare fabric: string;
 
   @ApiProperty({
     description: "Preço de aluguel do vestido",
     example: 200.0,
   })
-  @IsNumber()
   @Type(() => Number)
-  @IsOptional()
-  rentPrice: number;
+  declare rentPrice: number;
 }

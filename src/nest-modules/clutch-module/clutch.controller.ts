@@ -16,7 +16,6 @@ import { CreateClutchUseCase } from "@core/products/application/clutch/create-cl
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiConsumes,
   ApiOperation,
   ApiParam,
@@ -64,36 +63,6 @@ export class ClutchController {
     summary: "Cadastrar uma bolsa",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para cadastrar uma bolsa",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        color: {
-          type: "string",
-          description: "Cor da bolsa",
-          example: "Prata",
-        },
-        model: {
-          type: "string",
-          description: "Modelo da bolsa",
-          example: "Sem alça",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel da bolsa",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem da bolsa",
-        },
-      },
-      required: ["color", "model", "rentPrice", "file"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "Bolsa cadastrada com sucesso",
@@ -139,41 +108,6 @@ export class ClutchController {
     summary: "Atualizar uma bolsa",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para atualizar uma bolsa",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-          description: "Identificador da bolsa",
-          example: "123e4567-e89b-12d3-a456-426614174000",
-        },
-        color: {
-          type: "string",
-          description: "Cor da bolsa",
-          example: "Prata",
-        },
-        model: {
-          type: "string",
-          description: "Modelo da bolsa",
-          example: "Sem alça",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel da bolsa",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem da bolsa",
-        },
-      },
-      required: ["id"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: "Bolsa atualizada com sucesso",
