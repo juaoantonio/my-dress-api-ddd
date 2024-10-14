@@ -13,6 +13,8 @@ import { IBookingRepository } from "@core/booking/domain/booking.repository";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 import { BookingTypeormRepository } from "@core/booking/infra/db/typeorm/booking.typeorm-repository";
 import { ProviderType } from "@nest/shared-module/types/provider.type";
+import { GetPaginatedAppointmentsUseCase } from "@core/appointment/application/get-paginated-appointments/get-paginated-appointments.use-case";
+import { GetAppointmentUseCase } from "@core/appointment/application/get-appointment/get-appointment.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_APPOINTMENT_REPOSITORY: {
@@ -36,6 +38,7 @@ export const USE_CASES: ProviderType = {
     },
     inject: [REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide],
   },
+
   COMPLETE_APPOINTMENT_USE_CASE: {
     provide: CompleteAppointmentUseCase,
     useFactory: (appointmentRepository: IAppointmentRepository) => {
@@ -43,6 +46,7 @@ export const USE_CASES: ProviderType = {
     },
     inject: [REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide],
   },
+
   RESCHEDULE_APPOINTMENT_USE_CASE: {
     provide: RescheduleAppointmentUseCase,
     useFactory: (appointmentRepository: IAppointmentRepository) => {
@@ -50,6 +54,7 @@ export const USE_CASES: ProviderType = {
     },
     inject: [REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide],
   },
+
   SCHEDULE_INITIAL_VISIT_APPOINTMENT_USE_CASE: {
     provide: ScheduleInitialVisitUseCase,
     useFactory: (appointmentRepository: IAppointmentRepository) => {
@@ -57,6 +62,7 @@ export const USE_CASES: ProviderType = {
     },
     inject: [REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide],
   },
+
   SCHEDULE_FOR_ADJUSTMENT_APPOINTMENT_USE_CASE: {
     provide: ScheduleAdjustmentReturnUseCase,
     useFactory: (
@@ -72,6 +78,22 @@ export const USE_CASES: ProviderType = {
       REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide,
       "IBookingRepository",
     ],
+  },
+
+  GET_APPOINTMENT_USE_CASE: {
+    provide: GetAppointmentUseCase,
+    useFactory: (appointmentRepository: IAppointmentRepository) => {
+      return new GetAppointmentUseCase(appointmentRepository);
+    },
+    inject: [REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide],
+  },
+
+  GET_PAGINATED_APPOINTMENTS_USE_CASE: {
+    provide: GetPaginatedAppointmentsUseCase,
+    useFactory: (appointmentRepository: IAppointmentRepository) => {
+      return new GetPaginatedAppointmentsUseCase(appointmentRepository);
+    },
+    inject: [REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide],
   },
 };
 

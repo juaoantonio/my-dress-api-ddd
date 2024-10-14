@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -20,7 +21,6 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
@@ -104,7 +104,7 @@ export class DressController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  async deleteDress(@Param("id") id: string) {
+  async deleteDress(@Param("id", new ParseUUIDPipe()) id: string) {
     await this.deleteDressUseCase.execute({ id });
   }
 
@@ -122,10 +122,11 @@ export class DressController {
   async updateClutch(
     @UploadedImage("image", false) image: ImageFile,
     @Body() input: UpdateDressDto,
+    @Param("id", new ParseUUIDPipe()) id: string,
   ) {
     await this.updateDressUseCase.execute({
+      id,
       image,
-      id: input.id,
       color: input.color,
       model: input.model,
       fabric: input.fabric,
@@ -136,7 +137,7 @@ export class DressController {
   @ApiOperation({
     summary: "Buscar um vestido",
   })
-  @ApiQuery({
+  @ApiParam({
     name: "id",
     required: true,
     type: "string",
@@ -152,7 +153,7 @@ export class DressController {
     description: "Vestido não encontrado",
   })
   @Get(":id")
-  async getDress(@Param("id") id: string) {
+  async getDress(@Param("id", new ParseUUIDPipe()) id: string) {
     return await this.getDressUseCase.execute({ id });
   }
 

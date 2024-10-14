@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -100,7 +101,7 @@ export class ClutchController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  async deleteClutch(@Param("id") id: string) {
+  async deleteClutch(@Param("id", new ParseUUIDPipe()) id: string) {
     await this.deleteClutchUseCase.execute({ id });
   }
 
@@ -108,6 +109,12 @@ export class ClutchController {
     summary: "Atualizar uma bolsa",
   })
   @ApiConsumes("multipart/form-data")
+  @ApiParam({
+    name: "id",
+    required: true,
+    type: "string",
+    description: "Identificador da bolsa",
+  })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: "Bolsa atualizada com sucesso",
@@ -118,9 +125,10 @@ export class ClutchController {
   async updateClutch(
     @UploadedImage("image", false) image: ImageFile,
     @Body() input: UpdateClutchDto,
+    @Param("id", new ParseUUIDPipe()) id: string,
   ) {
     await this.updateClutchUseCase.execute({
-      id: input.id,
+      id,
       image,
       color: input.color,
       model: input.model,
@@ -146,7 +154,7 @@ export class ClutchController {
     description: "Bolsa não encontrada",
   })
   @Get(":id")
-  async getClutch(@Param("id") id: string) {
+  async getClutch(@Param("id", new ParseUUIDPipe()) id: string) {
     return await this.getClutchUseCase.execute({ id });
   }
 

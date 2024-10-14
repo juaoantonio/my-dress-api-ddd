@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  Get,
+  HttpStatus,
   Inject,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { ScheduleInitialVisitUseCase } from "@core/appointment/application/schedule-initial-visit/schedule-initial-visit.use.case";
 import { RescheduleAppointmentUseCase } from "@core/appointment/application/reschedule/reschedule-appointment.use-case";
@@ -15,7 +18,6 @@ import { RescheduleAppointmentDto } from "@nest/appointment-module/dto/reschedul
 import { ScheduleInitialVisitDto } from "@nest/appointment-module/dto/schedule-initial-visit.dto";
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -23,11 +25,24 @@ import {
 } from "@nestjs/swagger";
 import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/schedule-for-adjustment/schedule-adjustment-return.use-case";
 import { ScheduleAdjustmentReturnDto } from "@nest/appointment-module/dto/schedule-adjustment-return.dto";
+import { GetPaginatedAppointmentsUseCase } from "@core/appointment/application/get-paginated-appointments/get-paginated-appointments.use-case";
+import { GetAppointmentUseCase } from "@core/appointment/application/get-appointment/get-appointment.use-case";
+import { GetPaginatedDressesOutputDto } from "@nest/dress-module/dto/get-paginated-dresses.dto";
+import {
+  GetPaginatedAppointmentsInputDto,
+  GetPaginatedAppointmentsOutputDto,
+} from "@nest/appointment-module/get-paginated-appointments.dto";
 
 @ApiBearerAuth()
 @ApiTags("Agendamentos")
 @Controller("appointments")
 export class AppointmentController {
+  @Inject(GetAppointmentUseCase)
+  private getAppointmentUseCase: GetAppointmentUseCase;
+
+  @Inject(GetPaginatedAppointmentsUseCase)
+  private getPaginatedAppointmentsUseCase: GetPaginatedAppointmentsUseCase;
+
   @Inject(ScheduleInitialVisitUseCase)
   private scheduleInitialVisitUseCase: ScheduleInitialVisitUseCase;
 
@@ -43,12 +58,44 @@ export class AppointmentController {
   @Inject(CompleteAppointmentUseCase)
   private completeAppointmentUseCase: CompleteAppointmentUseCase;
 
+  @ApiOperation({ summary: "Buscar um agendamento" })
+  @ApiParam({
+    name: "id",
+    description: "ID do agendamento a ser buscado",
+    type: String,
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  })
+  @Get(":id")
+  async getAppointment(@Param("id", new ParseUUIDPipe()) id: string) {
+    return await this.getAppointmentUseCase.execute({ id });
+  }
+
+  @ApiOperation({
+    summary: "Listar agendamentos com paginação",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Agendamentos listados com sucesso",
+    type: GetPaginatedDressesOutputDto,
+  })
+  @Get()
+  async getPaginatedDresses(
+    @Query() query: GetPaginatedAppointmentsInputDto,
+  ): Promise<GetPaginatedAppointmentsOutputDto> {
+    const page = query.page || 1;
+    const limit = query.limit || 15;
+    return await this.getPaginatedAppointmentsUseCase.execute({
+      page,
+      limit,
+      sort: query.sort,
+      sortDir: query.sortDir,
+      appointmentDate: query.appointmentDate,
+      customerName: query.customerName,
+    });
+  }
+
   @Post("initial-visit")
   @ApiOperation({ summary: "Agendar uma visita inicial" })
-  @ApiBody({
-    type: ScheduleInitialVisitDto,
-    description: "Dados necessários para agendar uma visita inicial",
-  })
   @ApiResponse({
     status: 201,
     description: "Visita inicial agendada com sucesso",
@@ -70,10 +117,6 @@ export class AppointmentController {
     description: "ID do agendamento a ser reagendado",
     type: String,
     example: "123e4567-e89b-12d3-a456-426614174000",
-  })
-  @ApiBody({
-    type: RescheduleAppointmentDto,
-    description: "Dados necessários para reagendar o agendamento",
   })
   @ApiResponse({
     status: 200,
@@ -100,10 +143,6 @@ export class AppointmentController {
   @Post("adjustment-return")
   @ApiOperation({
     summary: "Agendar retorno para ajuste a partir de uma reserva",
-  })
-  @ApiBody({
-    type: ScheduleAdjustmentReturnDto,
-    description: "Dados necessários para agendar um retorno para ajuste",
   })
   @ApiResponse({
     status: 201,

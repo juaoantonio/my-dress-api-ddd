@@ -1,9 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { ClutchOutput } from "@core/products/application/clutch/common/clutch.output-mapper";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Type } from "class-transformer";
 import { CreateClutchUseCaseInput } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
-import { UpdateClutchUseCaseInput } from "@core/products/application/clutch/update-clutch/update-clutch.use-case";
 import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
 
 export class ClutchDto extends ClutchOutput {
@@ -74,33 +72,23 @@ export class CreateClutchDto extends CreateClutchUseCaseInput {
     description: "Modelo da bolsa",
     example: "Decote V",
   })
-  @IsString()
-  @IsNotEmpty()
   declare model: string;
 
   @ApiProperty({
     description: "Preço de aluguel da bolsa",
     example: 200.0,
   })
-  @IsNotEmpty()
-  @IsNumber()
   @Type(() => Number)
   declare rentPrice: number;
 }
 
-export class UpdateClutchDto extends UpdateClutchUseCaseInput {
+export class UpdateClutchDto extends PartialType(CreateClutchDto) {
   @ApiProperty({
     description: "Imagem da bolsa",
     type: "string",
     format: "binary",
   })
   declare image: ImageFile;
-
-  @ApiProperty({
-    description: "ID da bolsa",
-    example: "123e4567-e89b-12d3-a456-426614174000",
-  })
-  declare id: string;
 
   @ApiProperty({
     description: "Cor da bolsa",

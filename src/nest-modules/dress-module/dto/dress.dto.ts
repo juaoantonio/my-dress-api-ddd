@@ -1,10 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Type } from "class-transformer";
 import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
 import { CreateDressUseCaseInput } from "@core/products/application/dress/create-dress/create-dress.use.case";
-import { UpdateDressUseCaseInput } from "@core/products/application/dress/update-dress/update-dress.use-case";
 
 export class DressDto extends DressOutput {
   @ApiProperty({
@@ -102,19 +101,13 @@ export class CreateDressDto extends CreateDressUseCaseInput {
   declare rentPrice: number;
 }
 
-export class UpdateDressDto extends UpdateDressUseCaseInput {
+export class UpdateDressDto extends PartialType(CreateDressDto) {
   @ApiProperty({
     description: "Imagem do vestido",
     type: "string",
     format: "binary",
   })
   declare image: ImageFile;
-
-  @ApiProperty({
-    description: "ID do vestido",
-    example: "123e4567-e89b-12d3-a456-426614174000",
-  })
-  declare id: string;
 
   @ApiProperty({
     description: "Cor do vestido",

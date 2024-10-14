@@ -1,4 +1,7 @@
-import { Appointment } from "@core/appointment/domain/appointment.aggregate";
+import {
+  Appointment,
+  AppointmentType,
+} from "@core/appointment/domain/appointment.aggregate";
 
 export class AppointmentOutput {
   id: string;
@@ -6,7 +9,7 @@ export class AppointmentOutput {
   appointmentDate: string;
   customerName: string;
   eventDate: string;
-  type: string;
+  type: AppointmentType;
   history: AppointmentHistoryOutput[];
   status: string;
 }
@@ -24,7 +27,7 @@ export class AppointmentOutputMapper {
       appointmentDate: appointment.getAppointmentDate().toString(),
       customerName: appointment.getCustomerName(),
       eventDate: appointment.getEventDate().toString(),
-      type: appointment.getType().toString(),
+      type: appointment.getType(),
       history: appointment.getHistory().map((history) => ({
         status: history.getStatus().toString(),
         date: history.getDate().toString(),
