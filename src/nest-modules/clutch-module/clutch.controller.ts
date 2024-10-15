@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -15,7 +16,7 @@ import {
 import { CreateClutchUseCase } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
-  ApiBody,
+  ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
   ApiParam,
@@ -38,7 +39,9 @@ import {
   CreateClutchDto,
   UpdateClutchDto,
 } from "@nest/clutch-module/dto/clutch.dto";
+import { GetClutchUseCase } from "@core/products/application/clutch/get-clutch/get-clutch.use-case";
 
+@ApiBearerAuth()
 @ApiTags("Bolsas")
 @Controller("clutches")
 export class ClutchController {
@@ -51,6 +54,9 @@ export class ClutchController {
   @Inject(UpdateClutchUseCase)
   private updateClutchUseCase: UpdateClutchUseCase;
 
+  @Inject(GetClutchUseCase)
+  private getClutchUseCase: GetClutchUseCase;
+
   @Inject(GetPaginatedClutchesUseCase)
   private getPaginatedClutchesUseCase: GetPaginatedClutchesUseCase;
 
@@ -58,36 +64,6 @@ export class ClutchController {
     summary: "Cadastrar uma bolsa",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para cadastrar uma bolsa",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        color: {
-          type: "string",
-          description: "Cor da bolsa",
-          example: "Prata",
-        },
-        model: {
-          type: "string",
-          description: "Modelo da bolsa",
-          example: "Sem alça",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel da bolsa",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem da bolsa",
-        },
-      },
-      required: ["color", "model", "rentPrice", "file"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "Bolsa cadastrada com sucesso",
@@ -125,7 +101,7 @@ export class ClutchController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  async deleteClutch(@Param("id") id: string) {
+  async deleteClutch(@Param("id", new ParseUUIDPipe()) id: string) {
     await this.deleteClutchUseCase.execute({ id });
   }
 
@@ -133,40 +109,11 @@ export class ClutchController {
     summary: "Atualizar uma bolsa",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para atualizar uma bolsa",
+  @ApiParam({
+    name: "id",
     required: true,
-    schema: {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-          description: "Identificador da bolsa",
-          example: "123e4567-e89b-12d3-a456-426614174000",
-        },
-        color: {
-          type: "string",
-          description: "Cor da bolsa",
-          example: "Prata",
-        },
-        model: {
-          type: "string",
-          description: "Modelo da bolsa",
-          example: "Sem alça",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel da bolsa",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem da bolsa",
-        },
-      },
-      required: ["id"],
-    },
+    type: "string",
+    description: "Identificador da bolsa",
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
@@ -178,14 +125,37 @@ export class ClutchController {
   async updateClutch(
     @UploadedImage("image", false) image: ImageFile,
     @Body() input: UpdateClutchDto,
+    @Param("id", new ParseUUIDPipe()) id: string,
   ) {
     await this.updateClutchUseCase.execute({
-      id: input.id,
+      id,
       image,
       color: input.color,
       model: input.model,
       rentPrice: input.rentPrice,
     });
+  }
+
+  @ApiOperation({
+    summary: "Buscar uma bolsa",
+  })
+  @ApiParam({
+    name: "id",
+    required: true,
+    type: "string",
+    description: "Identificador da bolsa",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Bolsa buscada com sucesso",
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Bolsa não encontrada",
+  })
+  @Get(":id")
+  async getClutch(@Param("id", new ParseUUIDPipe()) id: string) {
+    return await this.getClutchUseCase.execute({ id });
   }
 
   @ApiOperation({

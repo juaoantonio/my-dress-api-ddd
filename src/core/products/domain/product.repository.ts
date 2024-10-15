@@ -9,10 +9,4 @@ export interface IProductRepository<
   Filter = string,
   SearchInput extends SearchParams<Filter> = SearchParams<Filter>,
   SearchOutput extends SearchResult<A> = SearchResult<A>,
-> extends ISearchableRepository<
-    ProductId,
-    A,
-    Filter,
-    SearchInput,
-    SearchOutput
-  > {}
+> extends ISearchableRepository<Id, A, Filter, SearchInput, SearchOutput> {}

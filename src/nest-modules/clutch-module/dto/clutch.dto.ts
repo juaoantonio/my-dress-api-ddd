@@ -1,13 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { ClutchOutput } from "@core/products/application/clutch/common/clutch.output-mapper";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from "class-validator";
 import { Type } from "class-transformer";
+import { CreateClutchUseCaseInput } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
+import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
+import { IsEmpty } from "class-validator";
 
 export class ClutchDto extends ClutchOutput {
   @ApiProperty({
@@ -59,63 +55,59 @@ export class ClutchDto extends ClutchOutput {
   declare type: string;
 }
 
-export class CreateClutchDto {
+export class CreateClutchDto extends CreateClutchUseCaseInput {
+  @ApiProperty({
+    description: "Imagem da bolsa",
+    type: "string",
+    format: "binary",
+  })
+  @IsEmpty()
+  declare image: ImageFile;
+
   @ApiProperty({
     description: "Cor da bolsa",
     example: "Branco",
   })
-  @IsString()
-  @IsNotEmpty()
-  color: string;
+  declare color: string;
 
   @ApiProperty({
     description: "Modelo da bolsa",
     example: "Decote V",
   })
-  @IsString()
-  @IsNotEmpty()
-  model: string;
+  declare model: string;
 
   @ApiProperty({
     description: "Preço de aluguel da bolsa",
     example: 200.0,
   })
-  @IsNotEmpty()
-  @IsNumber()
   @Type(() => Number)
-  rentPrice: number;
+  declare rentPrice: number;
 }
 
-export class UpdateClutchDto {
+export class UpdateClutchDto extends PartialType(CreateClutchDto) {
   @ApiProperty({
-    description: "ID da bolsa",
-    example: "123e4567-e89b-12d3-a456-426614174000",
+    description: "Imagem da bolsa",
+    type: "string",
+    format: "binary",
   })
-  @IsUUID()
-  id: string;
+  declare image: ImageFile;
 
   @ApiProperty({
     description: "Cor da bolsa",
     example: "Branco",
   })
-  @IsString()
-  @IsOptional()
-  color: string;
+  declare color: string;
 
   @ApiProperty({
     description: "Modelo da bolsa",
     example: "Decote V",
   })
-  @IsString()
-  @IsOptional()
-  model: string;
+  declare model: string;
 
   @ApiProperty({
     description: "Preço de aluguel da bolsa",
     example: 200.0,
   })
-  @IsNumber()
   @Type(() => Number)
-  @IsOptional()
-  rentPrice: number;
+  declare rentPrice: number;
 }

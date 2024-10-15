@@ -10,6 +10,7 @@ import { ProviderType } from "@nest/shared-module/types/provider.type";
 import { DeleteClutchUseCase } from "@core/products/application/clutch/delete-clutch/delete-clutch.use-case";
 import { GetPaginatedClutchesUseCase } from "@core/products/application/clutch/get-paginated-clutches/get-paginated-clutches.use-case";
 import { UpdateClutchUseCase } from "@core/products/application/clutch/update-clutch/update-clutch.use-case";
+import { GetClutchUseCase } from "@core/products/application/clutch/get-clutch/get-clutch.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_CLUTCH_REPOSITORY: {
@@ -54,6 +55,20 @@ export const USE_CASES: ProviderType = {
       uploadService: IImageStorageService,
     ) => {
       return new DeleteClutchUseCase(clutchRepository, uploadService);
+    },
+    inject: [
+      REPOSITORIES.DEFAULT_CLUTCH_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
+  },
+
+  GET_CLUTCH_USE_CASE: {
+    provide: GetClutchUseCase,
+    useFactory: (
+      clutchRepository: IClutchRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new GetClutchUseCase(clutchRepository, uploadService);
     },
     inject: [
       REPOSITORIES.DEFAULT_CLUTCH_REPOSITORY.provide,

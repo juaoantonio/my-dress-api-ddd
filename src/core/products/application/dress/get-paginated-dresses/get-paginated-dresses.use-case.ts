@@ -19,7 +19,6 @@ import {
   PaginationOutputMapper,
 } from "@core/@shared/application/pagination-output";
 import { UrlPresignerService } from "@core/@shared/application/url-presigner.service";
-import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 
 export class GetPaginatedDressesUseCase
   implements
@@ -51,16 +50,12 @@ export class GetPaginatedDressesUseCase
       },
     });
     const result = await this.dressRepository.search(searchParams);
-    const dressesWithPreSignedUrl =
-      await this.urlPresignerService.signMany<Dress>(
-        result.items,
-        "imagePath" as keyof Dress,
-      );
-    const dressesOutput = DressOutputMapper.toOutputMany(
-      dressesWithPreSignedUrl,
+    const dressesOutput = DressOutputMapper.toOutputMany(result.items);
+    const dressesWithPreSignedUrl = await this.urlPresignerService.signMany(
+      dressesOutput,
+      "imagePath",
     );
-
-    return PaginationOutputMapper.toOutput(dressesOutput, result);
+    return PaginationOutputMapper.toOutput(dressesWithPreSignedUrl, result);
   }
 }
 

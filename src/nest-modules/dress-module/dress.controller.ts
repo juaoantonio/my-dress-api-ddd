@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -15,7 +16,7 @@ import {
 import { CreateDressUseCase } from "@core/products/application/dress/create-dress/create-dress.use.case";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
-  ApiBody,
+  ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
   ApiParam,
@@ -38,7 +39,10 @@ import {
   CreateDressDto,
   UpdateDressDto,
 } from "@nest/dress-module/dto/dress.dto";
+import { GetDressUseCase } from "@core/products/application/dress/get-dress/get-dress.use-case";
+import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
 
+@ApiBearerAuth()
 @ApiTags("Vestidos")
 @Controller("dresses")
 export class DressController {
@@ -51,6 +55,9 @@ export class DressController {
   @Inject(UpdateDressUseCase)
   private updateDressUseCase: UpdateDressUseCase;
 
+  @Inject(GetDressUseCase)
+  private getDressUseCase: GetDressUseCase;
+
   @Inject(GetPaginatedDressesUseCase)
   private getPaginatedDressesUseCase: GetPaginatedDressesUseCase;
 
@@ -58,41 +65,6 @@ export class DressController {
     summary: "Cadastrar um vestido",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para cadastrar um vestido",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        color: {
-          type: "string",
-          description: "Cor do vestido",
-          example: "Branco",
-        },
-        fabric: {
-          type: "string",
-          description: "Tecido do vestido",
-          example: "Seda",
-        },
-        model: {
-          type: "string",
-          description: "Modelo do vestido",
-          example: "Decote V",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel do vestido",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem do vestido",
-        },
-      },
-      required: ["color", "fabric", "model", "rentPrice", "file"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "Vestido cadastrado com sucesso",
@@ -131,7 +103,7 @@ export class DressController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  async deleteDress(@Param("id") id: string) {
+  async deleteDress(@Param("id", new ParseUUIDPipe()) id: string) {
     await this.deleteDressUseCase.execute({ id });
   }
 
@@ -139,46 +111,6 @@ export class DressController {
     summary: "Atualizar um vestido",
   })
   @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    description: "Dados necessários para atualizar um vestido",
-    required: true,
-    schema: {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-          description: "Identificador de um vestido",
-          example: "123e4567-e89b-12d3-a456-426614174000",
-        },
-        color: {
-          type: "string",
-          description: "Cor do vestido",
-          example: "Prata",
-        },
-        model: {
-          type: "string",
-          description: "Modelo do vestido",
-          example: "Sem alça",
-        },
-        fabric: {
-          type: "string",
-          description: "Tecido do vestido",
-          example: "Seda",
-        },
-        rentPrice: {
-          type: "number",
-          description: "Preço de aluguel do vestido",
-          example: 200.0,
-        },
-        file: {
-          type: "string",
-          format: "binary",
-          description: "Imagem do vestido",
-        },
-      },
-      required: ["id"],
-    },
-  })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: "Vestido atualizado com sucesso",
@@ -189,10 +121,11 @@ export class DressController {
   async updateClutch(
     @UploadedImage("image", false) image: ImageFile,
     @Body() input: UpdateDressDto,
+    @Param("id", new ParseUUIDPipe()) id: string,
   ) {
     await this.updateDressUseCase.execute({
+      id,
       image,
-      id: input.id,
       color: input.color,
       model: input.model,
       fabric: input.fabric,
@@ -201,11 +134,30 @@ export class DressController {
   }
 
   @ApiOperation({
-    summary: "Listar vestidos com paginação",
+    summary: "Buscar um vestido",
   })
-  @ApiBody({
-    type: GetPaginatedDressesInputDto,
-    description: "Dados necessários para listar vestidos com paginação",
+  @ApiParam({
+    name: "id",
+    required: true,
+    type: "string",
+    description: "Identificador do vestido",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Vestido encontrado com sucesso",
+    type: DressOutput,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Vestido não encontrado",
+  })
+  @Get(":id")
+  async getDress(@Param("id", new ParseUUIDPipe()) id: string) {
+    return await this.getDressUseCase.execute({ id });
+  }
+
+  @ApiOperation({
+    summary: "Listar vestidos com paginação",
   })
   @ApiResponse({
     status: HttpStatus.OK,
