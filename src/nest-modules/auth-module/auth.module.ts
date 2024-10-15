@@ -16,7 +16,7 @@ import { AuthGuard } from "@nest/auth-module/auth.guard";
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get("JWT_SECRET"),
         signOptions: {
-          expiresIn: "60h",
+          expiresIn: "24h",
         },
       }),
       inject: [ConfigService],
