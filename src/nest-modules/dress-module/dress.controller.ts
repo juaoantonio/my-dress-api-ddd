@@ -17,7 +17,6 @@ import { CreateDressUseCase } from "@core/products/application/dress/create-dres
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiConsumes,
   ApiOperation,
   ApiParam,
@@ -159,10 +158,6 @@ export class DressController {
 
   @ApiOperation({
     summary: "Listar vestidos com paginação",
-  })
-  @ApiBody({
-    type: GetPaginatedDressesInputDto,
-    description: "Dados necessários para listar vestidos com paginação",
   })
   @ApiResponse({
     status: HttpStatus.OK,
