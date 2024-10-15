@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { DressOutput } from "@core/products/application/dress/common/dress.output-mapper";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEmpty, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Type } from "class-transformer";
 import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
 import { CreateDressUseCaseInput } from "@core/products/application/dress/create-dress/create-dress.use.case";
@@ -67,6 +67,7 @@ export class CreateDressDto extends CreateDressUseCaseInput {
     type: "string",
     format: "binary",
   })
+  @IsEmpty()
   declare image: ImageFile;
 
   @ApiProperty({

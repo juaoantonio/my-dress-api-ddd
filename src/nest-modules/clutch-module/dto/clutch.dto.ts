@@ -3,6 +3,7 @@ import { ClutchOutput } from "@core/products/application/clutch/common/clutch.ou
 import { Type } from "class-transformer";
 import { CreateClutchUseCaseInput } from "@core/products/application/clutch/create-clutch/create-clutch.use.case";
 import { ImageFile } from "@nest/shared-module/decorators/uploaded-image-file.decorator";
+import { IsEmpty } from "class-validator";
 
 export class ClutchDto extends ClutchOutput {
   @ApiProperty({
@@ -60,6 +61,7 @@ export class CreateClutchDto extends CreateClutchUseCaseInput {
     type: "string",
     format: "binary",
   })
+  @IsEmpty()
   declare image: ImageFile;
 
   @ApiProperty({
