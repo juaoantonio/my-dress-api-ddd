@@ -110,7 +110,30 @@ export class AppointmentController {
     await this.scheduleInitialVisitUseCase.execute(scheduleInitialVisitInput);
   }
 
-  @Patch("reschedule/:appointmentId")
+  @Post("adjustment-return")
+  @ApiOperation({
+    summary: "Agendar retorno para ajuste a partir de uma reserva",
+  })
+  @ApiResponse({
+    status: 201,
+    description: "Retorno para ajuste agendado com sucesso",
+  })
+  @ApiResponse({
+    status: 422,
+    description: "Entidade inválida",
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Reserva não encontrada",
+  })
+  async scheduleAdjustmentReturn(@Body() input: ScheduleAdjustmentReturnDto) {
+    await this.scheduleAdjustmentReturnUseCase.execute({
+      appointmentDate: input.appointmentDate,
+      bookingId: input.bookingId,
+    });
+  }
+
+  @Patch(":appointmentId/reschedule")
   @ApiOperation({ summary: "Reagendar um agendamento existente" })
   @ApiParam({
     name: "appointmentId",
@@ -137,29 +160,6 @@ export class AppointmentController {
     await this.rescheduleAppointmentUseCase.execute({
       appointmentId,
       newDate: input.newDate,
-    });
-  }
-
-  @Post("adjustment-return")
-  @ApiOperation({
-    summary: "Agendar retorno para ajuste a partir de uma reserva",
-  })
-  @ApiResponse({
-    status: 201,
-    description: "Retorno para ajuste agendado com sucesso",
-  })
-  @ApiResponse({
-    status: 422,
-    description: "Entidade inválida",
-  })
-  @ApiResponse({
-    status: 404,
-    description: "Reserva não encontrada",
-  })
-  async scheduleAdjustmentReturn(@Body() input: ScheduleAdjustmentReturnDto) {
-    await this.scheduleAdjustmentReturnUseCase.execute({
-      appointmentDate: input.appointmentDate,
-      bookingId: input.bookingId,
     });
   }
 

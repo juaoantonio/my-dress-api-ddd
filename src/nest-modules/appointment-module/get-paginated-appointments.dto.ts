@@ -4,6 +4,7 @@ import {
 } from "@core/appointment/application/get-paginated-appointments/get-paginated-appointments.use-case";
 import { ApiProperty } from "@nestjs/swagger";
 import { AppointmentOutput } from "@core/appointment/application/common/appointment.output-mapper";
+import { Type } from "class-transformer";
 
 export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUseCaseInput {
   @ApiProperty({
@@ -13,6 +14,7 @@ export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUs
     description: "Número da página",
     default: 1,
   })
+  @Type(() => Number)
   declare page: number;
 
   @ApiProperty({
@@ -22,6 +24,7 @@ export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUs
     description: "Número de itens por página",
     default: 10,
   })
+  @Type(() => Number)
   declare limit: number;
 
   @ApiProperty({
