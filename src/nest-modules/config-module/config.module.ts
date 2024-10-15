@@ -24,6 +24,9 @@ type AWS_S3_SCHEMA_TYPE = {
   AWS_S3_BUCKET_NAME: string;
   AWS_SECRET_ACCESS_KEY: string;
   AWS_ACCESS_KEY_ID: string;
+  AWS_ENDPOINT?: string;
+  AWS_SSL_ENABLED?: boolean;
+  AWS_S3_FORCE_PATH_STYLE?: boolean;
 };
 
 type JWT_SCHEMA_TYPE = {
@@ -68,6 +71,9 @@ export const CONFIG_AWS_S3_SCHEMA: Joi.StrictSchemaMap<AWS_S3_SCHEMA_TYPE> = {
   AWS_S3_BUCKET_NAME: Joi.string().required().default("mydressprod"),
   AWS_SECRET_ACCESS_KEY: Joi.string().required(),
   AWS_ACCESS_KEY_ID: Joi.string().required(),
+  AWS_ENDPOINT: Joi.string().optional(),
+  AWS_SSL_ENABLED: Joi.boolean().optional().default(true),
+  AWS_S3_FORCE_PATH_STYLE: Joi.boolean().optional().default(true),
 };
 
 export const CONFIG_JWT_SCHEMA: Joi.StrictSchemaMap<JWT_SCHEMA_TYPE> = {
