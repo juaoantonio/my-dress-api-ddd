@@ -22,11 +22,14 @@ export class S3ImageStorage implements IImageStorageService {
     private readonly configService: ConfigService<CONFIG_SCHEMA_TYPE>,
   ) {
     this.s3Client = new S3Client({
+      endpoint: this.configService.get("AWS_ENDPOINT"),
       region: this.configService.get("AWS_REGION"),
       credentials: {
         secretAccessKey: this.configService.get("AWS_SECRET_ACCESS_KEY"),
         accessKeyId: this.configService.get("AWS_ACCESS_KEY_ID"),
       },
+      forcePathStyle: this.configService.get("AWS_S3_FORCE_PATH_STYLE"),
+      tls: this.configService.get("AWS_SSL_ENABLED"),
     });
   }
 
