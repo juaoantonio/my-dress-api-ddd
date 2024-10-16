@@ -1,5 +1,6 @@
 import {
   Appointment,
+  AppointmentStatus,
   AppointmentType,
 } from "@core/appointment/domain/appointment.aggregate";
 
@@ -11,12 +12,13 @@ export class AppointmentOutput {
   eventDate: string;
   type: AppointmentType;
   history: AppointmentHistoryOutput[];
-  status: string;
+  status: AppointmentStatus;
 }
 
 export class AppointmentHistoryOutput {
-  status: string;
+  appointmentDate: string;
   date: string;
+  status: AppointmentStatus;
 }
 
 export class AppointmentOutputMapper {
@@ -24,15 +26,19 @@ export class AppointmentOutputMapper {
     return {
       id: appointment.getId().toString(),
       bookingId: appointment.getBookingId()?.toString() || null,
-      appointmentDate: appointment.getAppointmentDate().toString(),
+      appointmentDate: appointment
+        .getAppointmentDate()
+        .getValue()
+        .toISOString(),
       customerName: appointment.getCustomerName(),
-      eventDate: appointment.getEventDate().toString(),
+      eventDate: appointment.getEventDate().getValue().toISOString(),
       type: appointment.getType(),
       history: appointment.getHistory().map((history) => ({
-        status: history.getStatus().toString(),
-        date: history.getDate().toString(),
+        status: history.getStatus(),
+        date: history.getDate().getValue().toISOString(),
+        appointmentDate: history.getAppointmentDate().getValue().toISOString(),
       })),
-      status: appointment.getStatus().toString(),
+      status: appointment.getStatus(),
     };
   }
 

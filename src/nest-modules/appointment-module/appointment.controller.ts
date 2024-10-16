@@ -27,11 +27,11 @@ import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/s
 import { ScheduleAdjustmentReturnDto } from "@nest/appointment-module/dto/schedule-adjustment-return.dto";
 import { GetPaginatedAppointmentsUseCase } from "@core/appointment/application/get-paginated-appointments/get-paginated-appointments.use-case";
 import { GetAppointmentUseCase } from "@core/appointment/application/get-appointment/get-appointment.use-case";
-import { GetPaginatedDressesOutputDto } from "@nest/dress-module/dto/get-paginated-dresses.dto";
 import {
   GetPaginatedAppointmentsInputDto,
   GetPaginatedAppointmentsOutputDto,
-} from "@nest/appointment-module/get-paginated-appointments.dto";
+} from "@nest/appointment-module/dto/get-paginated-appointments.dto";
+import { AppointmentDto } from "@nest/appointment-module/dto/appointment.dto";
 
 @ApiBearerAuth()
 @ApiTags("Agendamentos")
@@ -66,7 +66,9 @@ export class AppointmentController {
     example: "123e4567-e89b-12d3-a456-426614174000",
   })
   @Get(":id")
-  async getAppointment(@Param("id", new ParseUUIDPipe()) id: string) {
+  async getAppointment(
+    @Param("id", new ParseUUIDPipe()) id: string,
+  ): Promise<AppointmentDto> {
     return await this.getAppointmentUseCase.execute({ id });
   }
 
@@ -76,7 +78,7 @@ export class AppointmentController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Agendamentos listados com sucesso",
-    type: GetPaginatedDressesOutputDto,
+    type: GetPaginatedAppointmentsOutputDto,
   })
   @Get()
   async getPaginatedDresses(
@@ -91,6 +93,7 @@ export class AppointmentController {
       sortDir: query.sortDir,
       appointmentDate: query.appointmentDate,
       customerName: query.customerName,
+      includeAll: query.includeAll,
     });
   }
 

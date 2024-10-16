@@ -102,6 +102,7 @@ export class Appointment extends AggregateRoot<AppointmentId> {
     this.history.push(
       new AppointmentHistory({
         appointmentId: this.getId(),
+        appointmentDate: this.appointmentDate,
         status: this.status,
         date: DateVo.now(),
       }),
@@ -147,20 +148,27 @@ export class AppointmentHistory extends ValueObject {
   private readonly appointmentId: AppointmentId;
   private readonly status: AppointmentStatus;
   private readonly date: DateVo;
+  private readonly appointmentDate: DateVo;
 
   constructor(props: {
     appointmentId: AppointmentId;
+    appointmentDate: DateVo;
     status: AppointmentStatus;
     date: DateVo;
   }) {
     super();
     this.appointmentId = props.appointmentId;
+    this.appointmentDate = props.appointmentDate;
     this.status = props.status;
     this.date = props.date;
   }
 
   public getAppointmentId(): AppointmentId {
     return this.appointmentId;
+  }
+
+  public getAppointmentDate(): DateVo {
+    return this.appointmentDate;
   }
 
   public getStatus(): AppointmentStatus {

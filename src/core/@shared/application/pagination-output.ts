@@ -6,6 +6,8 @@ export type PaginationOutput<Item = any> = {
   currentPage: number;
   lastPage: number;
   perPage: number;
+  isLastPage: boolean;
+  isFirstPage: boolean;
 };
 
 export class PaginationOutputMapper {
@@ -19,6 +21,8 @@ export class PaginationOutputMapper {
       currentPage: props.currentPage,
       lastPage: props.lastPage,
       perPage: props.perPage,
+      isLastPage: props.isLastPage,
+      isFirstPage: props.isFirstPage,
     };
   }
 }

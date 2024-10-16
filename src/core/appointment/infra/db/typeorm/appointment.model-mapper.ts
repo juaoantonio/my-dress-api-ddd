@@ -25,6 +25,7 @@ export class AppointmentModelMapper
         (history) =>
           new AppointmentHistory({
             appointmentId: AppointmentId.create(model.id),
+            appointmentDate: DateVo.create(model.appointmentDate),
             status: history.status,
             date: DateVo.create(history.date),
           }),
@@ -48,6 +49,7 @@ export class AppointmentModelMapper
       historyModel.date = history.getDate().getValue();
       historyModel.status = history.getStatus();
       historyModel.appointment = appointmentModel;
+      historyModel.appointmentDate = entity.getAppointmentDate().getValue();
       return historyModel;
     });
 

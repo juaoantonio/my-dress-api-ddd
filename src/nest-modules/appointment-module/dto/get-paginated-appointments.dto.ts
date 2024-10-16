@@ -3,8 +3,9 @@ import {
   GetPaginatedAppointmentsUseCaseOutput,
 } from "@core/appointment/application/get-paginated-appointments/get-paginated-appointments.use-case";
 import { ApiProperty } from "@nestjs/swagger";
-import { AppointmentOutput } from "@core/appointment/application/common/appointment.output-mapper";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
+import { AppointmentDto } from "@nest/appointment-module/dto/appointment.dto";
+import { PaginationOutputDto } from "@nest/shared-module/dtos/pagination-output.dto";
 
 export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUseCaseInput {
   @ApiProperty({
@@ -59,14 +60,31 @@ export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUs
     description: "Nome do cliente",
   })
   declare customerName?: string;
+
+  @ApiProperty({
+    name: "includeAll",
+    required: false,
+    type: "boolean",
+    description: "Incluir todos os agendamentos",
+    default: false,
+  })
+  @Transform(({ value }) => {
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+      return value.toLowerCase() === "true";
+    }
+    return Boolean(value);
+  })
+  declare includeAll?: boolean;
 }
 
 export class GetPaginatedAppointmentsOutputDto
+  extends PaginationOutputDto<AppointmentDto>
   implements GetPaginatedAppointmentsUseCaseOutput
 {
   @ApiProperty({
     isArray: true,
-    type: AppointmentOutput,
+    type: AppointmentDto,
     description: "Lista de agendamentos",
     example: [
       {
@@ -86,33 +104,5 @@ export class GetPaginatedAppointmentsOutputDto
       },
     ],
   })
-  declare items: AppointmentOutput[];
-
-  @ApiProperty({
-    type: "number",
-    description: "Número total de vestidos",
-    example: 1,
-  })
-  declare total: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número da página atual",
-    example: 1,
-  })
-  declare currentPage: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número de itens por página",
-    example: 10,
-  })
-  declare perPage: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número da última página",
-    example: 1,
-  })
-  declare lastPage: number;
+  declare items: AppointmentDto[];
 }

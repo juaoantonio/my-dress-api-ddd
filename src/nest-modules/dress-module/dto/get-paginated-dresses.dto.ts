@@ -6,6 +6,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { DressDto } from "@nest/dress-module/dto/dress.dto";
+import { PaginationOutputDto } from "@nest/shared-module/dtos/pagination-output.dto";
 
 export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput {
   @ApiProperty({
@@ -65,6 +66,7 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
 }
 
 export class GetPaginatedDressesOutputDto
+  extends PaginationOutputDto<DressDto>
   implements GetPaginatedDressesUseCaseOutput
 {
   @ApiProperty({
@@ -86,32 +88,4 @@ export class GetPaginatedDressesOutputDto
     ],
   })
   declare items: DressDto[];
-
-  @ApiProperty({
-    type: "number",
-    description: "Número total de vestidos",
-    example: 1,
-  })
-  declare total: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número da página atual",
-    example: 1,
-  })
-  declare currentPage: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número de itens por página",
-    example: 10,
-  })
-  declare perPage: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número da última página",
-    example: 1,
-  })
-  declare lastPage: number;
 }

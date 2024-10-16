@@ -36,4 +36,13 @@ export class AppointmentHistoryModel {
     },
   })
   date: Date;
+
+  @Column({
+    type: "text",
+    transformer: {
+      to: (value: Date) => value.toISOString(),
+      from: (value: string) => new Date(value),
+    },
+  })
+  appointmentDate: Date;
 }

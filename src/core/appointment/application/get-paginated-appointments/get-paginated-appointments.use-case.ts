@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDateString,
   IsOptional,
   IsPositive,
@@ -38,6 +39,7 @@ export class GetPaginatedAppointmentsUseCase
       filter: {
         appointmentDate: input.appointmentDate,
         customerName: input.customerName,
+        includeAll: input.includeAll,
       },
     });
     const result = await this.appointmentRepository.search(searchParams);
@@ -68,6 +70,10 @@ export class GetPaginatedAppointmentsUseCaseInput {
   @IsString()
   @IsOptional()
   customerName?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  includeAll?: boolean;
 }
 
 export type GetPaginatedAppointmentsUseCaseOutput =

@@ -28,8 +28,11 @@ export class SearchResult<
     this.perPage = props.perPage;
     this.isFirstPage = props.currentPage === 1;
     this.isLastPage =
-      props.currentPage === Math.ceil(props.total / props.perPage);
-    this.lastPage = Math.ceil(this.total / this.perPage);
+      props.total === 0
+        ? true
+        : props.currentPage === Math.ceil(props.total / props.perPage);
+    this.lastPage =
+      props.total === 0 ? 1 : Math.ceil(this.total / this.perPage);
   }
 
   toJSON() {

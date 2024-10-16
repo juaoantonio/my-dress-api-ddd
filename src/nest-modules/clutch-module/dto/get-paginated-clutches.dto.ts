@@ -6,6 +6,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { ClutchDto } from "@nest/clutch-module/dto/clutch.dto";
+import { PaginationOutputDto } from "@nest/shared-module/dtos/pagination-output.dto";
 
 export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInput {
   @ApiProperty({
@@ -65,6 +66,7 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
 }
 
 export class GetPaginatedClutchesOutputDto
+  extends PaginationOutputDto<ClutchDto>
   implements GetPaginatedClutchesUseCaseOutput
 {
   @ApiProperty({
@@ -86,32 +88,4 @@ export class GetPaginatedClutchesOutputDto
     ],
   })
   declare items: ClutchDto[];
-
-  @ApiProperty({
-    type: "number",
-    description: "Número total de bolsas",
-    example: 1,
-  })
-  declare total: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número da página atual",
-    example: 1,
-  })
-  declare currentPage: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número de itens por página",
-    example: 10,
-  })
-  declare perPage: number;
-
-  @ApiProperty({
-    type: "number",
-    description: "Número da última página",
-    example: 1,
-  })
-  declare lastPage: number;
 }

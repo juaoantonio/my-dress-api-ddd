@@ -13,6 +13,7 @@ import {
 export type AppointmentFilter = {
   appointmentDate?: DateVo;
   customerName?: string;
+  includeAll?: boolean;
 };
 
 export class AppointmentSearchParams extends SearchParams<AppointmentFilter> {
@@ -35,6 +36,9 @@ export class AppointmentSearchParams extends SearchParams<AppointmentFilter> {
         appointmentDate: _value.appointmentDate,
       }),
       ...(_value?.customerName && { customerName: _value.customerName }),
+      ...(_value?.includeAll !== undefined && {
+        includeAll: _value.includeAll,
+      }),
     };
     this._filter = Object.values(filter).length === 0 ? null : filter;
   }
@@ -44,6 +48,7 @@ export class AppointmentSearchParams extends SearchParams<AppointmentFilter> {
       filter?: {
         appointmentDate?: string;
         customerName?: string;
+        includeAll?: boolean;
       };
     } = {},
   ) {

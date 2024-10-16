@@ -7,7 +7,14 @@ import { EntityValidationErrorFilter } from "@nest/shared-module/filters/entity-
 import { InvalidVoParamsErrorFilter } from "@nest/shared-module/filters/invalid-param/invalid-vo-params.filter";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin:
+        process.env.NODE_ENV === "production"
+          ? "https://prosuite.mydressbelem.com.br"
+          : "*",
+    },
+  });
   app.useGlobalFilters(
     new NotFoundFilter(),
     new EntityValidationErrorFilter(),
@@ -30,7 +37,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("swagger", app, document);
-  await app.listen(3000);
+  await app.listen(3001);
 }
 
 bootstrap();

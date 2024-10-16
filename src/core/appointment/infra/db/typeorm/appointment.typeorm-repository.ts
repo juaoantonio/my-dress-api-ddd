@@ -8,6 +8,7 @@ import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment
 import {
   Appointment,
   AppointmentId,
+  AppointmentStatus,
 } from "@core/appointment/domain/appointment.aggregate";
 import { FindOptionsOrder, FindOptionsWhere, Repository } from "typeorm";
 import { BaseTypeormRepository } from "@core/@shared/infra/db/typeorm/base.typeorm-repository";
@@ -25,7 +26,7 @@ export class AppointmentTypeormRepository
   >
   implements IAppointmentRepository
 {
-  sortableFields: string[] = ["appointmentDate", "customerName"];
+  sortableFields: string[] = ["appointmentDate", "customerName", "status"];
 
   constructor(
     private readonly appointmentModelRepository: Repository<AppointmentModel>,
@@ -53,6 +54,9 @@ export class AppointmentTypeormRepository
     }
     if (filter?.customerName) {
       whereClause.customerName = filter.customerName;
+    }
+    if (filter?.includeAll === false) {
+      whereClause.status = AppointmentStatus.SCHEDULED;
     }
     const order: FindOptionsOrder<AppointmentModel> = {};
     if (sort && this.sortableFields.includes(sort)) {

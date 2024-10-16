@@ -167,12 +167,14 @@ describe("AppointmentModelMapper", () => {
         appointmentId: appointmentId,
         status: AppointmentStatus.SCHEDULED,
         date: DateVo.create(new Date("2024-10-05T10:00:00.000Z")),
+        appointmentDate: DateVo.create(new Date("2024-10-03T22:51:22.124Z")),
       });
 
       const history2 = new AppointmentHistory({
         appointmentId: appointmentId,
         status: AppointmentStatus.COMPLETED,
         date: DateVo.create(new Date("2024-10-06T12:00:00.000Z")),
+        appointmentDate: DateVo.create(new Date("2024-10-03T22:51:22.124Z")),
       });
 
       const appointment = new Appointment({

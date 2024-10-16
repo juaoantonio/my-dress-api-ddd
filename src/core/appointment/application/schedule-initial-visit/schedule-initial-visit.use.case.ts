@@ -28,10 +28,12 @@ export class ScheduleInitialVisitUseCase
   constructor(private readonly appointmentRepository: IAppointmentRepository) {}
 
   async execute(input: ScheduleInitialVisitInput): Promise<void> {
+    const appointmentDate = DateVo.create(input.appointmentDate);
+    const eventDate = DateVo.create(input.eventDate);
     const appointment = Appointment.create({
-      appointmentDate: DateVo.create(input.appointmentDate),
+      appointmentDate,
       customerName: input.customerName,
-      eventDate: DateVo.create(input.eventDate),
+      eventDate,
       type: AppointmentType.INITIAL_VISIT,
     });
     if (appointment.notification.hasErrors())
