@@ -40,6 +40,7 @@ import {
   UpdateClutchDto,
 } from "@nest/clutch-module/dto/clutch.dto";
 import { GetClutchUseCase } from "@core/products/application/clutch/get-clutch/get-clutch.use-case";
+import { ClutchOutput } from "@core/products/application/clutch/common/clutch.output-mapper";
 
 @ApiBearerAuth()
 @ApiTags("Bolsas")
@@ -148,13 +149,25 @@ export class ClutchController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Bolsa buscada com sucesso",
+    example: {
+      id: "667cb46b-fd52-4a5b-bdb2-1d8cc2e525ef",
+      rentPrice: 150,
+      name: "Prata, Sem alça",
+      color: "Prata",
+      model: "Sem alça",
+      isPickedUp: false,
+      imageUrl: "https://example.com/image1.jpg",
+      type: "clutch",
+    },
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: "Bolsa não encontrada",
   })
   @Get(":id")
-  async getClutch(@Param("id", new ParseUUIDPipe()) id: string) {
+  async getClutch(
+    @Param("id", new ParseUUIDPipe()) id: string,
+  ): Promise<ClutchOutput> {
     return await this.getClutchUseCase.execute({ id });
   }
 

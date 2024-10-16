@@ -77,10 +77,9 @@ export class GetPaginatedClutchesOutputDto
       {
         id: "667cb46b-fd52-4a5b-bdb2-1d8cc2e525ef",
         rentPrice: 150,
-        name: "Vermelho, Longo, Cetim",
-        color: "Vermelho",
-        model: "Longo",
-        fabric: "Cetim",
+        name: "Prata, Sem alça",
+        color: "Prata",
+        model: "Sem alça",
         isPickedUp: false,
         imageUrl: "https://example.com/image1.jpg",
         type: "clutch",

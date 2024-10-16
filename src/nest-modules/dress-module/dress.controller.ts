@@ -78,7 +78,7 @@ export class DressController {
   async createDress(
     @UploadedImage("image") image: ImageFile,
     @Body() input: CreateDressDto,
-  ) {
+  ): Promise<void> {
     await this.createDressUseCase.execute({
       image,
       color: input.color,
@@ -103,7 +103,9 @@ export class DressController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  async deleteDress(@Param("id", new ParseUUIDPipe()) id: string) {
+  async deleteDress(
+    @Param("id", new ParseUUIDPipe()) id: string,
+  ): Promise<void> {
     await this.deleteDressUseCase.execute({ id });
   }
 
@@ -122,7 +124,7 @@ export class DressController {
     @UploadedImage("image", false) image: ImageFile,
     @Body() input: UpdateDressDto,
     @Param("id", new ParseUUIDPipe()) id: string,
-  ) {
+  ): Promise<void> {
     await this.updateDressUseCase.execute({
       id,
       image,
@@ -146,13 +148,26 @@ export class DressController {
     status: HttpStatus.OK,
     description: "Vestido encontrado com sucesso",
     type: DressOutput,
+    example: {
+      id: "667cb46b-fd52-4a5b-bdb2-1d8cc2e525ef",
+      rentPrice: 150,
+      name: "Vermelho, Longo, Cetim",
+      color: "Vermelho",
+      model: "Longo",
+      fabric: "Cetim",
+      isPickedUp: false,
+      imageUrl: "https://example.com/image1.jpg",
+      type: "dress",
+    },
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: "Vestido não encontrado",
   })
   @Get(":id")
-  async getDress(@Param("id", new ParseUUIDPipe()) id: string) {
+  async getDress(
+    @Param("id", new ParseUUIDPipe()) id: string,
+  ): Promise<DressOutput> {
     return await this.getDressUseCase.execute({ id });
   }
 
