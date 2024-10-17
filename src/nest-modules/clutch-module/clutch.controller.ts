@@ -74,7 +74,7 @@ export class ClutchController {
     description: "Entidade inválida",
   })
   @Post()
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor("image"))
   async createClutch(
     @UploadedImage("image") image: ImageFile,
     @Body() input: CreateClutchDto,
