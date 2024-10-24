@@ -1,6 +1,7 @@
-import { Column } from "typeorm";
+import { Column, OneToMany } from "typeorm";
 import { ProductType } from "@core/products/domain/product";
 import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
+import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
 
 export class ProductModel extends BaseModel {
   @Column("text")
@@ -18,9 +19,6 @@ export class ProductModel extends BaseModel {
   @Column("boolean")
   isPickedUp: boolean;
 
-  @Column("json")
-  reservationPeriods: { startDate: string; endDate: string }[];
-
   @Column({
     type: "varchar",
     length: 50,
@@ -31,4 +29,9 @@ export class ProductModel extends BaseModel {
     },
   })
   type: ProductType;
+
+  @OneToMany(() => BookingItemModel, (bookingItem) => bookingItem.product, {
+    eager: true,
+  })
+  bookingItems: BookingItemModel[];
 }

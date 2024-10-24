@@ -15,11 +15,11 @@ export class DressModelMapper implements IModelMapper<Dress, DressModel> {
       fabric: model.fabric,
       rentPrice: model.rentPrice,
       isPickedUp: model.isPickedUp,
-      reservationPeriods: model.reservationPeriods.map(
-        (period) =>
+      reservationPeriods: model.bookingItems.map(
+        (item) =>
           new Period({
-            startDate: DateVo.create(period.startDate),
-            endDate: DateVo.create(period.endDate),
+            startDate: DateVo.create(item.booking.expectedPickUpDate),
+            endDate: DateVo.create(item.booking.expectedReturnDate),
           }),
       ),
     });
@@ -35,12 +35,6 @@ export class DressModelMapper implements IModelMapper<Dress, DressModel> {
     dressModel.rentPrice = entity.getRentPrice();
     dressModel.isPickedUp = entity.getIsPickedUp();
     dressModel.type = entity.getType();
-    dressModel.reservationPeriods = entity
-      .getReservationPeriods()
-      .map((period) => ({
-        startDate: period.getStartDate().getValue().toISOString(),
-        endDate: period.getEndDate().getValue().toISOString(),
-      }));
     return dressModel;
   }
 }
