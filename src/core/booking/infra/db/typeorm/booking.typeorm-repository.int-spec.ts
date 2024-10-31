@@ -160,7 +160,7 @@ describe("BookingTypeormRepository Integration Test", () => {
 
       const updatedBooking = await bookingRepository.findById(booking.getId());
       expect(updatedBooking?.getCustomerName()).toBe("Jane Smith");
-      expect(updatedBooking?.getStatus()).toBe(BookingStatus.PAYMENT_PENDING);
+      expect(updatedBooking?.getStatus()).toBe(BookingStatus.NOT_INITIATED);
     });
 
     it("should throw EntityNotFoundError when trying to update a non-existent booking", async () => {
