@@ -20,22 +20,6 @@ export class Period extends ValueObject {
   }
 
   validate(): void {
-    if (this.startDate.getValue() < new Date()) {
-      throw new InvalidVoFields([
-        {
-          startDate: ["Data de início não pode ser no passado"],
-        },
-      ]);
-    }
-
-    if (this.endDate.getValue() < new Date()) {
-      throw new InvalidVoFields([
-        {
-          endDate: ["Data de término não pode ser no passado"],
-        },
-      ]);
-    }
-
     if (this.startDate.getValue() > this.endDate.getValue()) {
       throw new InvalidVoFields([
         {
@@ -69,6 +53,19 @@ export class Period extends ValueObject {
     return (
       date.getValue() >= this.startDate.getValue() &&
       date.getValue() <= this.endDate.getValue()
+    );
+  }
+
+  /**
+   * Verifica se este período se sobrepõe a outro período.
+   * Dois períodos se sobrepõem se um deles começa antes do término do outro e termina após o início do outro.
+   * @param other Outro período para comparar.
+   * @returns Retorna `true` se houver sobreposição, caso contrário, `false`.
+   */
+  public overlaps(other: Period): boolean {
+    return (
+      this.startDate.getValue() <= other.getEndDate().getValue() &&
+      this.endDate.getValue() >= other.getStartDate().getValue()
     );
   }
 }

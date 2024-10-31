@@ -12,6 +12,7 @@ import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-
 import { BookingFakeBuilder } from "@core/booking/domain/booking-fake.builder";
 
 export enum BookingStatus {
+  NOT_INITIATED = "NOT_INITIATED",
   PAYMENT_PENDING = "PAYMENT_PENDING",
   READY = "READY",
   IN_PROGRESS = "IN_PROGRESS",
@@ -25,7 +26,7 @@ export type BookingConstructorProps = {
   eventDate: DateVo;
   expectedBookingPeriod: BookingPeriod;
   bookingPeriod?: BookingPeriod;
-  dresses: BookingDressItem[];
+  dresses?: BookingDressItem[];
   clutches?: BookingClutchItem[];
   status?: BookingStatus;
   amountPaid?: number;
@@ -39,9 +40,8 @@ export type BookingCreateCommandProps = {
   expectedReturnDate: string;
   pickUpDate?: string;
   returnDate?: string;
-  dresses: BookingDressItem[];
+  dresses?: BookingDressItem[];
   clutches?: BookingClutchItem[];
-  status?: BookingStatus;
   amountPaid?: number;
 };
 
@@ -104,7 +104,7 @@ export class Booking extends AggregateRoot<BookingId> {
         : undefined,
       dresses: props.dresses,
       clutches: props.clutches,
-      status: BookingStatus.PAYMENT_PENDING,
+      status: BookingStatus.NOT_INITIATED,
       amountPaid: props.amountPaid,
     });
 
@@ -135,6 +135,12 @@ export class Booking extends AggregateRoot<BookingId> {
   }
 
   public updatePayment(value: number): void {
+    if (this.status === BookingStatus.NOT_INITIATED) {
+      this.notification.addError(
+        "Não é possível pagar uma reserva que ainda não foi iniciada",
+      );
+      return;
+    }
     this.amountPaid += value;
     this.validate(["amountPaid"]);
     this.applyEvent(new BookingAmountPaidUpdatedEvent(this.getId(), value));
@@ -142,11 +148,27 @@ export class Booking extends AggregateRoot<BookingId> {
 
   public addItem(item: BookingDressItem | BookingClutchItem): void {
     if (item instanceof BookingClutchItem) {
+      item.reservationPeriods.forEach((period) => {
+        if (period.overlaps(this.expectedBookingPeriod.toPeriod())) {
+          this.notification.addError(
+            `Clutch (${item.getId().getValue()}) está reservada para um período que se sobrepõe ao período esperado da reserva`,
+            "clutches",
+          );
+        }
+      });
       this.clutches.push(item);
-      return;
+    } else {
+      item.reservationPeriods.forEach((period) => {
+        if (period.overlaps(this.expectedBookingPeriod.toPeriod())) {
+          this.notification.addError(
+            `Clutch (${item.getId().getValue()}) está reservada para um período que se sobrepõe ao período esperado da reserva`,
+            "dresses",
+          );
+        }
+      });
+      this.dresses.push(item);
     }
 
-    this.dresses.push(item);
     if (item.notification.hasErrors()) {
       this.notification.addError(
         `Item de reserva (${item.getId().getValue()}) inválido`,
@@ -172,6 +194,18 @@ export class Booking extends AggregateRoot<BookingId> {
     );
   }
 
+  public initBookingProcess(): void {
+    if (this.dresses.length === 0) {
+      this.notification.addError(
+        "Deve haver ao menos um vestido na reserva para poder iniciar o processo de reserva",
+      );
+    }
+    if (this.status !== BookingStatus.NOT_INITIATED) {
+      this.notification.addError("Reserva já foi iniciada");
+    }
+    this.status = BookingStatus.PAYMENT_PENDING;
+  }
+
   public start() {
     if (!(this.status === BookingStatus.READY)) {
       this.notification.addError("Reserva ainda não foi paga");
@@ -181,6 +215,10 @@ export class Booking extends AggregateRoot<BookingId> {
   }
 
   public complete() {
+    if (this.status === BookingStatus.NOT_INITIATED) {
+      this.notification.addError("Reserva ainda não foi iniciada");
+      return;
+    }
     if (this.status === BookingStatus.CANCELED) {
       this.notification.addError("Reserva já foi cancelada");
       return;

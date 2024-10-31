@@ -150,6 +150,7 @@ describe("Booking Aggregate Unit Tests", function () {
           }),
         ],
       });
+      booking.initBookingProcess();
       expect(booking.getId().getValue()).toBeDefined();
       expect(booking.getCustomerName()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
@@ -192,8 +193,8 @@ describe("Booking Aggregate Unit Tests", function () {
             rentPrice: 50,
           }),
         ],
-        status: BookingStatus.PAYMENT_PENDING,
       });
+      booking.initBookingProcess();
       expect(booking.getId().getValue()).toBe(
         "81d4babd-9644-4b6a-afaf-930f6608f6d5",
       );
@@ -308,6 +309,7 @@ describe("Booking Aggregate Unit Tests", function () {
           }),
         ],
       });
+      booking.initBookingProcess();
       booking.updatePayment(50);
       expect(booking.getAmountPaid()).toBe(50);
       expect(booking.getStatus()).toBe(BookingStatus.PAYMENT_PENDING);
@@ -334,6 +336,7 @@ describe("Booking Aggregate Unit Tests", function () {
           }),
         ],
       });
+      booking.initBookingProcess();
       booking.updatePayment(150);
       expect(booking.getStatus()).toBe(BookingStatus.READY);
     });
@@ -418,6 +421,7 @@ describe("Booking Aggregate Unit Tests", function () {
           }),
         ],
       });
+      booking.initBookingProcess();
       booking.updatePayment(150);
       expect(booking.getStatus()).toBe(BookingStatus.READY);
       booking.start();
@@ -485,13 +489,30 @@ describe("Booking Aggregate Unit Tests", function () {
         booking.getBookingPeriod()?.getReturnDate()?.getDateFormatted(),
       ).toBe("2024-09-02");
     });
+
+    it("should not initialize a booking if it has no dresses assigned", () => {
+      const booking = Booking.create({
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: "2024-09-01",
+        expectedPickUpDate: "2024-08-31",
+        expectedReturnDate: "2024-09-02",
+        dresses: [],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            rentPrice: 50,
+          }),
+        ],
+      });
+      booking.initBookingProcess();
+      expect(booking.notification).notificationContainsErrorMessages([
+        "Deve haver ao menos um vestido na reserva para poder iniciar o processo de reserva",
+      ]);
+    });
   });
 
   describe("Booking Validation", function () {
-    describe("Validate Booking Creation", function () {
-      it("should ", () => {});
-    });
-
     describe("Validate Booking Behavior Methods", function () {
       it("should validate amountPaid if not positive", () => {
         const booking = Booking.create({
@@ -514,6 +535,7 @@ describe("Booking Aggregate Unit Tests", function () {
             }),
           ],
         });
+        booking.initBookingProcess();
         booking.updatePayment(-50);
         expect(booking.notification).notificationContainsErrorMessages([
           {
@@ -544,6 +566,7 @@ describe("Booking Aggregate Unit Tests", function () {
             }),
           ],
         });
+        booking.initBookingProcess();
         booking.updatePayment(300);
         expect(booking.notification).notificationContainsErrorMessages([
           {

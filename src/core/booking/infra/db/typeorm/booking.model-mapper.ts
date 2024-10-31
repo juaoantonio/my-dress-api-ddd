@@ -67,14 +67,14 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
       status: model.status,
       eventDate: DateVo.create(model.eventDate),
       bookingPeriod: model.pickUpDate
-        ? BookingPeriod.create({
+        ? new BookingPeriod({
             pickUpDate: DateVo.create(model.pickUpDate),
             returnDate: model.returnDate
               ? DateVo.create(model.returnDate)
               : undefined,
           })
         : undefined,
-      expectedBookingPeriod: BookingPeriod.create({
+      expectedBookingPeriod: new BookingPeriod({
         pickUpDate: DateVo.create(model.expectedPickUpDate),
         returnDate: DateVo.create(model.expectedReturnDate),
       }),

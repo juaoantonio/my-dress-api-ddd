@@ -131,13 +131,13 @@ describe("Clutch Aggregate Unit Tests", function () {
       });
 
       const date = DateVo.create("2021-10-15");
-      expect(clutch.isAvailableFor(date)).toBe(false);
+      expect(clutch.isAvailableForDate(date)).toBe(false);
 
       const date2 = DateVo.create("2021-10-22");
-      expect(clutch.isAvailableFor(date2)).toBe(true);
+      expect(clutch.isAvailableForDate(date2)).toBe(true);
 
       const date3 = DateVo.create("2021-10-27");
-      expect(clutch.isAvailableFor(date3)).toBe(false);
+      expect(clutch.isAvailableForDate(date3)).toBe(false);
     });
   });
 

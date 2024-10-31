@@ -3,6 +3,8 @@ import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
 import { Adjustment } from "./vo/adjustment.vo";
 import { BookingItemValidatorFactory } from "./booking-item.validator";
 import { BookingDressItemFakeBuilder } from "@core/booking/domain/entities/booking-dress-item-fake.builder";
+import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
+import { Period } from "@core/@shared/domain/value-objects/period.vo";
 
 export class BookingDressItemId extends Uuid {}
 
@@ -17,13 +19,21 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
     productId: string;
     rentPrice: number;
     adjustments?: Adjustment[];
+    reservationPeriods?: Period[];
     isCourtesy?: boolean;
   }) {
     super(props.id);
     this.productId = props.productId;
     this.rentPrice = props.rentPrice;
     this.adjustments = new Set(props.adjustments ?? []);
+    this._reservationPeriods = props.reservationPeriods ?? [];
     this.isCourtesy = props.isCourtesy ?? false;
+  }
+
+  private _reservationPeriods: Period[];
+
+  get reservationPeriods(): Period[] {
+    return this._reservationPeriods;
   }
 
   static fake(): typeof BookingDressItemFakeBuilder {
@@ -35,6 +45,7 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
     productId: string;
     rentPrice: number;
     adjustments?: Adjustment[];
+    reservationPeriods?: Period[];
     isCourtesy?: boolean;
   }): BookingDressItem {
     const newBooking = new BookingDressItem({
@@ -42,10 +53,18 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
       productId: props.productId,
       rentPrice: props.rentPrice,
       adjustments: props.adjustments,
+      reservationPeriods: props.reservationPeriods,
       isCourtesy: props.isCourtesy,
     });
     newBooking.validate();
     return newBooking;
+  }
+
+  static from(dress: Dress): BookingDressItem {
+    return BookingDressItem.create({
+      productId: dress.getId().getValue(),
+      rentPrice: dress.getRentPrice(),
+    });
   }
 
   validate(fields?: string[]): void {

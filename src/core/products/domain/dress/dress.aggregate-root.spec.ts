@@ -214,16 +214,16 @@ describe("Dress Aggregate Unit Tests", function () {
       });
 
       const dateToCheck = DateVo.create("2022-01-15");
-      expect(dress.isAvailableFor(dateToCheck)).toBe(false);
+      expect(dress.isAvailableForDate(dateToCheck)).toBe(false);
 
       const dateToCheck2 = DateVo.create("2022-01-22");
-      expect(dress.isAvailableFor(dateToCheck2)).toBe(true);
+      expect(dress.isAvailableForDate(dateToCheck2)).toBe(true);
 
       const dateToCheck3 = DateVo.create("2022-01-30");
-      expect(dress.isAvailableFor(dateToCheck3)).toBe(false);
+      expect(dress.isAvailableForDate(dateToCheck3)).toBe(false);
 
       const dateToCheck4 = DateVo.create("2022-01-05");
-      expect(dress.isAvailableFor(dateToCheck4)).toBe(true);
+      expect(dress.isAvailableForDate(dateToCheck4)).toBe(true);
     });
 
     it("should add a reservation period", () => {

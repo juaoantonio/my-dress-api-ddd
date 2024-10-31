@@ -3,19 +3,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
 import { DressController } from "@nest/dress-module/dress.controller";
 import { DRESS_PROVIDERS } from "@nest/dress-module/dress.provider";
-import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
-import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
-import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      DressModel,
-      BookingModel,
-      BookingItemDressModel,
-      BookingItemClutchModel,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([DressModel])],
+  exports: [...Object.values(DRESS_PROVIDERS.REPOSITORIES)],
   controllers: [DressController],
   providers: [
     ...Object.values(DRESS_PROVIDERS.REPOSITORIES),

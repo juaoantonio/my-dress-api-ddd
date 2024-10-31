@@ -5,7 +5,7 @@ import {
 } from "@nestjs/config";
 import { join } from "path";
 import Joi, { ArraySchema } from "joi";
-import { CommonUser } from "../../users/users.service";
+import { CommonUser } from "@nest/users-module/users.service";
 
 type DB_SCHEMA_TYPE = {
   DB_VENDOR: "postgres" | "sqlite";

@@ -51,7 +51,6 @@ describe("BookingTypeormRepository Integration Test", () => {
     it("should save a single booking successfully", async () => {
       const booking = Booking.create({
         customerName: "John Doe",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -78,7 +77,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking = Booking.create({
         customerName: "Jane Doe",
         amountPaid: 150,
-        status: BookingStatus.READY,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -113,7 +111,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking1 = Booking.create({
         customerName: "Customer One",
         amountPaid: 100.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -125,7 +122,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking2 = Booking.create({
         customerName: "Customer Two",
         amountPaid: 150.0,
-        status: BookingStatus.READY,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -147,7 +143,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking = Booking.create({
         customerName: "Jane Doe",
         amountPaid: 100.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -175,7 +170,6 @@ describe("BookingTypeormRepository Integration Test", () => {
         id: nonExistentId.value,
         customerName: "Non-existent Customer",
         amountPaid: 50.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -194,7 +188,6 @@ describe("BookingTypeormRepository Integration Test", () => {
     it("should find a booking by id successfully", async () => {
       const booking = Booking.create({
         customerName: "Alice Johnson",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -219,7 +212,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking1 = Booking.create({
         customerName: "Customer One",
         amountPaid: 100.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -231,7 +223,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking2 = Booking.create({
         customerName: "Customer Two",
         amountPaid: 150.0,
-        status: BookingStatus.READY,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -257,7 +248,6 @@ describe("BookingTypeormRepository Integration Test", () => {
     it("should find multiple bookings by their ids successfully", async () => {
       const booking1 = Booking.create({
         customerName: "Customer A",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -268,7 +258,6 @@ describe("BookingTypeormRepository Integration Test", () => {
 
       const booking2 = Booking.create({
         customerName: "Customer B",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -295,7 +284,6 @@ describe("BookingTypeormRepository Integration Test", () => {
     it("should return only existing bookings when some ids do not exist", async () => {
       const booking = Booking.create({
         customerName: "Customer X",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -328,7 +316,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking = Booking.create({
         customerName: "To Be Deleted",
         amountPaid: 50.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -358,7 +345,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking1 = Booking.create({
         customerName: "Customer 1",
         amountPaid: 60.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -370,7 +356,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking2 = Booking.create({
         customerName: "Customer 2",
         amountPaid: 70.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -401,7 +386,6 @@ describe("BookingTypeormRepository Integration Test", () => {
       const booking = Booking.create({
         customerName: "Existing Customer",
         amountPaid: 85.0,
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -428,7 +412,6 @@ describe("BookingTypeormRepository Integration Test", () => {
     it("should correctly identify existing and non-existing booking ids", async () => {
       const booking1 = Booking.create({
         customerName: "Customer A",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),
@@ -439,7 +422,6 @@ describe("BookingTypeormRepository Integration Test", () => {
 
       const booking2 = Booking.create({
         customerName: "Customer B",
-        status: BookingStatus.PAYMENT_PENDING,
         eventDate: new Date().toISOString(),
         expectedPickUpDate: new Date().toISOString(),
         expectedReturnDate: new Date().toISOString(),

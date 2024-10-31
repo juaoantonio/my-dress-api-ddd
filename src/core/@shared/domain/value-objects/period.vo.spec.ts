@@ -22,28 +22,6 @@ describe("Period Value Object Unit Tests", () => {
     expect(period.getTotalDays()).toBe(6); // Deve incluir ambos os dias
   });
 
-  it("should throw error if start date is in the past", () => {
-    const startDate = DateVo.create("2022-01-01");
-    const endDate = DateVo.create("2024-09-25");
-
-    expect(() => {
-      Period.create({ startDate, endDate });
-    }).toThrow(
-      "Parâmetros inválidos: startDate: Data de início não pode ser no passado.",
-    );
-  });
-
-  it("should throw error if end date is in the past", () => {
-    const startDate = DateVo.create("2024-09-20");
-    const endDate = DateVo.create("2022-01-01");
-
-    expect(() => {
-      Period.create({ startDate, endDate });
-    }).toThrow(
-      "Parâmetros inválidos: endDate: Data de término não pode ser no passado.",
-    );
-  });
-
   it("should throw error if start date is after end date", () => {
     const startDate = DateVo.create("2024-09-25");
     const endDate = DateVo.create("2024-09-20");
@@ -75,5 +53,103 @@ describe("Period Value Object Unit Tests", () => {
 
     expect(period.contains(dateInside)).toBe(true);
     expect(period.contains(dateOutside)).toBe(false);
+  });
+
+  it("should overlap with another period that its end date and start date are inside the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-22"),
+      endDate: DateVo.create("2024-09-23"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(true);
+  });
+
+  it("should overlap with another period that its start date is before the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-18"),
+      endDate: DateVo.create("2024-09-23"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(true);
+  });
+
+  it("should overlap with another period that its end date is after the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-22"),
+      endDate: DateVo.create("2024-09-27"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(true);
+  });
+
+  it("should overlap with another period that its start date and end date are outside the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-18"),
+      endDate: DateVo.create("2024-09-27"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(true);
+  });
+
+  it("should overlap with another period that its start date and end date are the same as the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-20"),
+      endDate: DateVo.create("2024-09-25"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(true);
+  });
+
+  it("should not overlap with another period that its start date and end date are after the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-26"),
+      endDate: DateVo.create("2024-09-27"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(false);
+  });
+
+  it("should not overlap with another period that its start date and end date are before the first period", () => {
+    const startDate = DateVo.create("2024-09-20");
+    const endDate = DateVo.create("2024-09-25");
+
+    const period = Period.create({ startDate, endDate });
+
+    const overlappingPeriod = Period.create({
+      startDate: DateVo.create("2024-09-15"),
+      endDate: DateVo.create("2024-09-19"),
+    });
+
+    expect(period.overlaps(overlappingPeriod)).toBe(false);
   });
 });
