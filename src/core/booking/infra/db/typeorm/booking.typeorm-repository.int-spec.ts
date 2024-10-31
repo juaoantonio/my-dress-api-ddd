@@ -5,22 +5,43 @@ import {
   BookingId,
   BookingStatus,
 } from "@core/booking/domain/booking.aggregate-root";
-import { BookingItem } from "@core/booking/domain/entities/booking-item.entity";
+import { BookingDressItem } from "@core/booking/domain/entities/booking-dress-item.entity";
 import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
 import { v4 as uuidv4 } from "uuid";
-import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 import { BookingTypeormRepository } from "@core/booking/infra/db/typeorm/booking.typeorm-repository";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
+import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
+import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model";
+import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
+import { DressId } from "@core/products/domain/dress/dress-id.vo";
+import { ClutchTypeormRepository } from "@core/products/infra/db/typeorm/clutch/clutch.typeorm-repository";
+import { DressTypeormRepository } from "@core/products/infra/db/typeorm/dress/dress.typeorm-repository";
+import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
+import { ClutchId } from "@core/products/domain/clutch/clutch-id.vo";
 
 describe("BookingTypeormRepository Integration Test", () => {
-  let repository: BookingTypeormRepository;
+  let bookingRepository: BookingTypeormRepository;
+  let dressRepository: DressTypeormRepository;
+  let clutchRepository: ClutchTypeormRepository;
   const setup = setupTypeOrmForIntegrationTests({
-    entities: [BookingModel, BookingItemModel],
+    entities: [
+      BookingModel,
+      BookingItemDressModel,
+      BookingItemClutchModel,
+      DressModel,
+      ClutchModel,
+    ],
   });
 
   beforeEach(() => {
     const modelRepository = setup.dataSource.getRepository(BookingModel);
-    repository = new BookingTypeormRepository(modelRepository);
+    bookingRepository = new BookingTypeormRepository(modelRepository);
+    const dressModelRepository = setup.dataSource.getRepository(DressModel);
+    dressRepository = new DressTypeormRepository(dressModelRepository);
+    const clutchModelRepository = setup.dataSource.getRepository(ClutchModel);
+    clutchRepository = new ClutchTypeormRepository(clutchModelRepository);
 
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2024-01-01"));
@@ -36,17 +57,19 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.save(booking);
-      const savedBooking = await repository.findById(booking.getId());
+      await bookingRepository.save(booking);
+      const savedBooking = await bookingRepository.findById(booking.getId());
       expect(savedBooking.equals(booking)).toBe(true);
     });
 
-    it("should save a single booking with items successfully", async () => {
-      const bookingItem = BookingItem.create({
-        productId: uuidv4(),
-        type: "dress",
+    it("should save a single booking with dresses successfully", async () => {
+      const dressId = DressId.create(uuidv4());
+      const dress = Dress.fake().aDress().withId(dressId).build();
+      await dressRepository.save(dress);
+      const bookingItem = BookingDressItem.create({
+        productId: dressId.value,
         rentPrice: 150.0,
         isCourtesy: false,
         adjustments: [new Adjustment("Size Adjustment", "Adjusted to size M")],
@@ -61,28 +84,30 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [bookingItem],
+        dresses: [bookingItem],
       });
-      await repository.save(booking);
-      const savedBooking = await repository.findById(booking.getId());
+      await bookingRepository.save(booking);
+      const savedBooking = await bookingRepository.findById(booking.getId());
       expect(savedBooking.equals(booking)).toBe(true);
     });
 
     it("should save multiple bookings successfully", async () => {
-      const bookingItem1 = BookingItem.create({
-        productId: uuidv4(),
-        type: "dress",
+      const dressId = DressId.create(uuidv4());
+      const clutchId = ClutchId.create(uuidv4());
+      const dress = Dress.fake().aDress().withId(dressId).build();
+      const clutch = Dress.fake().aDress().withId(clutchId).build();
+      await dressRepository.save(dress);
+      await clutchRepository.save(clutch);
+      const dressItem = BookingDressItem.create({
+        productId: dressId.value,
         rentPrice: 150.0,
         isCourtesy: false,
         adjustments: [new Adjustment("Size Adjustment", "Adjusted to size M")],
       });
-
-      const bookingItem2 = BookingItem.create({
-        productId: uuidv4(),
-        type: "clutch",
+      const clutchItem = BookingClutchItem.create({
+        productId: clutchId.value,
         rentPrice: 200.0,
         isCourtesy: false,
-        adjustments: [new Adjustment("Size Adjustment", "Adjusted to size L")],
       });
 
       const booking1 = Booking.create({
@@ -94,7 +119,7 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [bookingItem1],
+        dresses: [dressItem],
       });
 
       const booking2 = Booking.create({
@@ -106,11 +131,12 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [bookingItem2],
+        dresses: [],
+        clutches: [clutchItem],
       });
-      await repository.saveMany([booking1, booking2]);
-      const foundBooking1 = await repository.findById(booking1.getId());
-      const foundBooking2 = await repository.findById(booking2.getId());
+      await bookingRepository.saveMany([booking1, booking2]);
+      const foundBooking1 = await bookingRepository.findById(booking1.getId());
+      const foundBooking2 = await bookingRepository.findById(booking2.getId());
       expect(foundBooking1.equals(booking1)).toBe(true);
       expect(foundBooking2.equals(booking2)).toBe(true);
     });
@@ -127,17 +153,17 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
-      await repository.save(booking);
+      await bookingRepository.save(booking);
 
       booking.changeCustomerName("Jane Smith");
       booking.start();
 
-      await repository.update(booking);
+      await bookingRepository.update(booking);
 
-      const updatedBooking = await repository.findById(booking.getId());
+      const updatedBooking = await bookingRepository.findById(booking.getId());
       expect(updatedBooking?.getCustomerName()).toBe("Jane Smith");
       expect(updatedBooking?.getStatus()).toBe(BookingStatus.PAYMENT_PENDING);
     });
@@ -155,10 +181,10 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
-      await expect(repository.update(booking)).rejects.toThrow(
+      await expect(bookingRepository.update(booking)).rejects.toThrow(
         `Booking with id(s) ${nonExistentId} not found`,
       );
     });
@@ -174,16 +200,16 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.save(booking);
-      const foundBooking = await repository.findById(booking.getId());
+      await bookingRepository.save(booking);
+      const foundBooking = await bookingRepository.findById(booking.getId());
       expect(foundBooking.equals(booking)).toBe(true);
     });
 
     it("should return null when booking is not found by id", async () => {
       const nonExistentId = BookingId.random();
-      const foundBooking = await repository.findById(nonExistentId);
+      const foundBooking = await bookingRepository.findById(nonExistentId);
       expect(foundBooking).toBeNull();
     });
   });
@@ -199,7 +225,7 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
       const booking2 = Booking.create({
@@ -211,10 +237,10 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.saveMany([booking1, booking2]);
-      const bookings = await repository.findMany();
+      await bookingRepository.saveMany([booking1, booking2]);
+      const bookings = await bookingRepository.findMany();
       expect(bookings).toHaveLength(2);
       const [foundBooking1, foundBooking2] = bookings;
       expect(foundBooking1.equals(booking1)).toBe(true);
@@ -222,7 +248,7 @@ describe("BookingTypeormRepository Integration Test", () => {
     });
 
     it("should return an empty array when there are no bookings", async () => {
-      const bookings = await repository.findMany();
+      const bookings = await bookingRepository.findMany();
       expect(bookings).toHaveLength(0);
     });
   });
@@ -237,7 +263,7 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
       const booking2 = Booking.create({
@@ -248,10 +274,10 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.saveMany([booking1, booking2]);
-      const foundBookings = await repository.findManyByIds([
+      await bookingRepository.saveMany([booking1, booking2]);
+      const foundBookings = await bookingRepository.findManyByIds([
         booking1.getId(),
         booking2.getId(),
       ]);
@@ -275,11 +301,11 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.save(booking);
+      await bookingRepository.save(booking);
       const nonExistentId = BookingId.random();
-      const foundBookings = await repository.findManyByIds([
+      const foundBookings = await bookingRepository.findManyByIds([
         booking.getId(),
         nonExistentId,
       ]);
@@ -291,7 +317,8 @@ describe("BookingTypeormRepository Integration Test", () => {
     it("should return an empty array when none of the ids exist", async () => {
       const nonExistentIds = [BookingId.random(), BookingId.random()];
 
-      const foundBookings = await repository.findManyByIds(nonExistentIds);
+      const foundBookings =
+        await bookingRepository.findManyByIds(nonExistentIds);
       expect(foundBookings).toHaveLength(0);
     });
   });
@@ -307,11 +334,11 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.save(booking);
-      await repository.delete(booking.getId());
-      const deletedBooking = await repository.findById(booking.getId());
+      await bookingRepository.save(booking);
+      await bookingRepository.delete(booking.getId());
+      const deletedBooking = await bookingRepository.findById(booking.getId());
       expect(deletedBooking).toBeNull();
     });
 
@@ -320,7 +347,7 @@ describe("BookingTypeormRepository Integration Test", () => {
         "830e6080-95a3-40e3-9012-88036866dcd7",
       );
 
-      await expect(repository.delete(nonExistentId)).rejects.toThrow(
+      await expect(bookingRepository.delete(nonExistentId)).rejects.toThrow(
         "Booking with id(s) 830e6080-95a3-40e3-9012-88036866dcd7 not found",
       );
     });
@@ -337,7 +364,7 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
       const booking2 = Booking.create({
@@ -349,15 +376,22 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
-      await repository.saveMany([booking1, booking2]);
+      await bookingRepository.saveMany([booking1, booking2]);
 
-      await repository.deleteManyByIds([booking1.getId(), booking2.getId()]);
+      await bookingRepository.deleteManyByIds([
+        booking1.getId(),
+        booking2.getId(),
+      ]);
 
-      const deletedBooking1 = await repository.findById(booking1.getId());
-      const deletedBooking2 = await repository.findById(booking2.getId());
+      const deletedBooking1 = await bookingRepository.findById(
+        booking1.getId(),
+      );
+      const deletedBooking2 = await bookingRepository.findById(
+        booking2.getId(),
+      );
 
       expect(deletedBooking1).toBeNull();
       expect(deletedBooking2).toBeNull();
@@ -373,17 +407,17 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
-      await repository.save(booking);
+      await bookingRepository.save(booking);
 
       const nonExistentId = BookingId.create(
         "830e6080-95a3-40e3-9012-88036866dcd7",
       );
 
       await expect(
-        repository.deleteManyByIds([booking.getId(), nonExistentId]),
+        bookingRepository.deleteManyByIds([booking.getId(), nonExistentId]),
       ).rejects.toThrow(
         "Booking with id(s) 830e6080-95a3-40e3-9012-88036866dcd7 not found",
       );
@@ -400,7 +434,7 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
 
       const booking2 = Booking.create({
@@ -411,11 +445,11 @@ describe("BookingTypeormRepository Integration Test", () => {
         expectedReturnDate: new Date().toISOString(),
         pickUpDate: new Date().toISOString(),
         returnDate: new Date().toISOString(),
-        items: [],
+        dresses: [],
       });
-      await repository.saveMany([booking1, booking2]);
+      await bookingRepository.saveMany([booking1, booking2]);
       const nonExistentId = BookingId.random();
-      const result = await repository.existsById([
+      const result = await bookingRepository.existsById([
         booking1.getId(),
         nonExistentId,
       ]);

@@ -7,6 +7,10 @@ import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model
 import { ClutchTypeormRepository } from "@core/products/infra/db/typeorm/clutch/clutch.typeorm-repository";
 import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
 import { ClutchId } from "@core/products/domain/clutch/clutch-id.vo";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 
 describe("DeleteClutchUseCase Integration Test", () => {
   let useCase: DeleteClutchUseCase;
@@ -14,7 +18,13 @@ describe("DeleteClutchUseCase Integration Test", () => {
   const uploadService: IImageStorageService = new ImageStorageServiceMock();
 
   const setup = setupTypeOrmForIntegrationTests({
-    entities: [ClutchModel],
+    entities: [
+      BookingModel,
+      DressModel,
+      BookingItemDressModel,
+      ClutchModel,
+      BookingItemClutchModel,
+    ],
   });
 
   beforeEach(async () => {

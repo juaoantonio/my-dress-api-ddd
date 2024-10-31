@@ -11,10 +11,20 @@ import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { DressId } from "@core/products/domain/dress/dress-id.vo";
 import { it } from "vitest";
 import { ImageMockBuilder } from "@core/@shared/infra/testing/mocks/file";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 
 describe("UpdateDressUseCase Integration Test", () => {
   const setup = setupTypeOrmForIntegrationTests({
-    entities: [DressModel],
+    entities: [
+      BookingModel,
+      DressModel,
+      BookingItemDressModel,
+      ClutchModel,
+      BookingItemClutchModel,
+    ],
   });
   let dressRepository: IDressRepository;
   let updateDressUseCase: UpdateDressUseCase;

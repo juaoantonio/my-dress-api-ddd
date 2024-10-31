@@ -7,12 +7,13 @@ import {
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { BookingPeriod } from "@core/booking/domain/booking-period.vo";
 import {
-  BookingItem,
-  BookingItemId,
-} from "@core/booking/domain/entities/booking-item.entity";
+  BookingDressItem,
+  BookingDressItemId,
+} from "@core/booking/domain/entities/booking-dress-item.entity";
 import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
-import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 
 export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
   toModel(entity: Booking): BookingModel {
@@ -38,14 +39,21 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
       .getBookingPeriod()
       ?.getReturnDate()
       .getValue();
-    bookingModel.items = entity.getItems().map((item) => {
-      const bookingItemModel = new BookingItemModel();
+    bookingModel.dresses = entity.getDresses().map((item) => {
+      const bookingItemModel = new BookingItemDressModel();
       bookingItemModel.id = item.getId().getValue();
-      bookingItemModel.type = item.getType();
       bookingItemModel.rentPrice = item.getRentPrice();
       bookingItemModel.isCourtesy = item.getIsCourtesy();
       bookingItemModel.adjustments = item.getAdjustments();
-      bookingItemModel.productId = item.getProductId();
+      bookingItemModel.dressId = item.getProductId();
+      return bookingItemModel;
+    });
+    bookingModel.clutches = entity.getClutches().map((item) => {
+      const bookingItemModel = new BookingItemClutchModel();
+      bookingItemModel.id = item.getId().getValue();
+      bookingItemModel.rentPrice = item.getRentPrice();
+      bookingItemModel.isCourtesy = item.getIsCourtesy();
+      bookingItemModel.clutchId = item.getProductId();
       return bookingItemModel;
     });
     return bookingModel;
@@ -70,17 +78,16 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
         pickUpDate: DateVo.create(model.expectedPickUpDate),
         returnDate: DateVo.create(model.expectedReturnDate),
       }),
-      items: model.items.map((item) => {
-        return new BookingItem({
-          id: BookingItemId.create(item.id),
-          type: item.type,
+      dresses: model.dresses.map((item) => {
+        return new BookingDressItem({
+          id: BookingDressItemId.create(item.id),
           rentPrice: item.rentPrice,
           isCourtesy: item.isCourtesy,
           adjustments: item.adjustments.map(
             (adjustment) =>
               new Adjustment(adjustment.label, adjustment.description),
           ),
-          productId: item.productId,
+          productId: item.dressId,
         });
       }),
     });

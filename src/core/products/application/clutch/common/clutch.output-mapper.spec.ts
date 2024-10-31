@@ -16,7 +16,6 @@ describe("ClutchOutputMapper", () => {
         model: "Model X",
         isPickedUp: false,
         imagePath: "images/elegant-clutch.jpg",
-        reservationPeriods: [],
       });
       const output: ClutchOutput = ClutchOutputMapper.toOutput(clutch);
       expect(output).toStrictEqual({
@@ -51,7 +50,6 @@ describe("ClutchOutputMapper", () => {
         model: "Model X",
         isPickedUp: false,
         imagePath: "images/elegant-clutch.jpg",
-        reservationPeriods: [],
       });
       const clutch2 = Clutch.create({
         id: "123e4567-e89b-12d3-a456-426614174001",
@@ -60,7 +58,6 @@ describe("ClutchOutputMapper", () => {
         model: "Model Y",
         isPickedUp: true,
         imagePath: "images/stylish-clutch.jpg",
-        reservationPeriods: [],
       });
       const clutches = [clutch1, clutch2];
       const outputs: ClutchOutput[] = ClutchOutputMapper.toOutputMany(clutches);

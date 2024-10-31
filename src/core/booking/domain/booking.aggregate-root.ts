@@ -2,12 +2,14 @@ import { BookingPeriod } from "./booking-period.vo";
 import { AggregateRoot } from "../../@shared/domain/aggregate-root";
 import { Uuid } from "../../@shared/domain/value-objects/uuid.vo";
 import { DateVo } from "../../@shared/domain/value-objects/date.vo";
-import { BookingItem } from "./entities/booking-item.entity";
+import { BookingDressItem } from "./entities/booking-dress-item.entity";
 import { BookingValidatorFactory } from "./booking.validator";
 import {
   BookingAmountPaidUpdatedEvent,
   BookingMarkedAsCompletedEvent,
 } from "./booking.event";
+import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
+import { BookingFakeBuilder } from "@core/booking/domain/booking-fake.builder";
 
 export enum BookingStatus {
   PAYMENT_PENDING = "PAYMENT_PENDING",
@@ -23,7 +25,8 @@ export type BookingConstructorProps = {
   eventDate: DateVo;
   expectedBookingPeriod: BookingPeriod;
   bookingPeriod?: BookingPeriod;
-  items: BookingItem[];
+  dresses: BookingDressItem[];
+  clutches?: BookingClutchItem[];
   status?: BookingStatus;
   amountPaid?: number;
 };
@@ -36,7 +39,8 @@ export type BookingCreateCommandProps = {
   expectedReturnDate: string;
   pickUpDate?: string;
   returnDate?: string;
-  items: BookingItem[];
+  dresses: BookingDressItem[];
+  clutches?: BookingClutchItem[];
   status?: BookingStatus;
   amountPaid?: number;
 };
@@ -45,13 +49,14 @@ export class BookingId extends Uuid {}
 
 export class Booking extends AggregateRoot<BookingId> {
   private customerName: string;
-  private eventDate: DateVo;
-  private expectedBookingPeriod: BookingPeriod;
+  private readonly eventDate: DateVo;
+  private readonly expectedBookingPeriod: BookingPeriod;
   private bookingPeriod?: BookingPeriod;
-  private items: BookingItem[] = [];
+  private dresses: BookingDressItem[] = [];
+  private clutches: BookingClutchItem[] = [];
   private status: BookingStatus;
   private amountPaid: number = 0;
-  private totalBookingPrice: number = 0;
+  private readonly totalBookingPrice: number = 0;
 
   constructor(props: BookingConstructorProps) {
     super(props.id);
@@ -59,7 +64,8 @@ export class Booking extends AggregateRoot<BookingId> {
     this.eventDate = props.eventDate;
     this.expectedBookingPeriod = props.expectedBookingPeriod;
     this.bookingPeriod = props.bookingPeriod;
-    this.items = props.items;
+    this.dresses = props.dresses ?? [];
+    this.clutches = props.clutches ?? [];
     this.status = props.status;
     this.amountPaid = props.amountPaid || 0;
     this.totalBookingPrice = this.calculateTotalPrice();
@@ -71,6 +77,10 @@ export class Booking extends AggregateRoot<BookingId> {
       BookingMarkedAsCompletedEvent.name,
       this.onBookingMarkedAsCompleted.bind(this),
     );
+  }
+
+  static fake(): typeof BookingFakeBuilder {
+    return BookingFakeBuilder;
   }
 
   static create(props: BookingCreateCommandProps): Booking {
@@ -92,7 +102,8 @@ export class Booking extends AggregateRoot<BookingId> {
             returnDate: DateVo.create(props.returnDate),
           })
         : undefined,
-      items: props.items,
+      dresses: props.dresses,
+      clutches: props.clutches,
       status: BookingStatus.PAYMENT_PENDING,
       amountPaid: props.amountPaid,
     });
@@ -117,7 +128,10 @@ export class Booking extends AggregateRoot<BookingId> {
 
   // Behavior methods
   public calculateTotalPrice(): number {
-    return this.items.reduce((acc, item) => acc + item.getRentPrice(), 0);
+    return (
+      this.dresses.reduce((acc, item) => acc + item.getRentPrice(), 0) +
+      this.clutches.reduce((acc, item) => acc + item.getRentPrice(), 0)
+    );
   }
 
   public updatePayment(value: number): void {
@@ -126,8 +140,13 @@ export class Booking extends AggregateRoot<BookingId> {
     this.applyEvent(new BookingAmountPaidUpdatedEvent(this.getId(), value));
   }
 
-  public addItem(item: BookingItem): void {
-    this.items.push(item);
+  public addItem(item: BookingDressItem | BookingClutchItem): void {
+    if (item instanceof BookingClutchItem) {
+      this.clutches.push(item);
+      return;
+    }
+
+    this.dresses.push(item);
     if (item.notification.hasErrors()) {
       this.notification.addError(
         `Item de reserva (${item.getId().getValue()}) inválido`,
@@ -136,8 +155,19 @@ export class Booking extends AggregateRoot<BookingId> {
     }
   }
 
+  public addManyItems(
+    items: Array<BookingDressItem | BookingClutchItem>,
+  ): void {
+    items.forEach((item) => {
+      this.addItem(item);
+    });
+  }
+
   public removeItem(itemId: string): void {
-    this.items = this.items.filter(
+    this.dresses = this.dresses.filter(
+      (item) => item.getId().getValue() !== itemId,
+    );
+    this.clutches = this.clutches.filter(
       (item) => item.getId().getValue() !== itemId,
     );
   }
@@ -192,16 +222,16 @@ export class Booking extends AggregateRoot<BookingId> {
     return this.bookingPeriod;
   }
 
-  public getItems(): BookingItem[] {
-    return this.items;
+  public getItems(): Array<BookingDressItem | BookingClutchItem> {
+    return [...this.dresses, ...this.clutches];
   }
 
-  public getDresses(): BookingItem[] {
-    return this.items.filter((item) => item.getType() === "dress");
+  public getDresses(): BookingDressItem[] {
+    return this.dresses;
   }
 
-  public getClutches(): BookingItem[] {
-    return this.items.filter((item) => item.getType() === "clutch");
+  public getClutches(): BookingClutchItem[] {
+    return this.clutches;
   }
 
   public getStatus(): BookingStatus {

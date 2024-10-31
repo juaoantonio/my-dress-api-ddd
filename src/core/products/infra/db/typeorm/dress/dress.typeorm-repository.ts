@@ -32,6 +32,8 @@ export class DressTypeormRepository
     const offset = (page - 1) * perPage;
     const limit = perPage;
     const qb = this.modelRepository.createQueryBuilder("dress");
+    qb.leftJoinAndSelect("dress.bookingItems", "bookingItems");
+    qb.leftJoinAndSelect("bookingItems.booking", "booking");
     if (filter?.model) {
       qb.andWhere("dress.model ILIKE :model", { model: `%${filter.model}%` });
     }

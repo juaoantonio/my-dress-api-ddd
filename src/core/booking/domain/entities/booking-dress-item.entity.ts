@@ -2,44 +2,44 @@ import { Entity } from "@core/@shared/domain/entity";
 import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
 import { Adjustment } from "./vo/adjustment.vo";
 import { BookingItemValidatorFactory } from "./booking-item.validator";
+import { BookingDressItemFakeBuilder } from "@core/booking/domain/entities/booking-dress-item-fake.builder";
 
-export class BookingItemId extends Uuid {}
+export class BookingDressItemId extends Uuid {}
 
-export class BookingItem extends Entity<BookingItemId> {
+export class BookingDressItem extends Entity<BookingDressItemId> {
   private productId: string;
-  private type: "dress" | "clutch";
   private rentPrice: number;
   private adjustments: Set<Adjustment>;
   private isCourtesy: boolean;
 
   constructor(props: {
-    id: BookingItemId;
+    id: BookingDressItemId;
     productId: string;
-    type: "dress" | "clutch";
     rentPrice: number;
     adjustments?: Adjustment[];
     isCourtesy?: boolean;
   }) {
     super(props.id);
     this.productId = props.productId;
-    this.type = props.type;
     this.rentPrice = props.rentPrice;
     this.adjustments = new Set(props.adjustments ?? []);
     this.isCourtesy = props.isCourtesy ?? false;
   }
 
+  static fake(): typeof BookingDressItemFakeBuilder {
+    return BookingDressItemFakeBuilder;
+  }
+
   static create(props: {
-    id?: BookingItemId;
+    id?: BookingDressItemId;
     productId: string;
-    type: "dress" | "clutch";
     rentPrice: number;
     adjustments?: Adjustment[];
     isCourtesy?: boolean;
-  }): BookingItem {
-    const newBooking = new BookingItem({
-      id: props.id ?? BookingItemId.random(),
+  }): BookingDressItem {
+    const newBooking = new BookingDressItem({
+      id: props.id ?? BookingDressItemId.random(),
       productId: props.productId,
-      type: props.type,
       rentPrice: props.rentPrice,
       adjustments: props.adjustments,
       isCourtesy: props.isCourtesy,
@@ -93,11 +93,6 @@ export class BookingItem extends Entity<BookingItemId> {
 
   public clearAdjustments(): void {
     this.adjustments.clear();
-  }
-
-  // Getters
-  public getType(): "dress" | "clutch" {
-    return this.type;
   }
 
   public getRentPrice(): number {

@@ -14,13 +14,15 @@ export class ClutchModelMapper implements IModelMapper<Clutch, ClutchModel> {
       color: model.color,
       rentPrice: model.rentPrice,
       isPickedUp: model.isPickedUp,
-      reservationPeriods: model.reservationPeriods.map(
-        (period) =>
-          new Period({
-            startDate: DateVo.create(period.startDate),
-            endDate: DateVo.create(period.endDate),
-          }),
-      ),
+      reservationPeriods: model.bookingItems
+        ? model.bookingItems.map(
+            (item) =>
+              new Period({
+                startDate: DateVo.create(item.booking.expectedPickUpDate),
+                endDate: DateVo.create(item.booking.expectedReturnDate),
+              }),
+          )
+        : [],
     });
   }
 
@@ -33,12 +35,6 @@ export class ClutchModelMapper implements IModelMapper<Clutch, ClutchModel> {
     clutchModel.rentPrice = entity.getRentPrice();
     clutchModel.isPickedUp = entity.getIsPickedUp();
     clutchModel.type = entity.getType();
-    clutchModel.reservationPeriods = entity
-      .getReservationPeriods()
-      .map((period) => ({
-        startDate: period.getStartDate().getValue().toISOString(),
-        endDate: period.getEndDate().getValue().toISOString(),
-      }));
     return clutchModel;
   }
 }

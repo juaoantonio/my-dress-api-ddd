@@ -3,6 +3,7 @@ import { FieldsErrors } from "@core/@shared/domain/validators/validator-fields.i
 
 interface CustomMatchers<R = unknown> {
   notificationContainsErrorMessages: (expected: FieldsErrors[]) => R;
+  toContainWithCondition: (condition: (item: any) => boolean) => R;
 }
 
 declare module "vitest" {

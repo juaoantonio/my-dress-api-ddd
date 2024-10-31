@@ -7,6 +7,10 @@ import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model
 import { ClutchTypeormRepository } from "@core/products/infra/db/typeorm/clutch/clutch.typeorm-repository";
 import { ImageUploadError } from "@core/@shared/infra/errors/image-upload.error";
 import { ImageMockBuilder } from "@core/@shared/infra/testing/mocks/file";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 
 describe("CreateClutchUseCase Integration Test", () => {
   let useCase: CreateClutchUseCase;
@@ -14,7 +18,13 @@ describe("CreateClutchUseCase Integration Test", () => {
   const uploadService: IImageStorageService = new ImageStorageServiceMock();
 
   const setup = setupTypeOrmForIntegrationTests({
-    entities: [ClutchModel],
+    entities: [
+      BookingModel,
+      DressModel,
+      BookingItemDressModel,
+      ClutchModel,
+      BookingItemClutchModel,
+    ],
   });
 
   beforeEach(() => {

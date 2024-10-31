@@ -32,6 +32,8 @@ export class ClutchTypeormRepository
     const offset = (page - 1) * perPage;
     const limit = perPage;
     const qb = this.modelRepository.createQueryBuilder("clutch");
+    qb.leftJoinAndSelect("clutch.bookingItems", "bookingItems");
+    qb.leftJoinAndSelect("bookingItems.booking", "booking");
     if (filter?.model) {
       qb.andWhere("clutch.model ILIKE :model", { model: `%${filter.model}%` });
     }

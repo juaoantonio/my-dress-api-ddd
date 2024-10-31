@@ -1,7 +1,8 @@
 import { Column, Entity, OneToMany, Relation } from "typeorm";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
-import { BookingItemModel } from "./booking-item.model";
+import { BookingItemDressModel } from "./booking-item-dress.model";
 import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 
 @Entity({ name: "bookings" })
 export class BookingModel extends BaseModel {
@@ -39,7 +40,7 @@ export class BookingModel extends BaseModel {
     type: "text",
     nullable: true,
     transformer: {
-      to: (value: Date) => value.toISOString(),
+      to: (value: Date) => (value ? value.toISOString() : null),
       from: (value: string) => new Date(value),
     },
   })
@@ -49,7 +50,7 @@ export class BookingModel extends BaseModel {
     type: "text",
     nullable: true,
     transformer: {
-      to: (value: Date) => value.toISOString(),
+      to: (value: Date) => (value ? value.toISOString() : null),
       from: (value: string) => new Date(value),
     },
   })
@@ -70,9 +71,15 @@ export class BookingModel extends BaseModel {
   @Column({ type: "float" })
   amountPaid: number;
 
-  @OneToMany(() => BookingItemModel, (item) => item.booking, {
+  @OneToMany(() => BookingItemDressModel, (item) => item.booking, {
     eager: true,
     cascade: true,
   })
-  items: Relation<BookingItemModel>[];
+  dresses: Relation<BookingItemDressModel>[];
+
+  @OneToMany(() => BookingItemClutchModel, (item) => item.booking, {
+    eager: true,
+    cascade: true,
+  })
+  clutches: Relation<BookingItemClutchModel>[];
 }

@@ -4,16 +4,18 @@ import {
   BookingStatus,
 } from "@core/booking/domain/booking.aggregate-root";
 import {
-  BookingItem,
-  BookingItemId,
-} from "@core/booking/domain/entities/booking-item.entity";
+  BookingDressItem,
+  BookingDressItemId,
+} from "@core/booking/domain/entities/booking-dress-item.entity";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { BookingPeriod } from "@core/booking/domain/booking-period.vo";
 import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
 import { v4 as uuidv4 } from "uuid";
 import { BookingModelMapper } from "@core/booking/infra/db/typeorm/booking.model-mapper";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
-import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
+import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 
 describe("BookingModelMapper", () => {
   let mapper: BookingModelMapper;
@@ -35,7 +37,7 @@ describe("BookingModelMapper", () => {
       bookingModel.amountPaid = 100.0;
       bookingModel.expectedPickUpDate = new Date("2024-10-03T22:51:22.124Z");
       bookingModel.expectedReturnDate = new Date("2024-10-05T22:51:22.124Z");
-      bookingModel.items = [];
+      bookingModel.dresses = [];
 
       // Act
       const booking = mapper.toEntity(bookingModel);
@@ -63,10 +65,9 @@ describe("BookingModelMapper", () => {
       // Arrange
       const bookingId = BookingId.create(uuidv4());
 
-      const bookingItemModel = new BookingItemModel();
+      const bookingItemModel = new BookingItemDressModel();
       bookingItemModel.id = uuidv4();
-      bookingItemModel.productId = uuidv4();
-      bookingItemModel.type = "dress";
+      bookingItemModel.dressId = uuidv4();
       bookingItemModel.rentPrice = 150.0;
       bookingItemModel.isCourtesy = false;
       bookingItemModel.adjustments = [
@@ -83,7 +84,7 @@ describe("BookingModelMapper", () => {
       bookingModel.expectedReturnDate = new Date("2024-12-26T10:00:00.000Z");
       bookingModel.pickUpDate = new Date("2024-12-24T12:00:00.000Z");
       bookingModel.returnDate = new Date("2024-12-26T09:00:00.000Z");
-      bookingModel.items = [bookingItemModel];
+      bookingModel.dresses = [bookingItemModel];
 
       // Act
       const booking = mapper.toEntity(bookingModel);
@@ -112,12 +113,11 @@ describe("BookingModelMapper", () => {
         new Date("2024-12-26T09:00:00.000Z"),
       );
 
-      expect(booking.getItems()).toHaveLength(1);
-      const item = booking.getItems()[0];
-      expect(item).toBeInstanceOf(BookingItem);
+      expect(booking.getDresses()).toHaveLength(1);
+      const item = booking.getDresses()[0];
+      expect(item).toBeInstanceOf(BookingDressItem);
       expect(item.getId().getValue()).toBe(bookingItemModel.id);
-      expect(item.getProductId()).toBe(bookingItemModel.productId);
-      expect(item.getType()).toBe("dress");
+      expect(item.getProductId()).toBe(bookingItemModel.dressId);
       expect(item.getRentPrice()).toBe(150.0);
       expect(item.getIsCourtesy()).toBe(false);
       expect(item.getAdjustments()).toEqual([
@@ -129,10 +129,9 @@ describe("BookingModelMapper", () => {
       // Arrange
       const bookingId = BookingId.create(uuidv4());
 
-      const bookingItemModel = new BookingItemModel();
+      const bookingItemModel = new BookingItemDressModel();
       bookingItemModel.id = uuidv4();
-      bookingItemModel.productId = uuidv4();
-      bookingItemModel.type = "dress";
+      bookingItemModel.dressId = uuidv4();
       bookingItemModel.rentPrice = 150.0;
       bookingItemModel.isCourtesy = false;
       bookingItemModel.adjustments = [
@@ -148,7 +147,7 @@ describe("BookingModelMapper", () => {
       bookingModel.expectedPickUpDate = new Date("2024-12-24T10:00:00.000Z");
       bookingModel.expectedReturnDate = new Date("2024-12-26T10:00:00.000Z");
       bookingModel.pickUpDate = new Date("2024-12-24T12:00:00.000Z");
-      bookingModel.items = [bookingItemModel];
+      bookingModel.dresses = [bookingItemModel];
       const booking = mapper.toEntity(bookingModel);
       expect(booking).toBeInstanceOf(Booking);
       expect(booking.getId().getValue()).toBe(bookingModel.id);
@@ -173,12 +172,11 @@ describe("BookingModelMapper", () => {
         booking.getBookingPeriod()?.getReturnDate()?.getValue(),
       ).toBeUndefined();
 
-      expect(booking.getItems()).toHaveLength(1);
-      const item = booking.getItems()[0];
-      expect(item).toBeInstanceOf(BookingItem);
+      expect(booking.getDresses()).toHaveLength(1);
+      const item = booking.getDresses()[0];
+      expect(item).toBeInstanceOf(BookingDressItem);
       expect(item.getId().getValue()).toBe(bookingItemModel.id);
-      expect(item.getProductId()).toBe(bookingItemModel.productId);
-      expect(item.getType()).toBe("dress");
+      expect(item.getProductId()).toBe(bookingItemModel.dressId);
       expect(item.getRentPrice()).toBe(150.0);
       expect(item.getIsCourtesy()).toBe(false);
       expect(item.getAdjustments()).toEqual([
@@ -202,7 +200,7 @@ describe("BookingModelMapper", () => {
           pickUpDate: DateVo.create(new Date("2024-10-03T22:51:22.124Z")),
           returnDate: DateVo.create(new Date("2024-10-05T22:51:22.124Z")),
         }),
-        items: [],
+        dresses: [],
       });
 
       // Act
@@ -225,20 +223,19 @@ describe("BookingModelMapper", () => {
       );
       expect(bookingModel.pickUpDate).toBeUndefined();
       expect(bookingModel.returnDate).toBeUndefined();
-      expect(bookingModel.items).toHaveLength(0);
+      expect(bookingModel.dresses).toHaveLength(0);
+      expect(bookingModel.clutches).toHaveLength(0);
     });
 
     it("should map Booking entity to BookingModel correctly with all fields", () => {
       // Arrange
       const bookingId = BookingId.create(uuidv4());
 
-      const bookingItem = new BookingItem({
-        id: BookingItemId.create(uuidv4()),
+      const bookingItem = new BookingClutchItem({
+        id: BookingDressItemId.create(uuidv4()),
         productId: uuidv4(),
-        type: "clutch",
         rentPrice: 50.0,
         isCourtesy: true,
-        adjustments: [new Adjustment("Color Adjustment", "Changed to red")],
       });
 
       const booking = new Booking({
@@ -255,7 +252,8 @@ describe("BookingModelMapper", () => {
           pickUpDate: DateVo.create(new Date("2024-12-24T12:00:00.000Z")),
           returnDate: DateVo.create(new Date("2024-12-26T09:00:00.000Z")),
         }),
-        items: [bookingItem],
+        dresses: [],
+        clutches: [bookingItem],
       });
       const bookingModel = mapper.toModel(booking);
       expect(bookingModel).toBeInstanceOf(BookingModel);
@@ -281,17 +279,13 @@ describe("BookingModelMapper", () => {
         new Date("2024-12-26T09:00:00.000Z"),
       );
 
-      expect(bookingModel.items).toHaveLength(1);
-      const itemModel = bookingModel.items[0];
-      expect(itemModel).toBeInstanceOf(BookingItemModel);
+      expect(bookingModel.clutches).toHaveLength(1);
+      const itemModel = bookingModel.clutches[0];
+      expect(itemModel).toBeInstanceOf(BookingItemClutchModel);
       expect(itemModel.id).toBe(bookingItem.getId().getValue());
-      expect(itemModel.productId).toBe(bookingItem.getProductId());
-      expect(itemModel.type).toBe("clutch");
+      expect(itemModel.clutchId).toBe(bookingItem.getProductId());
       expect(itemModel.rentPrice).toBe(50.0);
       expect(itemModel.isCourtesy).toBe(true);
-      expect(itemModel.adjustments).toEqual([
-        { label: "Color Adjustment", description: "Changed to red" },
-      ]);
     });
   });
 });
