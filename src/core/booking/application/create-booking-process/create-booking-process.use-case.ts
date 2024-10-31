@@ -4,15 +4,15 @@ import { Booking } from "@core/booking/domain/booking.aggregate-root";
 import { EntityValidationError } from "@core/@shared/domain/validators/validation.error";
 import { IBookingRepository } from "@core/booking/domain/booking.repository";
 
-export class StartBookingProcessUseCase
+export class CreateBookingProcessUseCase
   implements
-    IUseCase<InitBookingProcessInput, Promise<InitBookingProcessOutput>>
+    IUseCase<CreateBookingProcessInput, Promise<CreateBookingProcessOutput>>
 {
   constructor(private readonly bookingRepository: IBookingRepository) {}
 
   async execute(
-    input: InitBookingProcessInput,
-  ): Promise<InitBookingProcessOutput> {
+    input: CreateBookingProcessInput,
+  ): Promise<CreateBookingProcessOutput> {
     const booking = Booking.create({
       customerName: input.customerName,
       eventDate: input.eventDate,
@@ -29,7 +29,7 @@ export class StartBookingProcessUseCase
   }
 }
 
-export class InitBookingProcessInput {
+export class CreateBookingProcessInput {
   @IsString()
   @IsNotEmpty()
   customerName: string;
@@ -44,6 +44,6 @@ export class InitBookingProcessInput {
   expectedReturnDate: string;
 }
 
-export class InitBookingProcessOutput {
+export class CreateBookingProcessOutput {
   bookingId: string;
 }

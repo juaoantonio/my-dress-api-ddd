@@ -53,13 +53,15 @@ export class AddAdjustmentsInput {
   bookingId: string;
 
   @IsArray()
-  adjustments: {
-    label: string;
-    description: string;
-    dressId: string;
-  }[];
+  adjustments: AdjustmentInput[];
 }
 
 export class AddAdjustmentsOutput {
   bookingId: string;
+}
+
+export class AdjustmentInput {
+  label: string;
+  description: string;
+  dressId: string;
 }
