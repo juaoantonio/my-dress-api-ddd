@@ -5,8 +5,6 @@ import {
   ProductConstructorProps,
   ProductType,
 } from "@core/products/domain/product";
-import { Period } from "@core/@shared/domain/value-objects/period.vo";
-import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { ClutchFakeBuilder } from "@core/products/domain/clutch/clutch-fake.builder";
 
 export type ClutchConstructorProps = ProductConstructorProps<ClutchId>;
@@ -18,10 +16,6 @@ export type ClutchCreateCommandProps = {
   color: string;
   model: string;
   isPickedUp?: boolean;
-  reservationPeriods?: {
-    startDate: string;
-    endDate: string;
-  }[];
 };
 
 export class Clutch extends Product<ClutchId> {
@@ -37,15 +31,6 @@ export class Clutch extends Product<ClutchId> {
       rentPrice: props.rentPrice,
       color: props.color,
       model: props.model,
-      reservationPeriods: props.reservationPeriods
-        ? props.reservationPeriods.map(
-            (raw) =>
-              new Period({
-                startDate: DateVo.create(raw.startDate),
-                endDate: DateVo.create(raw.endDate),
-              }),
-          )
-        : [],
       isPickedUp: props.isPickedUp || false,
     });
   }

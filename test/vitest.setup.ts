@@ -32,3 +32,16 @@ expect.extend({
         };
   },
 });
+
+expect.extend({
+  toContainWithCondition(received: any[], condition: (item: any) => boolean) {
+    const every = received.some(condition);
+    return every
+      ? { pass: true, message: () => "" }
+      : {
+          pass: false,
+          message: () =>
+            `expected ${JSON.stringify(received)} to contain an item that satisfies the condition`,
+        };
+  },
+});

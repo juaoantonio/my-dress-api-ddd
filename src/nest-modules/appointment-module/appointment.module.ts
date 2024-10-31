@@ -5,7 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment.model";
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
-import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.mo
       AppointmentModel,
       AppointmentHistoryModel,
       BookingModel,
-      BookingItemModel,
+      BookingItemDressModel,
     ]),
   ],
   controllers: [AppointmentController],

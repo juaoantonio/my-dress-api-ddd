@@ -7,6 +7,10 @@ import { DeleteDressUseCase } from "@core/products/application/dress/delete-dres
 import { Dress } from "@core/products/domain/dress/dress.aggregate-root";
 import { DressId } from "@core/products/domain/dress/dress-id.vo";
 import { ImageStorageServiceMock } from "@core/@shared/infra/testing/image-storage-mock";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 
 describe("DeleteDressUseCase Integration Test", () => {
   let useCase: DeleteDressUseCase;
@@ -14,7 +18,13 @@ describe("DeleteDressUseCase Integration Test", () => {
   const uploadService: IImageStorageService = new ImageStorageServiceMock();
 
   const setup = setupTypeOrmForIntegrationTests({
-    entities: [DressModel],
+    entities: [
+      BookingModel,
+      DressModel,
+      BookingItemDressModel,
+      ClutchModel,
+      BookingItemClutchModel,
+    ],
   });
 
   beforeEach(async () => {

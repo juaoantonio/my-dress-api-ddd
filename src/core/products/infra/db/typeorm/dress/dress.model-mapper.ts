@@ -15,13 +15,15 @@ export class DressModelMapper implements IModelMapper<Dress, DressModel> {
       fabric: model.fabric,
       rentPrice: model.rentPrice,
       isPickedUp: model.isPickedUp,
-      reservationPeriods: model.bookingItems.map(
-        (item) =>
-          new Period({
-            startDate: DateVo.create(item.booking.expectedPickUpDate),
-            endDate: DateVo.create(item.booking.expectedReturnDate),
-          }),
-      ),
+      reservationPeriods: model.bookingItems
+        ? model.bookingItems.map(
+            (item) =>
+              new Period({
+                startDate: DateVo.create(item.booking.expectedPickUpDate),
+                endDate: DateVo.create(item.booking.expectedReturnDate),
+              }),
+          )
+        : [],
     });
   }
 

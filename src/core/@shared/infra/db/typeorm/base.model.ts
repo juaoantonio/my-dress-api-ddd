@@ -1,6 +1,6 @@
 import { CreateDateColumn, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
-export class BaseModel {
+export abstract class BaseModel {
   @PrimaryColumn("uuid")
   id: string;
 

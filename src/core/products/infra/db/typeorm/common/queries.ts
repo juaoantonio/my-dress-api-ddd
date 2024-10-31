@@ -1,10 +1,8 @@
-// clutch.typeorm-repository.helpers.ts
-
 /**
  * Retorna a condição SQL para disponibilidade com base no driver e no valor de 'available'.
  * @param dbType Tipo do banco de dados (e.g., 'postgres', 'sqlite')
- * @param alias Alias da tabela (e.g., 'clutch')
- * @param available Booleano indicando se deve filtrar clutches disponíveis (true) ou indisponíveis (false)
+ * @param alias Alias da tabela do produto (e.g., 'clutch' ou 'dress')
+ * @param available Booleano indicando se deve filtrar itens disponíveis (true) ou indisponíveis (false)
  */
 export function getAvailabilityCondition(
   dbType: string,
@@ -14,34 +12,31 @@ export function getAvailabilityCondition(
   const existsCondition = `
     EXISTS (
       SELECT 1
-      FROM ${
-        dbType === "postgres" ? "json_array_elements" : "json_each"
-      }(${alias}.reservationPeriods) AS period
-      WHERE (
+      FROM "bookings" AS booking
+      JOIN ${alias === "clutch" ? '"clutch_booking_item"' : '"dress_booking_item"'} AS booking_item
+      ON booking_item."bookingId" = booking."id"
+      WHERE booking_item."${alias}Id" = ${alias}."id"
+      AND (
         ${
           dbType === "postgres"
-            ? "(period->>'startDate')::timestamptz <= :endDate AND (period->>'endDate')::timestamptz >= :startDate"
-            : "json_extract(value, '$.startDate') <= :endDate AND json_extract(value, '$.endDate') >= :startDate"
+            ? 'booking."expectedPickUpDate"::timestamptz <= :endDate AND booking."expectedReturnDate"::timestamptz >= :startDate'
+            : "datetime(booking.expectedPickUpDate) <= :endDate AND datetime(booking.expectedReturnDate) >= :startDate"
         }
         OR 
         ${
           dbType === "postgres"
-            ? "(period->>'startDate')::timestamptz BETWEEN :startDate AND :endDate"
-            : "json_extract(value, '$.startDate') BETWEEN :startDate AND :endDate"
+            ? 'booking."expectedPickUpDate"::timestamptz BETWEEN :startDate AND :endDate'
+            : "datetime(booking.expectedPickUpDate) BETWEEN :startDate AND :endDate"
         }
         OR 
         ${
           dbType === "postgres"
-            ? "(period->>'endDate')::timestamptz BETWEEN :startDate AND :endDate"
-            : "json_extract(value, '$.endDate') BETWEEN :startDate AND :endDate"
+            ? 'booking."expectedReturnDate"::timestamptz BETWEEN :startDate AND :endDate'
+            : "datetime(booking.expectedReturnDate) BETWEEN :startDate AND :endDate"
         }
       )
     )
   `;
 
-  if (available) {
-    return `NOT ${existsCondition}`;
-  } else {
-    return existsCondition;
-  }
+  return available ? `NOT ${existsCondition}` : existsCondition;
 }

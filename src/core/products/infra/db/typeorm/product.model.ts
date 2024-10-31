@@ -1,9 +1,9 @@
 import { Column, OneToMany } from "typeorm";
 import { ProductType } from "@core/products/domain/product";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
-import { BookingItemModel } from "@core/booking/infra/db/typeorm/booking-item.model";
 
-export class ProductModel extends BaseModel {
+export abstract class ProductModel extends BaseModel {
   @Column("text")
   imageUrl: string;
 
@@ -30,8 +30,8 @@ export class ProductModel extends BaseModel {
   })
   type: ProductType;
 
-  @OneToMany(() => BookingItemModel, (bookingItem) => bookingItem.product, {
+  @OneToMany(() => BookingItemDressModel, (bookingItem) => bookingItem.dress, {
     eager: true,
   })
-  bookingItems: BookingItemModel[];
+  bookingItems: BookingItemDressModel[];
 }

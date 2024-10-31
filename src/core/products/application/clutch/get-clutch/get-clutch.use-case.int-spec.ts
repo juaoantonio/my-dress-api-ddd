@@ -8,6 +8,10 @@ import { GetClutchUseCase } from "@core/products/application/clutch/get-clutch/g
 import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
 import { ClutchId } from "@core/products/domain/clutch/clutch-id.vo";
 import { it } from "vitest";
+import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
+import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
+import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
+import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 
 describe("GetClutchUseCase Integration Test", () => {
   let useCase: GetClutchUseCase;
@@ -15,7 +19,13 @@ describe("GetClutchUseCase Integration Test", () => {
   const uploadService: IImageStorageService = new ImageStorageServiceMock();
 
   const setup = setupTypeOrmForIntegrationTests({
-    entities: [ClutchModel],
+    entities: [
+      BookingModel,
+      DressModel,
+      BookingItemDressModel,
+      ClutchModel,
+      BookingItemClutchModel,
+    ],
   });
 
   beforeEach(async () => {

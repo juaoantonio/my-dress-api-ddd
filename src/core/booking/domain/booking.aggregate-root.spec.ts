@@ -1,7 +1,11 @@
 import { BookingPeriod } from "./booking-period.vo";
 import { Booking, BookingId, BookingStatus } from "./booking.aggregate-root";
 import { DateVo } from "../../@shared/domain/value-objects/date.vo";
-import { BookingItem, BookingItemId } from "./entities/booking-item.entity";
+import {
+  BookingDressItem,
+  BookingDressItemId,
+} from "./entities/booking-dress-item.entity";
+import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
 
 describe("Booking Aggregate Unit Tests", function () {
   beforeEach(() => {
@@ -27,17 +31,17 @@ describe("Booking Aggregate Unit Tests", function () {
           pickUpDate: DateVo.create("2024-08-31"),
           returnDate: DateVo.create("2024-09-02"),
         }),
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-8644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 100,
           }),
         ],
@@ -84,17 +88,17 @@ describe("Booking Aggregate Unit Tests", function () {
           pickUpDate: DateVo.create("2024-08-31"),
           returnDate: DateVo.create("2024-09-02"),
         }),
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-8644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 100,
           }),
         ],
@@ -131,17 +135,17 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-8644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 100,
           }),
         ],
@@ -174,17 +178,17 @@ describe("Booking Aggregate Unit Tests", function () {
         expectedReturnDate: "2024-09-02",
         pickUpDate: "2024-08-31",
         returnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 50,
           }),
         ],
@@ -228,26 +232,26 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 50,
           }),
         ],
       });
       booking.addItem(
-        new BookingItem({
-          id: BookingItemId.random(),
+        new BookingDressItem({
+          id: BookingDressItemId.random(),
           productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-          type: "clutch",
+
           rentPrice: 50,
         }),
       );
@@ -261,17 +265,19 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-            productId: "81d4babd-9644-4b6a-afaf-930f6608f9d5",
-            type: "dress",
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.create(
+              "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            ),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
-            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
+            productId: "81d4aabd-9644-4b6a-afaf-930f6608f6d5",
             rentPrice: 50,
           }),
         ],
@@ -287,17 +293,17 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 50,
           }),
         ],
@@ -313,17 +319,17 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 50,
           }),
         ],
@@ -338,29 +344,26 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
         ],
       });
       booking.addItem(
-        new BookingItem({
-          id: BookingItemId.random(),
+        new BookingDressItem({
+          id: BookingDressItemId.random(),
           productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-          type: "clutch",
           rentPrice: 50,
         }),
       );
       expect(booking.calculateTotalPrice()).toBe(150);
       booking.addItem(
-        new BookingItem({
-          id: BookingItemId.random(),
+        new BookingClutchItem({
+          id: BookingDressItemId.random(),
           productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-          type: "clutch",
           rentPrice: 50,
         }),
       );
@@ -373,23 +376,25 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
-            productId: "81d4babd-9644-4b6a-afaf-930f6608f9d5",
-            type: "dress",
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
-            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.create(
+              "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            ),
+            productId: "81d4bbbd-9644-4b6a-afaf-930f6608f6d5",
             rentPrice: 50,
           }),
         ],
       });
       booking.removeItem("81d4babd-9644-4b6a-afaf-930f6608f6d5");
-      expect(booking.calculateTotalPrice()).toBe(50);
+      expect(booking.calculateTotalPrice()).toBe(100);
     });
 
     it("should initialize a booking", () => {
@@ -398,17 +403,17 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 50,
           }),
         ],
@@ -425,17 +430,17 @@ describe("Booking Aggregate Unit Tests", function () {
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
-        items: [
-          new BookingItem({
-            id: BookingItemId.random(),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
-          new BookingItem({
-            id: BookingItemId.random(),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "clutch",
             rentPrice: 50,
           }),
         ],
@@ -457,12 +462,18 @@ describe("Booking Aggregate Unit Tests", function () {
         bookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
         }),
-        items: [
-          BookingItem.create({
-            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
+          }),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            rentPrice: 50,
           }),
         ],
         status: BookingStatus.IN_PROGRESS,
@@ -488,17 +499,17 @@ describe("Booking Aggregate Unit Tests", function () {
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
-          items: [
-            new BookingItem({
-              id: BookingItemId.random(),
+          dresses: [
+            new BookingDressItem({
+              id: BookingDressItemId.random(),
               productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-              type: "dress",
               rentPrice: 100,
             }),
-            new BookingItem({
-              id: BookingItemId.random(),
+          ],
+          clutches: [
+            new BookingClutchItem({
+              id: BookingDressItemId.random(),
               productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-              type: "clutch",
               rentPrice: 50,
             }),
           ],
@@ -518,17 +529,17 @@ describe("Booking Aggregate Unit Tests", function () {
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
-          items: [
-            new BookingItem({
-              id: BookingItemId.random(),
+          dresses: [
+            new BookingDressItem({
+              id: BookingDressItemId.random(),
               productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-              type: "dress",
               rentPrice: 100,
             }),
-            new BookingItem({
-              id: BookingItemId.random(),
+          ],
+          clutches: [
+            new BookingClutchItem({
+              id: BookingDressItemId.random(),
               productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-              type: "clutch",
               rentPrice: 50,
             }),
           ],
@@ -549,17 +560,21 @@ describe("Booking Aggregate Unit Tests", function () {
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
-          items: [
-            BookingItem.create({
-              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+          dresses: [
+            BookingDressItem.create({
+              id: BookingDressItemId.create(
+                "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+              ),
               productId: "",
-              type: "dress",
               rentPrice: 100,
             }),
-            BookingItem.create({
-              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6c5"),
+          ],
+          clutches: [
+            BookingClutchItem.create({
+              id: BookingDressItemId.create(
+                "81d4babd-9644-4b6a-afaf-930f6608f6c5",
+              ),
               productId: "",
-              type: "clutch",
               rentPrice: 50,
             }),
           ],
@@ -580,20 +595,27 @@ describe("Booking Aggregate Unit Tests", function () {
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
-          items: [
-            BookingItem.create({
-              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+          dresses: [
+            new BookingDressItem({
+              id: BookingDressItemId.random(),
               productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-              type: "dress",
               rentPrice: 100,
+            }),
+          ],
+          clutches: [
+            new BookingClutchItem({
+              id: BookingDressItemId.random(),
+              productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+              rentPrice: 50,
             }),
           ],
         });
         booking.addItem(
-          BookingItem.create({
-            id: BookingItemId.create("91d4babd-9644-4b6a-afaf-930f6608f6d5"),
+          BookingDressItem.create({
+            id: BookingDressItemId.create(
+              "91d4babd-9644-4b6a-afaf-930f6608f6d5",
+            ),
             productId: "",
-            type: "clutch",
             rentPrice: 50,
           }),
         );
@@ -612,11 +634,10 @@ describe("Booking Aggregate Unit Tests", function () {
           eventDate: "2024-09-01",
           expectedPickUpDate: "2024-08-31",
           expectedReturnDate: "2024-09-02",
-          items: [
-            BookingItem.create({
-              id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+          dresses: [
+            new BookingDressItem({
+              id: BookingDressItemId.random(),
               productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-              type: "dress",
               rentPrice: 100,
             }),
           ],
@@ -642,12 +663,18 @@ describe("Booking Aggregate Unit Tests", function () {
         bookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
         }),
-        items: [
-          BookingItem.create({
-            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        dresses: [
+          new BookingDressItem({
+            id: BookingDressItemId.random(),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
+          }),
+        ],
+        clutches: [
+          new BookingClutchItem({
+            id: BookingDressItemId.random(),
+            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            rentPrice: 50,
           }),
         ],
         status: BookingStatus.COMPLETED,
@@ -672,11 +699,12 @@ describe("Booking Aggregate Unit Tests", function () {
         bookingPeriod: new BookingPeriod({
           pickUpDate: DateVo.create("2024-08-31"),
         }),
-        items: [
-          BookingItem.create({
-            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        dresses: [
+          BookingDressItem.create({
+            id: BookingDressItemId.create(
+              "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            ),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
         ],
@@ -699,11 +727,12 @@ describe("Booking Aggregate Unit Tests", function () {
           pickUpDate: DateVo.create("2024-08-31"),
           returnDate: DateVo.create("2024-09-02"),
         }),
-        items: [
-          BookingItem.create({
-            id: BookingItemId.create("81d4babd-9644-4b6a-afaf-930f6608f6d5"),
+        dresses: [
+          BookingDressItem.create({
+            id: BookingDressItemId.create(
+              "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+            ),
             productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            type: "dress",
             rentPrice: 100,
           }),
         ],
