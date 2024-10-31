@@ -7,15 +7,15 @@ import { ApiProperty } from "@nestjs/swagger";
 export class CreateBookingProcessInputDto extends CreateBookingProcessInput {
   @ApiProperty({
     name: "customerName",
-    description: "Nome do cliente",
-  })
-  declare eventDate: string;
-
-  @ApiProperty({
-    name: "expectedPickUpDate",
     description: "Data de retirada esperada",
   })
   declare customerName: string;
+
+  @ApiProperty({
+    name: "eventDate",
+    description: "Data do evento",
+  })
+  declare eventDate: string;
 
   @ApiProperty({
     name: "expectedPickUpDate",

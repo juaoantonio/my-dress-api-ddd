@@ -10,6 +10,10 @@ export class DressOutput {
   isPickedUp: boolean;
   imagePath: string;
   type: string;
+  reservationPeriods: {
+    startDate: string;
+    endDate: string;
+  }[];
 }
 
 export class DressOutputMapper {
@@ -24,6 +28,10 @@ export class DressOutputMapper {
       isPickedUp: dress.getIsPickedUp(),
       imagePath: dress.getImagePath(),
       type: dress.getType(),
+      reservationPeriods: dress.getReservationPeriods().map((period) => ({
+        startDate: period.getStartDate().getValue().toISOString(),
+        endDate: period.getEndDate().getValue().toISOString(),
+      })),
     };
   }
 

@@ -24,6 +24,15 @@ export class AdjustmentInputDto extends AdjustmentInput {
   declare dressId: string;
 }
 
+export class AddAdjustmentInputDto {
+  @ApiProperty({
+    name: "adjustments",
+    description: "Ajustes",
+    type: [AdjustmentInputDto],
+  })
+  adjustments: AdjustmentInputDto[];
+}
+
 export class AddAdjustmentOutputDto extends AddAdjustmentsOutput {
   @ApiProperty({
     name: "bookingId",

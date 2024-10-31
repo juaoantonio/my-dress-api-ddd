@@ -26,13 +26,13 @@ import {
 } from "@nest/booking-module/dto/create-booking-process.dto";
 import { AddBookingItemsInputDto } from "@nest/booking-module/dto/add-booking-items.dto";
 import {
+  AddAdjustmentInputDto,
   AddAdjustmentOutputDto,
-  AdjustmentInputDto,
 } from "@nest/booking-module/dto/add-adjustment.dto";
 import { BookingOutputDto } from "@nest/booking-module/dto/booking.dto";
 
 @ApiBearerAuth()
-@ApiTags("reservas")
+@ApiTags("Reservas")
 @Controller("bookings")
 export class BookingController {
   @Inject(CreateBookingProcessUseCase)
@@ -121,11 +121,11 @@ export class BookingController {
   @Patch(":bookingId/adjustments")
   async addAdjustments(
     @Param("bookingId", new ParseUUIDPipe()) bookingId: string,
-    @Body() adjustments: AdjustmentInputDto[],
+    @Body() input: AddAdjustmentInputDto,
   ): Promise<AddAdjustmentOutputDto> {
     return await this.addAdjustmentsUseCase.execute({
       bookingId,
-      adjustments,
+      adjustments: input.adjustments,
     });
   }
 

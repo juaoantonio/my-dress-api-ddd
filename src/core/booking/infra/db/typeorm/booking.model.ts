@@ -41,7 +41,7 @@ export class BookingModel extends BaseModel {
     nullable: true,
     transformer: {
       to: (value: Date) => (value ? value.toISOString() : null),
-      from: (value: string) => new Date(value),
+      from: (value: string) => (value ? new Date(value) : null),
     },
   })
   pickUpDate: Date;
@@ -51,7 +51,7 @@ export class BookingModel extends BaseModel {
     nullable: true,
     transformer: {
       to: (value: Date) => (value ? value.toISOString() : null),
-      from: (value: string) => new Date(value),
+      from: (value: string) => (value ? new Date(value) : null),
     },
   })
   returnDate: Date;

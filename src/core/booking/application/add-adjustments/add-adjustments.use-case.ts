@@ -32,8 +32,9 @@ export class AddAdjustmentsUseCase
       throw new EntityNotFoundError(foundDresses.notExists, Dress);
     }
     booking.getDresses().forEach((dress) => {
+      dress.clearAdjustments();
       input.adjustments.forEach((adjustment) => {
-        if (dress.getId().getValue() === adjustment.dressId) {
+        if (dress.getProductId() === adjustment.dressId) {
           dress.addAdjustment({
             label: adjustment.label,
             description: adjustment.description,
