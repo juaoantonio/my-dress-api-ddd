@@ -103,8 +103,14 @@ export abstract class Product<T extends ProductId> extends AggregateRoot<T> {
     this.validate(["imagePath"]);
   }
 
-  public isAvailableFor(date: DateVo): boolean {
+  public isAvailableForDate(date: DateVo): boolean {
     return this.reservationPeriods.every((period) => !period.contains(date));
+  }
+
+  public isAvailableForPeriod(period: Period): boolean {
+    return this.reservationPeriods.every(
+      (reservationPeriod) => !reservationPeriod.overlaps(period),
+    );
   }
 
   public addReservationPeriod(period: Period): void {

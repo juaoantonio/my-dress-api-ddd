@@ -2,6 +2,8 @@ import { Entity } from "@core/@shared/domain/entity";
 import { Uuid } from "@core/@shared/domain/value-objects/uuid.vo";
 import { BookingItemValidatorFactory } from "./booking-item.validator";
 import { BookingClutchItemFakeBuilder } from "@core/booking/domain/entities/booking-clutch-item-fake.builder";
+import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
+import { Period } from "@core/@shared/domain/value-objects/period.vo";
 
 export class BookingClutchItemId extends Uuid {}
 
@@ -14,12 +16,20 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
     id: BookingClutchItemId;
     productId: string;
     rentPrice: number;
+    reservationPeriods?: Period[];
     isCourtesy?: boolean;
   }) {
     super(props.id);
     this.productId = props.productId;
     this.rentPrice = props.rentPrice;
+    this._reservationPeriods = props.reservationPeriods ?? [];
     this.isCourtesy = props.isCourtesy ?? false;
+  }
+
+  private _reservationPeriods: Period[];
+
+  get reservationPeriods(): Period[] {
+    return this._reservationPeriods;
   }
 
   static fake(): typeof BookingClutchItemFakeBuilder {
@@ -30,16 +40,25 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
     id?: BookingClutchItemId;
     productId: string;
     rentPrice: number;
+    reservationPeriods?: Period[];
     isCourtesy?: boolean;
   }): BookingClutchItem {
     const newBooking = new BookingClutchItem({
       id: props.id ?? BookingClutchItemId.random(),
       productId: props.productId,
       rentPrice: props.rentPrice,
+      reservationPeriods: props.reservationPeriods,
       isCourtesy: props.isCourtesy,
     });
     newBooking.validate();
     return newBooking;
+  }
+
+  static from(clutch: Clutch): BookingClutchItem {
+    return BookingClutchItem.create({
+      productId: clutch.getId().getValue(),
+      rentPrice: clutch.getRentPrice(),
+    });
   }
 
   validate(fields?: string[]): void {

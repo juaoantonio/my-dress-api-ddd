@@ -1,6 +1,7 @@
 import { ValueObject } from "../../@shared/domain/value-object";
 import { InvalidBookingPeriodError } from "./booking.errors";
 import { DateVo } from "../../@shared/domain/value-objects/date.vo";
+import { Period } from "@core/@shared/domain/value-objects/period.vo";
 
 export class BookingPeriod extends ValueObject {
   private readonly pickUpDate: DateVo;
@@ -20,6 +21,13 @@ export class BookingPeriod extends ValueObject {
     const bookingPeriod = new BookingPeriod(props);
     bookingPeriod.validate();
     return bookingPeriod;
+  }
+
+  public toPeriod(): Period {
+    return Period.create({
+      startDate: this.pickUpDate,
+      endDate: this.returnDate || this.pickUpDate,
+    });
   }
 
   validate(): void {
