@@ -91,6 +91,7 @@ export class DressController {
   @ApiOperation({
     summary: "Deletar um vestido",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiParam({
     name: "id",
     required: true,
@@ -136,6 +137,7 @@ export class DressController {
   @ApiOperation({
     summary: "Buscar um vestido",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiParam({
     name: "id",
     required: true,
@@ -159,6 +161,7 @@ export class DressController {
   @ApiOperation({
     summary: "Listar vestidos com paginação",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Vestidos listados com sucesso",

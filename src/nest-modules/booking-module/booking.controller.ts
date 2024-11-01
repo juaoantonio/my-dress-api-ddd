@@ -1,5 +1,6 @@
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +31,11 @@ import {
   AddAdjustmentOutputDto,
 } from "@nest/booking-module/dto/add-adjustment.dto";
 import { BookingOutputDto } from "@nest/booking-module/dto/booking.dto";
+import { GetPaginatedBookingsUseCase } from "@core/booking/application/get-paginated-bookings/get-paginated-bookings.use-case";
+import {
+  GetPaginatedBookingsInputDto,
+  GetPaginatedBookingsOutputDto,
+} from "@nest/booking-module/dto/get-paginated-bookings.dto";
 
 @ApiBearerAuth()
 @ApiTags("Reservas")
@@ -47,10 +53,14 @@ export class BookingController {
   @Inject(AddAdjustmentsUseCase)
   private readonly addAdjustmentsUseCase: AddAdjustmentsUseCase;
 
+  @Inject(GetPaginatedBookingsUseCase)
+  private readonly getPaginatedBookingsUseCase: GetPaginatedBookingsUseCase;
+
   @Inject(GetBookingUseCase)
   private readonly getBookingUseCase: GetBookingUseCase;
 
   @ApiOperation({ summary: "Criar processo de reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "Reserva criada com sucesso",
@@ -67,6 +77,7 @@ export class BookingController {
   }
 
   @ApiOperation({ summary: "Iniciar processo de reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Processo de reserva iniciado com sucesso",
@@ -85,6 +96,7 @@ export class BookingController {
   }
 
   @ApiOperation({ summary: "Adicionar itens à reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Itens adicionados à reserva com sucesso",
@@ -110,6 +122,7 @@ export class BookingController {
   }
 
   @ApiOperation({ summary: "Adicionar ajustes aos vestidos da reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Ajustes adicionados com sucesso",
@@ -129,7 +142,30 @@ export class BookingController {
     });
   }
 
+  @ApiOperation({ summary: "Buscar reservas paginadas" })
+  @ApiConsumes("application/json", "multipart/form-data")
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Reservas encontradas com sucesso",
+  })
+  @Get()
+  async getPaginatedBookings(
+    @Body() input: GetPaginatedBookingsInputDto,
+  ): Promise<GetPaginatedBookingsOutputDto> {
+    return await this.getPaginatedBookingsUseCase.execute({
+      page: input.page,
+      limit: input.limit,
+      sortDir: input.sortDir,
+      customerName: input.customerName,
+      eventDate: input.eventDate,
+      expectedPickUpDate: input.expectedPickUpDate,
+      expectedReturnDate: input.expectedReturnDate,
+      status: input.status,
+    });
+  }
+
   @ApiOperation({ summary: "Buscar uma reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Reserva encontrada com sucesso",

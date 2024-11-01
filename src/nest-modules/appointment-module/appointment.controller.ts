@@ -18,6 +18,7 @@ import { RescheduleAppointmentDto } from "@nest/appointment-module/dto/reschedul
 import { ScheduleInitialVisitDto } from "@nest/appointment-module/dto/schedule-initial-visit.dto";
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -59,6 +60,7 @@ export class AppointmentController {
   private completeAppointmentUseCase: CompleteAppointmentUseCase;
 
   @ApiOperation({ summary: "Buscar um agendamento" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiParam({
     name: "id",
     description: "ID do agendamento a ser buscado",
@@ -75,6 +77,7 @@ export class AppointmentController {
   @ApiOperation({
     summary: "Listar agendamentos com paginação",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Agendamentos listados com sucesso",
@@ -99,6 +102,7 @@ export class AppointmentController {
 
   @Post("initial-visit")
   @ApiOperation({ summary: "Agendar uma visita inicial" })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: 201,
     description: "Visita inicial agendada com sucesso",
@@ -114,6 +118,7 @@ export class AppointmentController {
   }
 
   @Post("adjustment-return")
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiOperation({
     summary: "Agendar retorno para ajuste a partir de uma reserva",
   })
@@ -137,6 +142,7 @@ export class AppointmentController {
   }
 
   @Patch(":appointmentId/reschedule")
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiOperation({ summary: "Reagendar um agendamento existente" })
   @ApiParam({
     name: "appointmentId",
@@ -167,6 +173,7 @@ export class AppointmentController {
   }
 
   @Patch(":appointmentId/cancel")
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiOperation({ summary: "Cancelar um agendamento" })
   @ApiParam({
     name: "appointmentId",
@@ -190,6 +197,7 @@ export class AppointmentController {
   }
 
   @Patch(":appointmentId/complete")
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiOperation({ summary: "Concluir um agendamento" })
   @ApiParam({
     name: "appointmentId",
