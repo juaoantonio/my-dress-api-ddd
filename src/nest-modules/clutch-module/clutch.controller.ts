@@ -90,6 +90,7 @@ export class ClutchController {
   @ApiOperation({
     summary: "Deletar uma bolsa",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiParam({
     name: "id",
     required: true,
@@ -140,6 +141,7 @@ export class ClutchController {
   @ApiOperation({
     summary: "Buscar uma bolsa",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiParam({
     name: "id",
     required: true,
@@ -174,6 +176,7 @@ export class ClutchController {
   @ApiOperation({
     summary: "Listar bolsas com paginação",
   })
+  @ApiConsumes("application/json", "multipart/form-data")
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Bolsas listadas com sucesso",
