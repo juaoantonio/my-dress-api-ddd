@@ -15,6 +15,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { CreateBookingProcessUseCase } from "@core/booking/application/create-booking-process/create-booking-process.use-case";
 import { InitBookingProcessUseCase } from "@core/booking/application/init-booking-process/init-booking-process.use-case";
@@ -150,7 +151,7 @@ export class BookingController {
   })
   @Get()
   async getPaginatedBookings(
-    @Body() input: GetPaginatedBookingsInputDto,
+    @Query() input: GetPaginatedBookingsInputDto,
   ): Promise<GetPaginatedBookingsOutputDto> {
     return await this.getPaginatedBookingsUseCase.execute({
       page: input.page,
