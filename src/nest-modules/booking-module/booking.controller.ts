@@ -15,6 +15,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { CreateBookingProcessUseCase } from "@core/booking/application/create-booking-process/create-booking-process.use-case";
 import { InitBookingProcessUseCase } from "@core/booking/application/init-booking-process/init-booking-process.use-case";
@@ -147,10 +148,11 @@ export class BookingController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Reservas encontradas com sucesso",
+    type: GetPaginatedBookingsOutputDto,
   })
   @Get()
   async getPaginatedBookings(
-    @Body() input: GetPaginatedBookingsInputDto,
+    @Query() input: GetPaginatedBookingsInputDto,
   ): Promise<GetPaginatedBookingsOutputDto> {
     return await this.getPaginatedBookingsUseCase.execute({
       page: input.page,
@@ -169,6 +171,7 @@ export class BookingController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Reserva encontrada com sucesso",
+    type: BookingOutputDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
