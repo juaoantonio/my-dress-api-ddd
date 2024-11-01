@@ -148,6 +148,7 @@ export class BookingController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Reservas encontradas com sucesso",
+    type: GetPaginatedBookingsOutputDto,
   })
   @Get()
   async getPaginatedBookings(
@@ -170,6 +171,7 @@ export class BookingController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Reserva encontrada com sucesso",
+    type: BookingOutputDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,

@@ -82,22 +82,6 @@ export class GetPaginatedBookingsOutputDto
     isArray: true,
     type: () => BookingOutputDto,
     description: "Listagem de reservas",
-    example: [
-      {
-        id: "667cb46b-fd52-4a5b-bdb2-1d8cc2e525ef",
-        customerName: "Maria Silva",
-        eventDate: "2021-10-10",
-        expectedPickUpDate: "2021-10-10T10:00:00Z",
-        expectedReturnDate: "2021-10-10T10:00:00Z",
-        pickUpDate: null,
-        returnDate: null,
-        status: "NOT_INITIATED",
-        amountPaid: 0,
-        totalBookingPrice: 0,
-        dresses: [],
-        clutches: [],
-      },
-    ],
   })
   declare items: BookingOutputDto[];
 }
