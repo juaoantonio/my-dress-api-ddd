@@ -13,6 +13,7 @@ import { CLUTCH_PROVIDERS } from "@nest/clutch-module/clutch.provider";
 import { AddAdjustmentsUseCase } from "@core/booking/application/add-adjustments/add-adjustments.use-case";
 import { GetBookingUseCase } from "@core/booking/application/get-booking/get-booking.use-case";
 import { IClutchRepository } from "@core/products/domain/clutch/clutch.repository";
+import { GetPaginatedBookingsUseCase } from "@core/booking/application/get-paginated-bookings/get-paginated-bookings.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_BOOKING_REPOSITORY: {
@@ -77,6 +78,14 @@ export const USE_CASES: ProviderType = {
       REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide,
       DRESS_PROVIDERS.REPOSITORIES.DEFAULT_DRESS_REPOSITORY.provide,
     ],
+  },
+
+  GET_PAGINATED_BOOKINGS_USE_CASE: {
+    provide: GetPaginatedBookingsUseCase,
+    useFactory: (bookingRepository: IBookingRepository) => {
+      return new GetPaginatedBookingsUseCase(bookingRepository);
+    },
+    inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
   },
 
   GET_BOOKING_USE_CASE: {
