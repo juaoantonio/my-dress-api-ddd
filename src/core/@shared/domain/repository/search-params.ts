@@ -36,7 +36,7 @@ export class SearchParams<Filter = string> extends ValueObject {
     this._page = _page;
   }
 
-  protected _perPage: number = 15;
+  protected _perPage: number = 10;
 
   get perPage() {
     return this._perPage;

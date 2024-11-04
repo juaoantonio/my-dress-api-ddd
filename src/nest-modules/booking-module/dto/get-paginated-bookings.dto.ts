@@ -8,26 +8,34 @@ import { BookingOutputDto } from "@nest/booking-module/dto/booking.dto";
 import { SortDirection } from "@core/@shared/domain/repository/search-params";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
 import { Relation } from "typeorm";
+import { Type } from "class-transformer";
 
 export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "page",
     description: "Página",
     example: 1,
+    required: false,
+    default: 1,
   })
-  declare page: number;
+  @Type(() => Number)
+  declare page?: number;
 
   @ApiProperty({
     name: "limit",
     description: "Limite",
     example: 10,
+    required: false,
+    default: 10,
   })
-  declare limit: number;
+  @Type(() => Number)
+  declare limit?: number;
 
   @ApiProperty({
     name: "sortDir",
     description: "Direção da ordenação",
     enum: ["asc", "desc"],
+    required: false,
   })
   declare sortDir?: SortDirection;
 
@@ -35,29 +43,33 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
     name: "customerName",
     description: "Nome do cliente",
     example: "Maria Silva",
+    required: false,
   })
-  declare customerName: string;
+  declare customerName?: string;
 
   @ApiProperty({
     name: "eventDate",
     description: "Data do evento",
     example: "2021-10-10T10:00:00Z",
+    required: false,
   })
-  declare eventDate: string;
+  declare eventDate?: string;
 
   @ApiProperty({
     name: "expectedPickUpDate",
     description: "Data de retirada esperada",
     example: "2021-10-10T10:00:00Z",
+    required: false,
   })
-  declare expectedPickUpDate: string;
+  declare expectedPickUpDate?: string;
 
   @ApiProperty({
     name: "expectedReturnDate",
     description: "Data de devolução esperada",
     example: "2021-10-10T10:00:00Z",
+    required: false,
   })
-  declare expectedReturnDate: string;
+  declare expectedReturnDate?: string;
 
   @ApiProperty({
     name: "status",
@@ -70,8 +82,9 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
       "COMPLETED",
       "CANCELED",
     ],
+    required: false,
   })
-  declare status: Relation<BookingStatus>;
+  declare status?: Relation<BookingStatus>;
 }
 
 export class GetPaginatedBookingsOutputDto

@@ -50,10 +50,10 @@ export class GetPaginatedBookingsUseCase
 
 export class GetPaginatedBookingsInput {
   @IsPositive()
-  page: number;
+  page?: number;
 
   @IsPositive()
-  limit: number;
+  limit?: number;
 
   @IsEnum(["asc", "desc"])
   @IsOptional()
@@ -76,6 +76,7 @@ export class GetPaginatedBookingsInput {
   expectedReturnDate?: string;
 
   @IsEnum(BookingStatus)
+  @IsOptional()
   status?: BookingStatus;
 }
 
