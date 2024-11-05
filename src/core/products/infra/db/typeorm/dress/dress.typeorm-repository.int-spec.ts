@@ -391,7 +391,7 @@ describe("DressTypeormRepository Integration Test", async () => {
       expect(searchResult.items).toHaveLength(3);
       expect(searchResult.items[0].getRentPrice()).toBe(210.0); // Maior preço
       expect(searchResult.items[1].getRentPrice()).toBe(180.0);
-      expect(searchResult.items[2].getRentPrice()).toBe(0.0); // Menor preço
+      expect(searchResult.items[2].getRentPrice()).toBe(150.0); // Menor preço
     });
 
     it("should return no dresses if filter does not match", async () => {
