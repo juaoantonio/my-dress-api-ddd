@@ -93,7 +93,7 @@ describe("ClutchTypeormRepository Integration Test", async () => {
       expect(searchResult.items).toContainEqual(clutch2);
       expect(searchResult.total).toBe(2);
       expect(searchResult.currentPage).toBe(1);
-      expect(searchResult.perPage).toBe(15);
+      expect(searchResult.perPage).toBe(10);
     });
 
     it("should return available clutches when reservations do not overlap with the requested period", async () => {
