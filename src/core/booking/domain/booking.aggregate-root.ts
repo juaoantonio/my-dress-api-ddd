@@ -127,9 +127,12 @@ export class Booking extends AggregateRoot<BookingId> {
   // Behavior methods
   public calculateTotalPrice(): number {
     return (
-      this.dresses.reduce((acc, item) => acc + item.getRentPrice(), 0) +
+      this.dresses.reduce((acc, item) => {
+        if (item.getIsCourtesy()) return acc;
+        return acc + item.getRentPrice();
+      }, 0) +
       this.clutches.reduce((acc, item) => {
-        if (item.getIsCourtesy()) return;
+        if (item.getIsCourtesy()) return acc;
         return acc + item.getRentPrice();
       }, 0)
     );

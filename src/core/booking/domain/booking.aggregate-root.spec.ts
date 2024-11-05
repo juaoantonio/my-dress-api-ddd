@@ -315,6 +315,27 @@ describe("Booking Aggregate Unit Tests", function () {
       expect(booking.getStatus()).toBe(BookingStatus.PAYMENT_PENDING);
     });
 
+    it("should ignore item's price if is courtesy when calculate total price", () => {
+      const booking = Booking.fake().aBooking().build();
+      const dressItem1 = BookingDressItem.fake()
+        .aDressItem()
+        .withIsCourtesy(false)
+        .withRentPrice(200)
+        .build();
+      const dressItem2 = BookingDressItem.fake()
+        .aDressItem()
+        .withIsCourtesy(true)
+        .withRentPrice(200)
+        .build();
+      const clutchItem = BookingClutchItem.fake()
+        .aClutchItem()
+        .withIsCourtesy(true)
+        .withRentPrice(100)
+        .build();
+      booking.addManyItems([dressItem1, dressItem2, clutchItem]);
+      expect(booking.calculateTotalPrice()).toBe(200);
+    });
+
     it("should mark booking as ready if amountPaid is equal to total booking price", () => {
       const booking = Booking.create({
         customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
