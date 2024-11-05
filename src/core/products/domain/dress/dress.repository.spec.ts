@@ -16,7 +16,7 @@ describe("DressSearchParams", () => {
       expect(searchParams).toBeInstanceOf(DressSearchParams);
       expect(searchParams.filter).toBeNull();
       expect(searchParams.page).toBe(1);
-      expect(searchParams.perPage).toBe(15);
+      expect(searchParams.perPage).toBe(10);
       expect(searchParams.sort).toBeNull();
       expect(searchParams.sortDir).toBeNull();
     });
@@ -154,7 +154,7 @@ describe("DressSearchParams", () => {
         period,
       });
       expect(searchParams.page).toBe(1);
-      expect(searchParams.perPage).toBe(15);
+      expect(searchParams.perPage).toBe(10);
       expect(searchParams.sort).toBeNull();
       expect(searchParams.sortDir).toBeNull();
     });

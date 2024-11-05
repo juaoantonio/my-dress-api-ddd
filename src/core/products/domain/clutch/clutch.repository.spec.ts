@@ -21,7 +21,7 @@ describe("ClutchSearchParams", () => {
       expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toBeNull();
       expect(searchParams.page).toBe(1);
-      expect(searchParams.perPage).toBe(15);
+      expect(searchParams.perPage).toBe(10);
       expect(searchParams.sort).toBeNull();
       expect(searchParams.sortDir).toBeNull();
     });
@@ -152,7 +152,7 @@ describe("ClutchSearchParams", () => {
         period,
       });
       expect(searchParams.page).toBe(1);
-      expect(searchParams.perPage).toBe(15);
+      expect(searchParams.perPage).toBe(10);
       expect(searchParams.sort).toBeNull();
       expect(searchParams.sortDir).toBeNull();
     });

@@ -56,7 +56,6 @@ export class Booking extends AggregateRoot<BookingId> {
   private clutches: BookingClutchItem[] = [];
   private status: BookingStatus;
   private amountPaid: number = 0;
-  private readonly totalBookingPrice: number = 0;
 
   constructor(props: BookingConstructorProps) {
     super(props.id);
@@ -68,7 +67,6 @@ export class Booking extends AggregateRoot<BookingId> {
     this.clutches = props.clutches ?? [];
     this.status = props.status;
     this.amountPaid = props.amountPaid || 0;
-    this.totalBookingPrice = this.calculateTotalPrice();
     this.registerHandler(
       BookingAmountPaidUpdatedEvent.name,
       this.onBookingAmountPaidUpdate.bind(this),
@@ -130,7 +128,10 @@ export class Booking extends AggregateRoot<BookingId> {
   public calculateTotalPrice(): number {
     return (
       this.dresses.reduce((acc, item) => acc + item.getRentPrice(), 0) +
-      this.clutches.reduce((acc, item) => acc + item.getRentPrice(), 0)
+      this.clutches.reduce((acc, item) => {
+        if (item.getIsCourtesy()) return;
+        return acc + item.getRentPrice();
+      }, 0)
     );
   }
 
@@ -282,7 +283,7 @@ export class Booking extends AggregateRoot<BookingId> {
 
   // Event handlers
   private onBookingAmountPaidUpdate(): void {
-    if (this.amountPaid === this.totalBookingPrice) {
+    if (this.amountPaid === this.calculateTotalPrice()) {
       this.status = BookingStatus.READY;
     }
   }

@@ -23,6 +23,7 @@ class BookingRules {
 
   constructor(aggregate: Booking) {
     Object.assign(this, aggregate);
+    this.totalBookingPrice = aggregate.calculateTotalPrice();
   }
 }
 

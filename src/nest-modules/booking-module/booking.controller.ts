@@ -37,6 +37,8 @@ import {
   GetPaginatedBookingsInputDto,
   GetPaginatedBookingsOutputDto,
 } from "@nest/booking-module/dto/get-paginated-bookings.dto";
+import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/update-payment.use-case";
+import { UpdatePaymentInputDto } from "@nest/booking-module/dto/update-payment.dto";
 
 @ApiBearerAuth()
 @ApiTags("Reservas")
@@ -53,6 +55,9 @@ export class BookingController {
 
   @Inject(AddAdjustmentsUseCase)
   private readonly addAdjustmentsUseCase: AddAdjustmentsUseCase;
+
+  @Inject(UpdatePaymentUseCase)
+  private readonly updatePaymentUseCase: UpdatePaymentUseCase;
 
   @Inject(GetPaginatedBookingsUseCase)
   private readonly getPaginatedBookingsUseCase: GetPaginatedBookingsUseCase;
@@ -140,6 +145,27 @@ export class BookingController {
     return await this.addAdjustmentsUseCase.execute({
       bookingId,
       adjustments: input.adjustments,
+    });
+  }
+
+  @ApiOperation({ summary: "Atualizar pagamento da reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Pagamento atualizado com sucesso",
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Reserva não encontrada",
+  })
+  @Patch(":bookingId/payment")
+  async updatePayment(
+    @Param("bookingId", new ParseUUIDPipe()) bookingId: string,
+    @Body() input: UpdatePaymentInputDto,
+  ): Promise<void> {
+    return await this.updatePaymentUseCase.execute({
+      bookingId,
+      amount: input.amount,
     });
   }
 

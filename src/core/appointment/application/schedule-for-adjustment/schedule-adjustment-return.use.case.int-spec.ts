@@ -27,6 +27,8 @@ export const bookingRepositoryStub: IBookingRepository = {
   getEntity(): { new (...args: any[]): Booking } {
     return Booking;
   },
+  search: vi.fn(),
+  sortableFields: [],
 };
 
 describe("ScheduleAdjustmentReturnUseCase Integration Test", () => {
