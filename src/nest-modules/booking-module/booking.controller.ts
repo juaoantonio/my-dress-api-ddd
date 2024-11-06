@@ -8,6 +8,7 @@ import {
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Inject,
@@ -39,6 +40,7 @@ import {
 } from "@nest/booking-module/dto/get-paginated-bookings.dto";
 import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/update-payment.use-case";
 import { UpdatePaymentInputDto } from "@nest/booking-module/dto/update-payment.dto";
+import { CancelBookingUseCase } from "@core/booking/application/cancel-booking/cancel-booking.use-case";
 
 @ApiBearerAuth()
 @ApiTags("Reservas")
@@ -58,6 +60,9 @@ export class BookingController {
 
   @Inject(UpdatePaymentUseCase)
   private readonly updatePaymentUseCase: UpdatePaymentUseCase;
+
+  @Inject(CancelBookingUseCase)
+  private readonly cancelBookingUseCase: CancelBookingUseCase;
 
   @Inject(GetPaginatedBookingsUseCase)
   private readonly getPaginatedBookingsUseCase: GetPaginatedBookingsUseCase;
@@ -166,6 +171,25 @@ export class BookingController {
     return await this.updatePaymentUseCase.execute({
       bookingId,
       amount: input.amount,
+    });
+  }
+
+  @ApiOperation({ summary: "Cancelar reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Reserva cancelada com sucesso",
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Reserva não encontrada",
+  })
+  @Delete(":bookingId")
+  async cancelBooking(
+    @Param("bookingId", new ParseUUIDPipe()) bookingId: string,
+  ): Promise<void> {
+    return await this.cancelBookingUseCase.execute({
+      bookingId,
     });
   }
 
