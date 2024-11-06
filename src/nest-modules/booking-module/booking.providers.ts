@@ -16,6 +16,7 @@ import { IClutchRepository } from "@core/products/domain/clutch/clutch.repositor
 import { GetPaginatedBookingsUseCase } from "@core/booking/application/get-paginated-bookings/get-paginated-bookings.use-case";
 import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/update-payment.use-case";
 import { CancelBookingUseCase } from "@core/booking/application/cancel-booking/cancel-booking.use-case";
+import { StartBookingUseCase } from "@core/booking/application/start-booking-process/start-booking-process.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_BOOKING_REPOSITORY: {
@@ -94,6 +95,14 @@ export const USE_CASES: ProviderType = {
     provide: CancelBookingUseCase,
     useFactory: (bookingRepository: IBookingRepository) => {
       return new CancelBookingUseCase(bookingRepository);
+    },
+    inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
+  },
+
+  START_BOOKING_USE_CASE: {
+    provide: StartBookingUseCase,
+    useFactory: (bookingRepository: IBookingRepository) => {
+      return new StartBookingUseCase(bookingRepository);
     },
     inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
   },

@@ -41,6 +41,7 @@ import {
 import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/update-payment.use-case";
 import { UpdatePaymentInputDto } from "@nest/booking-module/dto/update-payment.dto";
 import { CancelBookingUseCase } from "@core/booking/application/cancel-booking/cancel-booking.use-case";
+import { StartBookingUseCase } from "@core/booking/application/start-booking-process/start-booking-process.use-case";
 
 @ApiBearerAuth()
 @ApiTags("Reservas")
@@ -63,6 +64,9 @@ export class BookingController {
 
   @Inject(CancelBookingUseCase)
   private readonly cancelBookingUseCase: CancelBookingUseCase;
+
+  @Inject(StartBookingUseCase)
+  private readonly startBookingUseCase: StartBookingUseCase;
 
   @Inject(GetPaginatedBookingsUseCase)
   private readonly getPaginatedBookingsUseCase: GetPaginatedBookingsUseCase;
@@ -190,6 +194,25 @@ export class BookingController {
   ): Promise<void> {
     return await this.cancelBookingUseCase.execute({
       bookingId,
+    });
+  }
+
+  @ApiOperation({ summary: "Iniciar processo de reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Processo de reserva iniciado com sucesso",
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Reserva não encontrada",
+  })
+  @Patch(":bookingId/start")
+  async startBooking(
+    @Param("bookingId", new ParseUUIDPipe()) bookingId: string,
+  ) {
+    return await this.startBookingUseCase.execute({
+      bookingId: bookingId,
     });
   }
 
