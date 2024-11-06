@@ -42,6 +42,7 @@ import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/u
 import { UpdatePaymentInputDto } from "@nest/booking-module/dto/update-payment.dto";
 import { CancelBookingUseCase } from "@core/booking/application/cancel-booking/cancel-booking.use-case";
 import { StartBookingUseCase } from "@core/booking/application/start-booking-process/start-booking-process.use-case";
+import { CompleteBookingUseCase } from "@core/booking/application/complete-booking/complete-booking.use-case";
 
 @ApiBearerAuth()
 @ApiTags("Reservas")
@@ -67,6 +68,9 @@ export class BookingController {
 
   @Inject(StartBookingUseCase)
   private readonly startBookingUseCase: StartBookingUseCase;
+
+  @Inject(CompleteBookingUseCase)
+  private readonly completeBookingUseCase: CompleteBookingUseCase;
 
   @Inject(GetPaginatedBookingsUseCase)
   private readonly getPaginatedBookingsUseCase: GetPaginatedBookingsUseCase;
@@ -212,6 +216,25 @@ export class BookingController {
     @Param("bookingId", new ParseUUIDPipe()) bookingId: string,
   ) {
     return await this.startBookingUseCase.execute({
+      bookingId: bookingId,
+    });
+  }
+
+  @ApiOperation({ summary: "Finalizar processo de reserva" })
+  @ApiConsumes("application/json", "multipart/form-data")
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Processo de reserva finalizado com sucesso",
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "Reserva não encontrada",
+  })
+  @Patch(":bookingId/complete")
+  async completeBooking(
+    @Param("bookingId", new ParseUUIDPipe()) bookingId: string,
+  ) {
+    return await this.completeBookingUseCase.execute({
       bookingId: bookingId,
     });
   }

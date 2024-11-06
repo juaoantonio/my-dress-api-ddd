@@ -17,6 +17,7 @@ import { GetPaginatedBookingsUseCase } from "@core/booking/application/get-pagin
 import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/update-payment.use-case";
 import { CancelBookingUseCase } from "@core/booking/application/cancel-booking/cancel-booking.use-case";
 import { StartBookingUseCase } from "@core/booking/application/start-booking-process/start-booking-process.use-case";
+import { CompleteBookingUseCase } from "@core/booking/application/complete-booking/complete-booking.use-case";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_BOOKING_REPOSITORY: {
@@ -103,6 +104,14 @@ export const USE_CASES: ProviderType = {
     provide: StartBookingUseCase,
     useFactory: (bookingRepository: IBookingRepository) => {
       return new StartBookingUseCase(bookingRepository);
+    },
+    inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
+  },
+
+  COMPLETE_BOOKING_USE_CASE: {
+    provide: CompleteBookingUseCase,
+    useFactory: (bookingRepository: IBookingRepository) => {
+      return new CompleteBookingUseCase(bookingRepository);
     },
     inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
   },
