@@ -1,7 +1,7 @@
 name: Publish Docker image
 
 on:
- push:
+  push:
     branches:
       - main
 jobs:
@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: juaoantonio/my-dress-api:latest
+          images: juaoantonio/my-dress-api
 
       - name: Build and push Docker image
         id: push
