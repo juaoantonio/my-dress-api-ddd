@@ -10,7 +10,13 @@ import {
 } from "@core/booking/domain/booking.aggregate-root";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 import { BaseTypeormRepository } from "@core/@shared/infra/db/typeorm/base.typeorm-repository";
-import { FindOptionsOrder, FindOptionsWhere, Repository } from "typeorm";
+import {
+  FindOptionsOrder,
+  FindOptionsWhere,
+  In,
+  Not,
+  Repository,
+} from "typeorm";
 import { BookingModelMapper } from "@core/booking/infra/db/typeorm/booking.model-mapper";
 
 export class BookingTypeormRepository
@@ -61,7 +67,10 @@ export class BookingTypeormRepository
       order.expectedPickUpDate = "ASC";
     }
     const [models, count] = await this.modelRepository.findAndCount({
-      where: whereClause,
+      where: {
+        ...whereClause,
+        status: Not(In(["CANCELED", "COMPLETED"])),
+      },
       order,
       skip: offset,
       take: limit,
