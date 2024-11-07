@@ -186,14 +186,6 @@ export class ClutchController {
   async getPaginatedClutches(
     @Query() query: GetPaginatedClutchesInputDto,
   ): Promise<GetPaginatedClutchesOutputDto> {
-    const page = query.page || 1;
-    const limit = query.limit || 15;
-    return await this.getPaginatedClutchesUseCase.execute({
-      page,
-      limit,
-      available: query.available,
-      endDate: query.endDate,
-      startDate: query.startDate,
-    });
+    return await this.getPaginatedClutchesUseCase.execute(query);
   }
 }

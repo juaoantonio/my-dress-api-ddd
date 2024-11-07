@@ -186,14 +186,6 @@ export class DressController {
   async getPaginatedDresses(
     @Query() query: GetPaginatedDressesInputDto,
   ): Promise<GetPaginatedDressesOutputDto> {
-    const page = query.page || 1;
-    const limit = query.limit || 15;
-    return await this.getPaginatedDressesUseCase.execute({
-      page,
-      limit,
-      available: query.available,
-      endDate: query.endDate,
-      startDate: query.startDate,
-    });
+    return await this.getPaginatedDressesUseCase.execute(query);
   }
 }
