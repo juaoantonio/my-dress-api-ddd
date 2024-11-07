@@ -44,6 +44,10 @@ export class GetPaginatedDressesUseCase
       perPage: input.limit,
       sortDir: "desc",
       filter: {
+        color: input.color,
+        fabric: input.fabric,
+        model: input.model,
+        rentPrice: input.rentPrice,
         available: input.available,
         startDate: input.startDate,
         endDate: input.endDate,
@@ -68,17 +72,30 @@ export class GetPaginatedDressesUseCaseInput {
   @IsOptional()
   limit?: number;
 
+  @IsOptional()
+  model?: string;
+
+  @IsOptional()
+  fabric?: string;
+
+  @IsOptional()
+  color?: string;
+
+  @IsPositive()
+  @IsOptional()
+  rentPrice?: number;
+
   @IsBoolean()
   @IsOptional()
-  available: boolean;
+  available?: boolean;
 
   @IsDateString()
   @IsOptional()
-  startDate: string;
+  startDate?: string;
 
   @IsDateString()
   @IsOptional()
-  endDate: string;
+  endDate?: string;
 }
 
 export type GetPaginatedDressesUseCaseOutput = PaginationOutput<DressOutput>;

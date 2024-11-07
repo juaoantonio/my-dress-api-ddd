@@ -32,6 +32,30 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
   declare limit?: number;
 
   @ApiProperty({
+    name: "model",
+    required: false,
+    type: "string",
+    description: "Modelo da bolsa",
+  })
+  declare model?: string;
+
+  @ApiProperty({
+    name: "color",
+    required: false,
+    type: "string",
+    description: "Cor da bolsa",
+  })
+  declare color?: string;
+
+  @ApiProperty({
+    name: "rentPrice",
+    required: false,
+    type: "number",
+    description: "Preço do aluguel",
+  })
+  declare rentPrice?: number;
+
+  @ApiProperty({
     name: "available",
     required: false,
     description:

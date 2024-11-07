@@ -45,6 +45,9 @@ export class GetPaginatedClutchesUseCase
       perPage: input.limit,
       sortDir: "desc",
       filter: {
+        color: input.color,
+        model: input.model,
+        rentPrice: input.rentPrice,
         available: input.available,
         startDate: input.startDate,
         endDate: input.endDate,
@@ -74,16 +77,25 @@ export class GetPaginatedClutchesUseCaseInput {
   limit?: number;
 
   @IsOptional()
+  model?: string;
+
+  @IsOptional()
+  color?: string;
+
+  @IsOptional()
+  rentPrice?: number;
+
+  @IsOptional()
   @IsBoolean()
-  available: boolean;
+  available?: boolean;
 
   @IsOptional()
   @IsDateString()
-  startDate: string;
+  startDate?: string;
 
   @IsOptional()
   @IsDateString()
-  endDate: string;
+  endDate?: string;
 }
 
 export type GetPaginatedClutchesUseCaseOutput = PaginationOutput<ClutchOutput>;

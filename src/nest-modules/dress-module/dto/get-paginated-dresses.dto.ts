@@ -29,6 +29,38 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
   declare limit?: number;
 
   @ApiProperty({
+    name: "model",
+    required: false,
+    type: "string",
+    description: "Modelo do vestido",
+  })
+  declare model?: string;
+
+  @ApiProperty({
+    name: "color",
+    required: false,
+    type: "string",
+    description: "Cor do vestido",
+  })
+  declare color?: string;
+
+  @ApiProperty({
+    name: "fabric",
+    required: false,
+    type: "string",
+    description: "Tecido do vestido",
+  })
+  declare fabric?: string;
+
+  @ApiProperty({
+    name: "rentPrice",
+    required: false,
+    type: "number",
+    description: "Preço do aluguel",
+  })
+  declare rentPrice?: number;
+
+  @ApiProperty({
     name: "available",
     required: false,
     description:
@@ -41,7 +73,7 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
     }
     return Boolean(value);
   })
-  declare available: boolean;
+  declare available?: boolean;
 
   @ApiProperty({
     name: "startDate",
@@ -50,7 +82,7 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
     description:
       "Data de início do intervalo de datas. É obrigatória se for passada a propriedade available",
   })
-  declare startDate: string;
+  declare startDate?: string;
 
   @ApiProperty({
     name: "endDate",
@@ -59,7 +91,7 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
     description:
       "Data de fim do intervalo de datas. É obrigatória se for passada a propriedade available",
   })
-  declare endDate: string;
+  declare endDate?: string;
 }
 
 export class GetPaginatedDressesOutputDto

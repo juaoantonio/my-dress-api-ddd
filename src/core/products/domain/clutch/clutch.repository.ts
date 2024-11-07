@@ -8,7 +8,6 @@ import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
 import { SearchResult } from "@core/@shared/domain/repository/search-result";
 import { InvalidSearchParamsError } from "@core/@shared/domain/error/invalid-search-params.error";
 import { Period } from "@core/@shared/domain/value-objects/period.vo";
-import { DressFilter } from "@core/products/domain/dress/dress.repository";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
 export type ClutchFilter = {
@@ -46,7 +45,7 @@ export class ClutchSearchParams extends SearchParams<ClutchFilter> {
 
   static create(
     props: Omit<SearchParamsConstructorProps<ClutchFilter>, "filter"> & {
-      filter?: Omit<DressFilter, "period"> & {
+      filter?: Omit<ClutchFilter, "period"> & {
         startDate?: string;
         endDate?: string;
       };
