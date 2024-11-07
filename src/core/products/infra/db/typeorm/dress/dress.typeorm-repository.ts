@@ -40,6 +40,11 @@ export class DressTypeormRepository
     if (filter?.color) {
       qb.andWhere("dress.color ILIKE :color", { color: `%${filter.color}%` });
     }
+    if (filter?.fabric) {
+      qb.andWhere("dress.fabric ILIKE :fabric", {
+        fabric: `%${filter.fabric}%`,
+      });
+    }
     if (filter?.rentPrice !== undefined) {
       qb.andWhere("dress.rentPrice = :rentPrice", {
         rentPrice: filter.rentPrice,

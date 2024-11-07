@@ -10,7 +10,7 @@ import {
   AppointmentId,
   AppointmentStatus,
 } from "@core/appointment/domain/appointment.aggregate";
-import { FindOptionsOrder, FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from "typeorm";
 import { BaseTypeormRepository } from "@core/@shared/infra/db/typeorm/base.typeorm-repository";
 import { AppointmentModelMapper } from "@core/appointment/infra/db/typeorm/appointment.model-mapper";
 import { SearchResult } from "@core/@shared/domain/repository/search-result";
@@ -53,7 +53,7 @@ export class AppointmentTypeormRepository
       whereClause.appointmentDate = filter.appointmentDate.getValue();
     }
     if (filter?.customerName) {
-      whereClause.customerName = filter.customerName;
+      whereClause.customerName = ILike(`%${filter.customerName}%`);
     }
     if (filter?.includeAll === false) {
       whereClause.status = AppointmentStatus.SCHEDULED;
