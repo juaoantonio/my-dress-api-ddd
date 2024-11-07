@@ -8,13 +8,12 @@ import { BookingOutputDto } from "@nest/booking-module/dto/booking.dto";
 import { SortDirection } from "@core/@shared/domain/repository/search-params";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
 import { Relation } from "typeorm";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "page",
     description: "Página",
-    example: 1,
     required: false,
     default: 1,
   })
@@ -24,7 +23,6 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "limit",
     description: "Limite",
-    example: 10,
     required: false,
     default: 10,
   })
@@ -42,7 +40,6 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "customerName",
     description: "Nome do cliente",
-    example: "Maria Silva",
     required: false,
   })
   declare customerName?: string;
@@ -50,7 +47,6 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "eventDate",
     description: "Data do evento",
-    example: "2021-10-10T10:00:00Z",
     required: false,
   })
   declare eventDate?: string;
@@ -58,7 +54,6 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "expectedPickUpDate",
     description: "Data de retirada esperada",
-    example: "2021-10-10T10:00:00Z",
     required: false,
   })
   declare expectedPickUpDate?: string;
@@ -66,7 +61,6 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
   @ApiProperty({
     name: "expectedReturnDate",
     description: "Data de devolução esperada",
-    example: "2021-10-10T10:00:00Z",
     required: false,
   })
   declare expectedReturnDate?: string;
@@ -85,6 +79,21 @@ export class GetPaginatedBookingsInputDto extends GetPaginatedBookingsInput {
     required: false,
   })
   declare status?: Relation<BookingStatus>;
+
+  @ApiProperty({
+    name: "includeArchived",
+    description: "Incluir arquivados (Reservas canceladas ou concluídas)",
+    example: false,
+    required: false,
+  })
+  @Transform(({ value }) => {
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+      return value.toLowerCase() === "true";
+    }
+    return Boolean(value);
+  })
+  declare includeArchived?: boolean;
 }
 
 export class GetPaginatedBookingsOutputDto

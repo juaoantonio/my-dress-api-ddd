@@ -156,7 +156,9 @@ VALUES ('faf61a92-93b8-42cc-8298-1da888f640b4', 'João da Silva', '2024-12-01T00
        ('8bc4b380-89ef-4d5f-816e-750a82b2a826', 'Marcos Pereira', '2025-01-20T00:00:00-03:00',
         '2025-01-18T00:00:00-03:00', '2025-01-21T00:00:00-03:00', NULL, NULL, 'NOT_INITIATED', 0.00),
        ('8296950b-19e1-48f0-ac88-8da7a90f0de7', 'Juliana Mendes', '2025-01-25T00:00:00-03:00',
-        '2025-01-23T00:00:00-03:00', '2025-01-26T00:00:00-03:00', NULL, NULL, 'READY', 0.00);
+        '2025-01-23T00:00:00-03:00', '2025-01-26T00:00:00-03:00', NULL, NULL, 'READY', 0.00),
+       ('8296950b-19e1-48f0-ac88-8da7a90f0de8', 'Maria Mendes', '2025-01-25T00:00:00-03:00',
+        '2025-01-23T00:00:00-03:00', '2025-01-26T00:00:00-03:00', NULL, NULL, 'COMPLETED', 0.00);
 
 INSERT INTO dress_booking_item (id, "rentPrice", "isCourtesy", "dressId", "bookingId", adjustments)
 VALUES ('1f1a2b3c-4d5e-6f78-9a0b-c1d2e3f4b5a6', 120.00, false, 'e1231c50-3a9f-4d3c-8fc4-81cb9cf6a310',

@@ -45,4 +45,11 @@ export class PaginationOutputDto<T> implements PaginationOutput<T> {
     example: true,
   })
   declare isLastPage: boolean;
+
+  @ApiProperty({
+    type: "number",
+    description: "Número de itens na página atual",
+    example: 1,
+  })
+  declare itemsCount: number;
 }

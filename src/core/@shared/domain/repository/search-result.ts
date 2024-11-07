@@ -19,6 +19,7 @@ export class SearchResult<
   readonly lastPage: number;
   readonly isFirstPage: boolean;
   readonly isLastPage: boolean;
+  readonly itemsCount: number;
 
   constructor(props: SearchResultConstructorProps<A>) {
     super();
@@ -33,6 +34,7 @@ export class SearchResult<
         : props.currentPage === Math.ceil(props.total / props.perPage);
     this.lastPage =
       props.total === 0 ? 1 : Math.ceil(this.total / this.perPage);
+    this.itemsCount = this.items.length;
   }
 
   toJSON() {
@@ -44,6 +46,7 @@ export class SearchResult<
       lastPage: this.lastPage,
       isFirstPage: this.isFirstPage,
       isLastPage: this.isLastPage,
+      itemsCount: this.itemsCount,
     };
   }
 }

@@ -17,6 +17,7 @@ describe("SearchResult Unit Tests", () => {
       lastPage: 2,
       isFirstPage: true,
       isLastPage: false,
+      itemsCount: 2,
     });
 
     result = new SearchResult({
@@ -34,6 +35,7 @@ describe("SearchResult Unit Tests", () => {
       lastPage: 2,
       isFirstPage: true,
       isLastPage: false,
+      itemsCount: 2,
     });
   });
 

@@ -3,7 +3,6 @@ import {
   GetPaginatedDressesUseCaseOutput,
 } from "@core/products/application/dress/get-paginated-dresses/get-paginated-dresses.use-case";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { DressDto } from "@nest/dress-module/dto/dress.dto";
 import { PaginationOutputDto } from "@nest/shared-module/dtos/pagination-output.dto";
@@ -16,9 +15,8 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
     description: "Número da página",
     default: 1,
   })
-  @IsOptional()
   @Type(() => Number)
-  declare page: number;
+  declare page?: number;
 
   @ApiProperty({
     name: "limit",
@@ -27,9 +25,8 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
     description: "Número de itens por página",
     default: 10,
   })
-  @IsOptional()
   @Type(() => Number)
-  declare limit: number;
+  declare limit?: number;
 
   @ApiProperty({
     name: "available",

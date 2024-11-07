@@ -13,6 +13,7 @@ import { BaseTypeormRepository } from "@core/@shared/infra/db/typeorm/base.typeo
 import {
   FindOptionsOrder,
   FindOptionsWhere,
+  ILike,
   In,
   Not,
   Repository,
@@ -46,7 +47,7 @@ export class BookingTypeormRepository
     const limit = perPage;
     const whereClause: FindOptionsWhere<BookingModel> = {};
     if (filter?.customerName) {
-      whereClause.customerName = filter.customerName;
+      whereClause.customerName = ILike(`%${filter.customerName}%`);
     }
     if (filter?.eventDate) {
       whereClause.eventDate = new Date(filter.eventDate);
@@ -60,6 +61,9 @@ export class BookingTypeormRepository
     if (filter?.status) {
       whereClause.status = filter.status;
     }
+    if (!filter?.includeArchived) {
+      whereClause.status = Not(In(["CANCELED", "COMPLETED"]));
+    }
     const order: FindOptionsOrder<BookingModel> = {};
     if (sort && this.sortableFields.includes(sort)) {
       order[sort] = sortDir;
@@ -67,10 +71,7 @@ export class BookingTypeormRepository
       order.expectedPickUpDate = "ASC";
     }
     const [models, count] = await this.modelRepository.findAndCount({
-      where: {
-        ...whereClause,
-        status: Not(In(["CANCELED", "COMPLETED"])),
-      },
+      where: whereClause,
       order,
       skip: offset,
       take: limit,

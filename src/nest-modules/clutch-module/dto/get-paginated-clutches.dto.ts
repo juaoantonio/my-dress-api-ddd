@@ -18,7 +18,7 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
   })
   @IsOptional()
   @Type(() => Number)
-  declare page: number;
+  declare page?: number;
 
   @ApiProperty({
     name: "limit",
@@ -29,7 +29,7 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
   })
   @IsOptional()
   @Type(() => Number)
-  declare limit: number;
+  declare limit?: number;
 
   @ApiProperty({
     name: "available",

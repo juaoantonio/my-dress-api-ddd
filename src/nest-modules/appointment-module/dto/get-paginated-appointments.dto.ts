@@ -16,7 +16,7 @@ export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUs
     default: 1,
   })
   @Type(() => Number)
-  declare page: number;
+  declare page?: number;
 
   @ApiProperty({
     name: "limit",
@@ -26,7 +26,7 @@ export class GetPaginatedAppointmentsInputDto extends GetPaginatedAppointmentsUs
     default: 10,
   })
   @Type(() => Number)
-  declare limit: number;
+  declare limit?: number;
 
   @ApiProperty({
     name: "sort",

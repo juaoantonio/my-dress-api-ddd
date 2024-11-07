@@ -61,21 +61,23 @@ export class GetPaginatedDressesUseCase
 
 export class GetPaginatedDressesUseCaseInput {
   @IsPositive()
-  page: number;
+  @IsOptional()
+  page?: number;
 
   @IsPositive()
-  limit: number;
-
   @IsOptional()
+  limit?: number;
+
   @IsBoolean()
+  @IsOptional()
   available: boolean;
 
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   startDate: string;
 
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   endDate: string;
 }
 

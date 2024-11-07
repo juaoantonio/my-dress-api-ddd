@@ -16,6 +16,7 @@ export type BookingFilter = {
   expectedPickUpDate?: string;
   expectedReturnDate?: string;
   status?: BookingStatus;
+  includeArchived?: boolean;
 };
 
 export class BookingSearchParams extends SearchParams<BookingFilter> {
@@ -43,6 +44,9 @@ export class BookingSearchParams extends SearchParams<BookingFilter> {
         expectedReturnDate: _value.expectedReturnDate,
       }),
       ...(_value?.status && { status: _value.status }),
+      ...(typeof _value?.includeArchived === "boolean" && {
+        includeArchived: _value.includeArchived,
+      }),
     };
     this._filter = Object.values(filter).length === 0 ? null : filter;
   }
@@ -55,6 +59,7 @@ export class BookingSearchParams extends SearchParams<BookingFilter> {
         expectedPickUpDate?: string;
         expectedReturnDate?: string;
         status?: BookingStatus;
+        includeArchived?: boolean;
       };
     } = {},
   ) {

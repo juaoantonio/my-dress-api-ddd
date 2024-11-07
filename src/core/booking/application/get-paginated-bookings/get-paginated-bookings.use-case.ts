@@ -4,6 +4,7 @@ import {
   IBookingRepository,
 } from "@core/booking/domain/booking.repository";
 import {
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsOptional,
@@ -50,9 +51,11 @@ export class GetPaginatedBookingsUseCase
 
 export class GetPaginatedBookingsInput {
   @IsPositive()
+  @IsOptional()
   page?: number;
 
   @IsPositive()
+  @IsOptional()
   limit?: number;
 
   @IsEnum(["asc", "desc"])
@@ -78,6 +81,10 @@ export class GetPaginatedBookingsInput {
   @IsEnum(BookingStatus)
   @IsOptional()
   status?: BookingStatus;
+
+  @IsBoolean()
+  @IsOptional()
+  includeArchived?: boolean;
 }
 
 export type GetPaginatedBookingsOutput = PaginationOutput<BookingOutput>;

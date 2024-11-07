@@ -8,6 +8,7 @@ export type PaginationOutput<Item = any> = {
   perPage: number;
   isLastPage: boolean;
   isFirstPage: boolean;
+  itemsCount: number;
 };
 
 export class PaginationOutputMapper {
@@ -23,6 +24,7 @@ export class PaginationOutputMapper {
       perPage: props.perPage,
       isLastPage: props.isLastPage,
       isFirstPage: props.isFirstPage,
+      itemsCount: items.length,
     };
   }
 }

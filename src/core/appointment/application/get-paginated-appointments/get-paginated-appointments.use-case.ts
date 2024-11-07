@@ -50,10 +50,12 @@ export class GetPaginatedAppointmentsUseCase
 
 export class GetPaginatedAppointmentsUseCaseInput {
   @IsPositive()
-  page: number;
+  @IsOptional()
+  page?: number;
 
   @IsPositive()
-  limit: number;
+  @IsOptional()
+  limit?: number;
 
   @IsString()
   @IsOptional()

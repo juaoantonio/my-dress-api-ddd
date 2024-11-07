@@ -66,10 +66,12 @@ export class GetPaginatedClutchesUseCase
 
 export class GetPaginatedClutchesUseCaseInput {
   @IsPositive()
-  page: number;
+  @IsOptional()
+  page?: number;
 
   @IsPositive()
-  limit: number;
+  @IsOptional()
+  limit?: number;
 
   @IsOptional()
   @IsBoolean()
