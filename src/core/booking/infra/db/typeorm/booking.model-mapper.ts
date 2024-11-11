@@ -14,6 +14,7 @@ import { Adjustment } from "@core/booking/domain/entities/vo/adjustment.vo";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
 import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
+import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
 
 export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
   toModel(entity: Booking): BookingModel {
@@ -46,6 +47,7 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
       bookingItemModel.isCourtesy = item.getIsCourtesy();
       bookingItemModel.adjustments = item.getAdjustments();
       bookingItemModel.dressId = item.getProductId();
+      bookingItemModel.bookingId = entity.getId().getValue();
       return bookingItemModel;
     });
     bookingModel.clutches = entity.getClutches().map((item) => {
@@ -54,6 +56,7 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
       bookingItemModel.rentPrice = item.getRentPrice();
       bookingItemModel.isCourtesy = item.getIsCourtesy();
       bookingItemModel.clutchId = item.getProductId();
+      bookingItemModel.bookingId = entity.getId().getValue();
       return bookingItemModel;
     });
     return bookingModel;
@@ -88,6 +91,14 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
               new Adjustment(adjustment.label, adjustment.description),
           ),
           productId: item.dressId,
+        });
+      }),
+      clutches: model.clutches.map((item) => {
+        return new BookingClutchItem({
+          id: BookingDressItemId.create(item.id),
+          rentPrice: item.rentPrice,
+          isCourtesy: item.isCourtesy,
+          productId: item.clutchId,
         });
       }),
     });

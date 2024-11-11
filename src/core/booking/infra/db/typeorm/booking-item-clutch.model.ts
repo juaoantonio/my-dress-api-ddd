@@ -30,13 +30,13 @@ export class BookingItemClutchModel {
   })
   clutch: Relation<ClutchModel>;
 
-  @Column()
-  bookingId: string;
-
   @ManyToOne(() => BookingModel, (booking) => booking.clutches)
   @JoinColumn({
     name: "bookingId",
     referencedColumnName: "id",
   })
   booking: Relation<BookingModel>;
+
+  @Column()
+  bookingId: string;
 }
