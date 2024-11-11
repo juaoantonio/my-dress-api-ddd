@@ -81,26 +81,30 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
         pickUpDate: DateVo.create(model.expectedPickUpDate),
         returnDate: DateVo.create(model.expectedReturnDate),
       }),
-      dresses: model.dresses.map((item) => {
-        return new BookingDressItem({
-          id: BookingDressItemId.create(item.id),
-          rentPrice: item.rentPrice,
-          isCourtesy: item.isCourtesy,
-          adjustments: item.adjustments.map(
-            (adjustment) =>
-              new Adjustment(adjustment.label, adjustment.description),
-          ),
-          productId: item.dressId,
-        });
-      }),
-      clutches: model.clutches.map((item) => {
-        return new BookingClutchItem({
-          id: BookingDressItemId.create(item.id),
-          rentPrice: item.rentPrice,
-          isCourtesy: item.isCourtesy,
-          productId: item.clutchId,
-        });
-      }),
+      dresses: model.dresses
+        ? model.dresses.map((item) => {
+            return new BookingDressItem({
+              id: BookingDressItemId.create(item.id),
+              rentPrice: item.rentPrice,
+              isCourtesy: item.isCourtesy,
+              adjustments: item.adjustments.map(
+                (adjustment) =>
+                  new Adjustment(adjustment.label, adjustment.description),
+              ),
+              productId: item.dressId,
+            });
+          })
+        : [],
+      clutches: model.clutches
+        ? model.clutches.map((item) => {
+            return new BookingClutchItem({
+              id: BookingDressItemId.create(item.id),
+              rentPrice: item.rentPrice,
+              isCourtesy: item.isCourtesy,
+              productId: item.clutchId,
+            });
+          })
+        : [],
     });
   }
 }
