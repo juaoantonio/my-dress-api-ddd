@@ -336,7 +336,7 @@ describe("Booking Aggregate Unit Tests", function () {
       expect(booking.calculateTotalPrice()).toBe(200);
     });
 
-    it("should mark booking as ready if amountPaid is equal to total booking price", () => {
+    it("should mark booking as ready if amountPaid is equal to 50% of booking price", () => {
       const booking = Booking.create({
         customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
@@ -358,7 +358,7 @@ describe("Booking Aggregate Unit Tests", function () {
         ],
       });
       booking.initBookingProcess();
-      booking.updatePayment(150);
+      booking.updatePayment(75);
       expect(booking.getStatus()).toBe(BookingStatus.READY);
     });
 
@@ -443,7 +443,7 @@ describe("Booking Aggregate Unit Tests", function () {
         ],
       });
       booking.initBookingProcess();
-      booking.updatePayment(150);
+      booking.updatePayment(75);
       expect(booking.getStatus()).toBe(BookingStatus.READY);
       booking.start();
       expect(booking.getStatus()).toBe(BookingStatus.IN_PROGRESS);
