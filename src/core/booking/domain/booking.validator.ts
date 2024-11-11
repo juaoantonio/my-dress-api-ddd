@@ -2,10 +2,10 @@ import { ClassValidatorFields } from "../../@shared/domain/validators/class-vali
 import { Min } from "class-validator";
 import { INotification } from "../../@shared/domain/validators/notification.interface";
 import { Booking } from "./booking.aggregate-root";
-import { isLessThanOrEqual } from "@core/@shared/domain/custom-decorators/custom-class-validator-decorators";
+import { IsLessThanOrEqual } from "@core/@shared/domain/custom-decorators/custom-class-validator-decorators";
 
 class BookingRules {
-  @isLessThanOrEqual("totalBookingPrice", {
+  @IsLessThanOrEqual("totalBookingPrice", {
     message: "Valor pago não pode ser maior que o valor total da reserva",
     groups: ["amountPaid"],
   })

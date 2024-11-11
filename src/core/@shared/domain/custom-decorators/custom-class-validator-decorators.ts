@@ -48,7 +48,7 @@ export function isGreaterThan(
   };
 }
 
-export function isLessThanOrEqual(
+export function IsLessThanOrEqual(
   property: string,
   validationOptions?: ValidationOptions,
 ) {
