@@ -1,5 +1,5 @@
 import { IUseCase } from "@core/@shared/application/use-case.interface";
-import { IsArray, IsUUID } from "class-validator";
+import { IsArray, IsBoolean, IsUUID } from "class-validator";
 import { IBookingRepository } from "@core/booking/domain/booking.repository";
 import { IDressRepository } from "@core/products/domain/dress/dress.repository";
 import { IClutchRepository } from "@core/products/domain/clutch/clutch.repository";
@@ -29,14 +29,25 @@ export class AddBookingItemsUseCase
     if (!booking) {
       throw new EntityNotFoundError(bookingId, Booking);
     }
-    const dressIds = input.dressIds.map((id) => DressId.create(id));
+    const dressIds = input.dresses.map(({ dressId }) =>
+      DressId.create(dressId),
+    );
     const dresses = await this.dressRepository.findManyByIds(dressIds);
     const dressItems = dresses.map((dress) => BookingDressItem.from(dress));
-    const clutchIds = input.clutchIds.map((id) => ClutchId.create(id));
-    const clutches = await this.clutchRepository.findManyByIds(clutchIds);
-    const clutchItems = clutches.map((clutch) =>
-      BookingClutchItem.from(clutch),
+    const clutchIds = input.clutches.map(({ clutchId }) =>
+      ClutchId.create(clutchId),
     );
+    const clutches = await this.clutchRepository.findManyByIds(clutchIds);
+    const clutchItems = clutches.map((clutch) => {
+      const clutchBookingItem = BookingClutchItem.from(clutch);
+      const clutchInput = input.clutches.find(
+        (clutchInput) => clutchInput.clutchId === clutch.getId().getValue(),
+      );
+      if (clutchInput) {
+        clutchBookingItem.setIsCourtesy(clutchInput.isCourtesy);
+      }
+      return clutchBookingItem;
+    });
     booking.addManyItems([...dressItems, ...clutchItems]);
     if (booking.notification.hasErrors()) {
       throw new EntityValidationError(booking.notification.toJSON());
@@ -48,17 +59,28 @@ export class AddBookingItemsUseCase
   }
 }
 
+export class AddBookingItemsDressInput {
+  @IsUUID("4")
+  dressId: string;
+}
+
+export class AddBookingItemsClutchInput {
+  @IsUUID("4")
+  clutchId: string;
+
+  @IsBoolean()
+  isCourtesy: boolean = false;
+}
+
 export class AddBookingItemsInput {
   @IsUUID("4")
   bookingId: string;
 
   @IsArray()
-  @IsUUID("4", { each: true })
-  dressIds: string[];
+  dresses: Array<AddBookingItemsDressInput>;
 
   @IsArray()
-  @IsUUID("4", { each: true })
-  clutchIds: string[];
+  clutches: Array<AddBookingItemsClutchInput>;
 }
 
 export class AddBookingItemsOutput {

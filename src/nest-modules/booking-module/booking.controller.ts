@@ -135,8 +135,8 @@ export class BookingController {
   ) {
     return await this.addBookingItemsUseCase.execute({
       bookingId: bookingId,
-      dressIds: input.dressIds,
-      clutchIds: input.clutchIds,
+      dresses: input.dresses,
+      clutches: input.clutches,
     });
   }
 

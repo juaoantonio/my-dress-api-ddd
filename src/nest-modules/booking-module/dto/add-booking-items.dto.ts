@@ -1,20 +1,45 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsUUID } from "class-validator";
+import { IsArray, IsBoolean, IsUUID } from "class-validator";
+
+export class AddBookingItemsDressDto {
+  @ApiProperty({
+    name: "dressId",
+    description: "Identificador do vestido",
+  })
+  @IsUUID("4")
+  dressId: string;
+}
+
+export class AddBookingItemsClutchDto {
+  @ApiProperty({
+    name: "clutchId",
+    description: "Identificador da bolsa",
+  })
+  @IsUUID("4")
+  clutchId: string;
+
+  @ApiProperty({
+    name: "isCourtesy",
+    description: "Cortesia",
+  })
+  @IsBoolean()
+  isCourtesy: boolean = false;
+}
 
 export class AddBookingItemsInputDto {
   @ApiProperty({
-    name: "dressIds",
+    name: "dresses",
     description: "Identificadores dos vestidos",
+    type: AddBookingItemsDressDto,
   })
   @IsArray()
-  @IsUUID("4", { each: true })
-  dressIds: string[];
+  dresses: AddBookingItemsDressDto[];
 
   @ApiProperty({
-    name: "clutchIds",
+    name: "clutches",
     description: "Identificadores das bolsas",
+    type: AddBookingItemsClutchDto,
   })
   @IsArray()
-  @IsUUID("4", { each: true })
-  clutchIds: string[];
+  clutches: AddBookingItemsClutchDto[];
 }

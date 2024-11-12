@@ -77,4 +77,8 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
   public getProductId(): string {
     return this.productId;
   }
+
+  public setIsCourtesy(isCourtesy: boolean): void {
+    this.isCourtesy = isCourtesy;
+  }
 }
