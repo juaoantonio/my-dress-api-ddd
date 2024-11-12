@@ -23,6 +23,7 @@ describe("DressSearchParams", () => {
 
     it("should create a new instance with provided filter values", () => {
       const filter: DressFilter = {
+        name: "Red Evening Gown",
         color: "Red",
         model: "Evening Gown",
         fabric: "Silk",
@@ -37,7 +38,8 @@ describe("DressSearchParams", () => {
       });
 
       expect(searchParams).toBeInstanceOf(DressSearchParams);
-      expect(searchParams.filter).toEqual({
+      expect(searchParams.filter).toStrictEqual({
+        name: "Red Evening Gown",
         color: "Red",
         model: "Evening Gown",
         fabric: "Silk",
@@ -51,6 +53,7 @@ describe("DressSearchParams", () => {
 
     it("should create a new instance and ignore invalid filter values", () => {
       const filter: DressFilter = {
+        name: "",
         color: "",
         model: "",
         fabric: "",

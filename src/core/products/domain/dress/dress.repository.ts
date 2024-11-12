@@ -12,6 +12,7 @@ import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 import { ClutchFilter } from "@core/products/domain/clutch/clutch.repository";
 
 export type DressFilter = {
+  name?: string;
   model?: string;
   color?: string;
   fabric?: string;
@@ -36,6 +37,7 @@ export class DressSearchParams extends SearchParams<DressFilter> {
         : value;
 
     const filter: DressFilter = {
+      ...(_value?.name && { name: _value.name }),
       ...(_value?.color && { color: _value.color }),
       ...(_value?.model && { model: _value.model }),
       ...(_value?.fabric && { fabric: _value.fabric }),

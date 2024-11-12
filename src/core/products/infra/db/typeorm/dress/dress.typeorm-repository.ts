@@ -45,6 +45,13 @@ export class DressTypeormRepository
         fabric: `%${filter.fabric}%`,
       });
     }
+    if (filter?.name) {
+      qb.where("dress.model ILIKE :name", {
+        name: `%${filter.name}%`,
+      }).orWhere("dress.color ILIKE :name", {
+        name: `%${filter.name}%`,
+      });
+    }
     if (filter?.rentPrice !== undefined) {
       qb.andWhere("dress.rentPrice = :rentPrice", {
         rentPrice: filter.rentPrice,

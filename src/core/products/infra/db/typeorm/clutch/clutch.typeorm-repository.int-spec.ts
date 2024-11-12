@@ -1,5 +1,4 @@
 import { setupTypeOrmForIntegrationTests } from "@core/@shared/infra/testing/helpers";
-import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { ClutchTypeormRepository } from "@core/products/infra/db/typeorm/clutch/clutch.typeorm-repository";
 import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model";
 import { Clutch } from "@core/products/domain/clutch/clutch.aggregate-root";
@@ -12,7 +11,6 @@ import {
 } from "@core/products/domain/clutch/clutch.repository";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { InvalidSearchParamsError } from "@core/@shared/domain/error/invalid-search-params.error";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
@@ -215,71 +213,23 @@ describe("ClutchTypeormRepository Integration Test", async () => {
       expect(searchResult2.items[0].equals(clutch)).toBe(true);
     });
 
-    it("should throw InvalidSearchParamsError when available=true but period dates are missing", () => {
-      expect(() =>
-        ClutchSearchParams.create({
-          filter: {
-            available: true,
-            // startDate e endDate estão faltando
-          },
-        }),
-      ).toThrow(InvalidSearchParamsError);
-    });
-
-    it("should create a new instance with available=false and period provided", () => {
+    it("should filter clutches that color or model ilike name", async () => {
+      const clutches = Clutch.fake()
+        .theClutches(3)
+        .withColor((index) => `color${index}`)
+        .withModel((index) => `model${index}`)
+        .build();
+      await clutchRepository.saveMany(clutches);
       const searchParams = ClutchSearchParams.create({
         filter: {
-          available: false,
-          startDate: "2024-11-01T00:00:00.000Z",
-          endDate: "2024-11-10T00:00:00.000Z",
+          name: "1",
         },
-        page: 4,
-        perPage: 25,
-        sort: "fabric",
-        sortDir: "desc",
       });
-
-      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
-      expect(searchParams.filter).toEqual({
-        available: false,
-        period: Period.create({
-          startDate: DateVo.create("2024-11-01T00:00:00.000Z"),
-          endDate: DateVo.create("2024-11-10T00:00:00.000Z"),
-        }),
-      });
-      expect(searchParams.page).toBe(4);
-      expect(searchParams.perPage).toBe(25);
-      expect(searchParams.sort).toBe("fabric");
-      expect(searchParams.sortDir).toBe("desc");
-    });
-
-    it("should create a new instance with partial valid filter values including available and period", () => {
-      const searchParams = ClutchSearchParams.create({
-        filter: {
-          model: "Summer Clutch",
-          available: true,
-          startDate: "2024-10-01T00:00:00.000Z",
-          endDate: "2024-10-15T00:00:00.000Z",
-        },
-        page: 2,
-        perPage: 10,
-        sort: "model",
-        sortDir: "desc",
-      });
-
-      expect(searchParams).toBeInstanceOf(ClutchSearchParams);
-      expect(searchParams.filter).toEqual({
-        model: "Summer Clutch",
-        available: true,
-        period: Period.create({
-          startDate: DateVo.create("2024-10-01T00:00:00.000Z"),
-          endDate: DateVo.create("2024-10-15T00:00:00.000Z"),
-        }),
-      });
-      expect(searchParams.page).toBe(2);
-      expect(searchParams.perPage).toBe(10);
-      expect(searchParams.sort).toBe("model");
-      expect(searchParams.sortDir).toBe("desc");
+      const searchResult: ClutchSearchResult =
+        await clutchRepository.search(searchParams);
+      expect(searchResult.items).toHaveLength(1);
+      expect(searchResult.items[0].getModel()).toBe("model1");
+      expect(searchResult.items[0].getColor()).toBe("color1");
     });
   });
 

@@ -11,6 +11,7 @@ import { Period } from "@core/@shared/domain/value-objects/period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
 
 export type ClutchFilter = {
+  name?: string;
   model?: string;
   color?: string;
   rentPrice?: number;
@@ -34,6 +35,7 @@ export class ClutchSearchParams extends SearchParams<ClutchFilter> {
         : value;
 
     const filter: ClutchFilter = {
+      ...(_value?.name && { name: _value.name }),
       ...(_value?.color && { color: _value.color }),
       ...(_value?.model && { model: _value.model }),
       ...(_value?.rentPrice && { rentPrice: _value.rentPrice }),

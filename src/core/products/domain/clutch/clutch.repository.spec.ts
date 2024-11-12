@@ -28,8 +28,9 @@ describe("ClutchSearchParams", () => {
 
     it("deve criar uma nova instância com valores de filtro fornecidos", () => {
       const filter: ClutchFilter = {
+        name: "Preto Sem Alça",
         color: "Preto",
-        model: "Clutch Elegante",
+        model: "Sem Alça",
         rentPrice: 250.0,
       };
       const searchParams = ClutchSearchParams.create({
@@ -42,8 +43,9 @@ describe("ClutchSearchParams", () => {
 
       expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toEqual({
+        name: "Preto Sem Alça",
         color: "Preto",
-        model: "Clutch Elegante",
+        model: "Sem Alça",
         rentPrice: 250.0,
       });
       expect(searchParams.page).toBe(2);
@@ -54,6 +56,7 @@ describe("ClutchSearchParams", () => {
 
     it("deve ignorar valores de filtro inválidos e retornar filter como null", () => {
       const filter: ClutchFilter = {
+        name: "",
         color: "",
         model: "",
         rentPrice: 0,
@@ -65,8 +68,6 @@ describe("ClutchSearchParams", () => {
       expect(searchParams).toBeInstanceOf(ClutchSearchParams);
       expect(searchParams.filter).toBeNull();
     });
-
-    // **Novos Testes Adicionados**
 
     it("deve criar uma nova instância com available=true e período válido", () => {
       const searchParams = ClutchSearchParams.create({

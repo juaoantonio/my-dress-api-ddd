@@ -58,6 +58,13 @@ export class ClutchTypeormRepository
         endDate: filter.period.getEndDate().getValue().toISOString(),
       });
     }
+    if (filter?.name) {
+      qb.where("clutch.model ILIKE :name", {
+        name: `%${filter.name}%`,
+      }).orWhere("clutch.color ILIKE :name", {
+        name: `%${filter.name}%`,
+      });
+    }
     if (sort && this.sortableFields.includes(sort)) {
       qb.orderBy(
         `clutch.${sort}`,

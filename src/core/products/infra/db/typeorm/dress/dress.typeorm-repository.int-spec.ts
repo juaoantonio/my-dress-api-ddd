@@ -409,6 +409,26 @@ describe("DressTypeormRepository Integration Test", async () => {
       expect(searchResult.items).toHaveLength(0);
       expect(searchResult.total).toBe(0);
     });
+
+    it("should filter clutches that color or model ilike name", async () => {
+      const dresses = Dress.fake()
+        .theDresses(3)
+        .withColor((index) => `color${index}`)
+        .withModel((index) => `model${index}`)
+        .withFabric((index) => `fabric${index}`)
+        .build();
+      await dressRepository.saveMany(dresses);
+      const searchParams = DressSearchParams.create({
+        filter: {
+          name: "1",
+        },
+      });
+      const searchResult = await dressRepository.search(searchParams);
+      expect(searchResult.items).toHaveLength(1);
+      expect(searchResult.items[0].getModel()).toBe("model1");
+      expect(searchResult.items[0].getColor()).toBe("color1");
+      expect(searchResult.items[0].getFabric()).toBe("fabric1");
+    });
   });
 
   // **Testes de Salvar, Deletar, e Existência**
