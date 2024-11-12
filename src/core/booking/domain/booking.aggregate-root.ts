@@ -286,7 +286,7 @@ export class Booking extends AggregateRoot<BookingId> {
 
   // Event handlers
   private onBookingAmountPaidUpdate(): void {
-    if (this.amountPaid >== this.calculateTotalPrice() / 2) {
+    if (this.amountPaid >= this.calculateTotalPrice() / 2) {
       this.status = BookingStatus.READY;
     }
   }
