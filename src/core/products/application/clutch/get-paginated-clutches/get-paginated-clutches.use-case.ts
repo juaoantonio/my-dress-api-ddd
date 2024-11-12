@@ -45,6 +45,7 @@ export class GetPaginatedClutchesUseCase
       perPage: input.limit,
       sortDir: "desc",
       filter: {
+        name: input.name,
         color: input.color,
         model: input.model,
         rentPrice: input.rentPrice,
@@ -75,6 +76,9 @@ export class GetPaginatedClutchesUseCaseInput {
   @IsPositive()
   @IsOptional()
   limit?: number;
+
+  @IsOptional()
+  name?: string;
 
   @IsOptional()
   model?: string;

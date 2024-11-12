@@ -32,6 +32,14 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
   declare limit?: number;
 
   @ApiProperty({
+    name: "name",
+    required: false,
+    type: "string",
+    description: "Nome do vestido",
+  })
+  declare name?: string;
+
+  @ApiProperty({
     name: "model",
     required: false,
     type: "string",

@@ -29,6 +29,14 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
   declare limit?: number;
 
   @ApiProperty({
+    name: "name",
+    required: false,
+    type: "string",
+    description: "Nome do vestido",
+  })
+  declare name?: string;
+
+  @ApiProperty({
     name: "model",
     required: false,
     type: "string",

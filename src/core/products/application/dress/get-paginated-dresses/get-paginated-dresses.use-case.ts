@@ -44,6 +44,7 @@ export class GetPaginatedDressesUseCase
       perPage: input.limit,
       sortDir: "desc",
       filter: {
+        name: input.name,
         color: input.color,
         fabric: input.fabric,
         model: input.model,
@@ -71,6 +72,9 @@ export class GetPaginatedDressesUseCaseInput {
   @IsPositive()
   @IsOptional()
   limit?: number;
+
+  @IsOptional()
+  name?: string;
 
   @IsOptional()
   model?: string;
