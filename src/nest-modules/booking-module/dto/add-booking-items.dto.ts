@@ -31,6 +31,7 @@ export class AddBookingItemsInputDto {
     name: "dresses",
     description: "Identificadores dos vestidos",
     type: AddBookingItemsDressDto,
+    isArray: true,
   })
   @IsArray()
   dresses: AddBookingItemsDressDto[];
@@ -39,6 +40,7 @@ export class AddBookingItemsInputDto {
     name: "clutches",
     description: "Identificadores das bolsas",
     type: AddBookingItemsClutchDto,
+    isArray: true,
   })
   @IsArray()
   clutches: AddBookingItemsClutchDto[];
