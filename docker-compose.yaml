@@ -33,12 +33,13 @@ services:
       "
 
   api:
-    image: juaoantonio/my-dress-api
+    image: juaoantonio/my-dress-api:main
     ports:
       - "3000:3000"
     depends_on:
       - db
     environment:
+      NODE_ENV: development
       DB_VENDOR: postgres
       DB_HOST: db
       DB_DATABASE: database
