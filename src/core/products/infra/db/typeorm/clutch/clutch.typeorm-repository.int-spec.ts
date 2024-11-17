@@ -15,7 +15,10 @@ import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 import { DressModel } from "@core/products/infra/db/typeorm/dress/dress.model";
 import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
-import { Booking } from "@core/booking/domain/booking.aggregate-root";
+import {
+  Booking,
+  BookingStatus,
+} from "@core/booking/domain/booking.aggregate-root";
 import { BookingPeriod } from "@core/booking/domain/booking-period.vo";
 import { BookingTypeormRepository } from "@core/booking/infra/db/typeorm/booking.typeorm-repository";
 import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
@@ -144,6 +147,7 @@ describe("ClutchTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-11T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
       const clutchItem1 = BookingClutchItem.fake()
         .aClutchItem()

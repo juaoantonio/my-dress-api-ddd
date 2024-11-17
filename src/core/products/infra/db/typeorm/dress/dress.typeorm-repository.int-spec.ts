@@ -15,7 +15,10 @@ import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-it
 import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model";
 import { BookingItemClutchModel } from "@core/booking/infra/db/typeorm/booking-item-clutch.model";
 import { BookingTypeormRepository } from "@core/booking/infra/db/typeorm/booking.typeorm-repository";
-import { Booking } from "@core/booking/domain/booking.aggregate-root";
+import {
+  Booking,
+  BookingStatus,
+} from "@core/booking/domain/booking.aggregate-root";
 import { BookingDressItem } from "@core/booking/domain/entities/booking-dress-item.entity";
 import { BookingPeriod } from "@core/booking/domain/booking-period.vo";
 import { DateVo } from "@core/@shared/domain/value-objects/date.vo";
@@ -100,6 +103,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-09T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
       const dressBookingItems = BookingDressItem.fake()
         .theDressItems(2)
@@ -147,6 +151,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-09T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
       const nonOverlapingBooking = Booking.fake()
         .aBooking()
@@ -156,6 +161,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-15T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
       const dressBookingItem1 = BookingDressItem.fake()
         .aDressItem()
@@ -196,6 +202,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-15T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
 
       const dressBookingItem = BookingDressItem.fake()
@@ -233,6 +240,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-10T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
 
       const booking2 = Booking.fake()
@@ -243,6 +251,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-10T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
 
       const dressBookingItem1 = BookingDressItem.fake()
@@ -293,6 +302,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-08T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
 
       const booking2 = Booking.fake()
@@ -303,6 +313,7 @@ describe("DressTypeormRepository Integration Test", async () => {
             returnDate: DateVo.create("2024-10-11T00:00:00.000Z"),
           }),
         )
+        .withStatus(BookingStatus.CONFIRMED)
         .build();
 
       const dressBookingItem1 = BookingDressItem.fake()
