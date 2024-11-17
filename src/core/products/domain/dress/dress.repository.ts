@@ -19,6 +19,7 @@ export type DressFilter = {
   rentPrice?: number;
   available?: boolean;
   period?: Period;
+  bookingId?: string;
 };
 
 export class DressSearchParams extends SearchParams<DressFilter> {
@@ -44,6 +45,7 @@ export class DressSearchParams extends SearchParams<DressFilter> {
       ...(_value?.rentPrice && { rentPrice: _value.rentPrice }),
       ...(_value?.available !== undefined && { available: _value.available }),
       ...(_value?.period && { period: _value.period }),
+      ...(_value?.bookingId && { bookingId: _value.bookingId }),
     };
     this._filter = Object.values(filter).length === 0 ? null : filter;
   }

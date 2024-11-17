@@ -76,7 +76,7 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
     }
     return Boolean(value);
   })
-  declare available: boolean;
+  declare available?: boolean;
 
   @ApiProperty({
     name: "startDate",
@@ -85,7 +85,7 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
     description:
       "Data de início do intervalo de datas. É obrigatória se for passada a propriedade available",
   })
-  declare startDate: string;
+  declare startDate?: string;
 
   @ApiProperty({
     name: "endDate",
@@ -94,7 +94,15 @@ export class GetPaginatedClutchesInputDto extends GetPaginatedClutchesUseCaseInp
     description:
       "Data de fim do intervalo de datas. É obrigatória se for passada a propriedade available",
   })
-  declare endDate: string;
+  declare endDate?: string;
+
+  @ApiProperty({
+    name: "bookingId",
+    required: false,
+    type: "string",
+    description: "Id da reserva",
+  })
+  declare bookingId?: string;
 }
 
 export class GetPaginatedClutchesOutputDto

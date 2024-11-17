@@ -8,6 +8,7 @@ import {
   IsDateString,
   IsOptional,
   IsPositive,
+  IsUUID,
 } from "class-validator";
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import {
@@ -52,6 +53,7 @@ export class GetPaginatedClutchesUseCase
         available: input.available,
         startDate: input.startDate,
         endDate: input.endDate,
+        bookingId: input.bookingId,
       },
     });
     const result = await this.clutchRepository.search(searchParams);
@@ -100,6 +102,10 @@ export class GetPaginatedClutchesUseCaseInput {
   @IsOptional()
   @IsDateString()
   endDate?: string;
+
+  @IsUUID()
+  @IsOptional()
+  bookingId?: string;
 }
 
 export type GetPaginatedClutchesUseCaseOutput = PaginationOutput<ClutchOutput>;

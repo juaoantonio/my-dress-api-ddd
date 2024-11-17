@@ -65,6 +65,18 @@ export class ClutchTypeormRepository
         name: `%${filter.name}%`,
       });
     }
+    if (filter?.bookingId) {
+      qb.orWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select("1")
+          .from("clutch_booking_item", "bookingItems")
+          .where("bookingItems.bookingId = :bookingId")
+          .getQuery();
+
+        return `EXISTS (${subQuery})`;
+      }).setParameter("bookingId", filter.bookingId);
+    }
     if (sort && this.sortableFields.includes(sort)) {
       qb.orderBy(
         `clutch.${sort}`,

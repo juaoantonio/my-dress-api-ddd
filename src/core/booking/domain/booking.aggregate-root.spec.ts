@@ -251,7 +251,7 @@ describe("Booking Aggregate Unit Tests", function () {
       booking.addItem(
         new BookingDressItem({
           id: BookingDressItemId.random(),
-          productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          productId: "81d4babd-9644-4b6a-afaf-930f6608f6d6",
 
           rentPrice: 50,
         }),
@@ -379,7 +379,7 @@ describe("Booking Aggregate Unit Tests", function () {
       booking.addItem(
         new BookingDressItem({
           id: BookingDressItemId.random(),
-          productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+          productId: "81d4babd-9644-4b6a-afaf-930f6608f6d6",
           rentPrice: 50,
         }),
       );
@@ -531,6 +531,69 @@ describe("Booking Aggregate Unit Tests", function () {
         "Deve haver ao menos um vestido na reserva para poder iniciar o processo de reserva",
       ]);
     });
+
+    it("should override items if passed items dont have same product id", () => {
+      const dressItem = BookingDressItem.fake()
+        .aDressItem()
+        .withProductId("123")
+        .build();
+      const clutchItems = BookingClutchItem.fake()
+        .aClutchItem()
+        .withProductId("321")
+        .build();
+      const booking = Booking.fake()
+        .aBooking()
+        .withDresses([dressItem])
+        .withClutches([clutchItems])
+        .build();
+      const newDressItem = BookingDressItem.fake()
+        .aDressItem()
+        .withProductId("456")
+        .build();
+      const newClutchItem = BookingClutchItem.fake()
+        .aClutchItem()
+        .withProductId("654")
+        .build();
+      booking.addManyItems([newDressItem, newClutchItem]);
+      expect(booking.getItems().length).toBe(2);
+      expect(booking.getDresses()).toContain(newDressItem);
+      expect(booking.getClutches()).toContain(newClutchItem);
+    });
+
+    it("should not override items if items with same productId are passed", () => {
+      const dressItem = BookingDressItem.fake()
+        .aDressItem()
+        .withProductId("123")
+        .build();
+      const clutchItem = BookingClutchItem.fake()
+        .aClutchItem()
+        .withProductId("321")
+        .build();
+      const booking = Booking.fake()
+        .aBooking()
+        .withDresses([dressItem])
+        .withClutches([clutchItem])
+        .build();
+      const newDressItem = BookingDressItem.fake()
+        .aDressItem()
+        .withProductId("456")
+        .build();
+      const newClutchItem = BookingClutchItem.fake()
+        .aClutchItem()
+        .withProductId("654")
+        .build();
+      booking.addManyItems([
+        newDressItem,
+        newClutchItem,
+        dressItem,
+        clutchItem,
+      ]);
+      expect(booking.getItems().length).toBe(4);
+      expect(booking.getDresses()).toContain(dressItem);
+      expect(booking.getClutches()).toContain(clutchItem);
+      expect(booking.getDresses()).toContain(newDressItem);
+      expect(booking.getClutches()).toContain(newClutchItem);
+    });
   });
 
   describe("Booking Validation", function () {
@@ -666,7 +729,7 @@ describe("Booking Aggregate Unit Tests", function () {
         expect(booking.notification).notificationContainsErrorMessages([
           {
             items: [
-              "Item de reserva (91d4babd-9644-4b6a-afaf-930f6608f6d5) inválido",
+              "Item de reserva (vestido) (91d4babd-9644-4b6a-afaf-930f6608f6d5) inválido",
             ],
           },
         ]);

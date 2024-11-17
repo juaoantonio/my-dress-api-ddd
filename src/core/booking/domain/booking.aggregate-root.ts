@@ -150,40 +150,81 @@ export class Booking extends AggregateRoot<BookingId> {
     this.applyEvent(new BookingAmountPaidUpdatedEvent(this.getId(), value));
   }
 
-  public addItem(item: BookingDressItem | BookingClutchItem): void {
-    if (item instanceof BookingClutchItem) {
-      item.reservationPeriods.forEach((period) => {
-        if (period.overlaps(this.expectedBookingPeriod.toPeriod())) {
-          this.notification.addError(
-            `Clutch (${item.getId().getValue()}) está reservada para um período que se sobrepõe ao período esperado da reserva`,
-            "clutches",
-          );
-        }
-      });
-      this.clutches.push(item);
-    } else {
-      item.reservationPeriods.forEach((period) => {
-        if (period.overlaps(this.expectedBookingPeriod.toPeriod())) {
-          this.notification.addError(
-            `Clutch (${item.getId().getValue()}) está reservada para um período que se sobrepõe ao período esperado da reserva`,
-            "dresses",
-          );
-        }
-      });
-      this.dresses.push(item);
-    }
+  public addClutch(clutch: BookingClutchItem): void {
+    clutch.reservationPeriods.forEach((period) => {
+      if (period.overlaps(this.expectedBookingPeriod.toPeriod())) {
+        this.notification.addError(
+          `Clutch (${clutch.getId().getValue()}) está reservada para um período que se sobrepõe ao período esperado da reserva`,
+          "clutches",
+        );
+      }
+    });
 
-    if (item.notification.hasErrors()) {
+    if (
+      this.clutches.find(
+        (item) => item.getProductId() === clutch.getProductId(),
+      )
+    )
+      return;
+
+    this.clutches.push(clutch);
+
+    if (clutch.notification.hasErrors()) {
       this.notification.addError(
-        `Item de reserva (${item.getId().getValue()}) inválido`,
+        `Item de reserva (bolsa) (${clutch.getId().getValue()}) inválido`,
         "items",
       );
+    }
+  }
+
+  public addDress(dress: BookingDressItem): void {
+    dress.reservationPeriods.forEach((period) => {
+      if (period.overlaps(this.expectedBookingPeriod.toPeriod())) {
+        this.notification.addError(
+          `Dress (${dress.getId().getValue()}) está reservado para um período que se sobrepõe ao período esperado da reserva`,
+          "dresses",
+        );
+      }
+    });
+    if (
+      this.dresses.find((item) => item.getProductId() === dress.getProductId())
+    )
+      return;
+
+    this.dresses.push(dress);
+
+    if (dress.notification.hasErrors()) {
+      this.notification.addError(
+        `Item de reserva (vestido) (${dress.getId().getValue()}) inválido`,
+        "items",
+      );
+    }
+  }
+
+  public addItem(item: BookingDressItem | BookingClutchItem): void {
+    switch (item.constructor) {
+      case BookingDressItem:
+        this.addDress(item as BookingDressItem);
+        break;
+      case BookingClutchItem:
+        this.addClutch(item as BookingClutchItem);
+        break;
+      default:
+        throw new Error("Item de reserva inválido");
     }
   }
 
   public addManyItems(
     items: Array<BookingDressItem | BookingClutchItem>,
   ): void {
+    [...this.dresses, ...this.clutches].forEach((item) => {
+      if (
+        items.find((newItem) => newItem.getProductId() === item.getProductId())
+      )
+        return;
+      this.removeItem(item.getId().getValue());
+    });
+
     items.forEach((item) => {
       this.addItem(item);
     });

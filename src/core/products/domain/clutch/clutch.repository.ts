@@ -17,6 +17,7 @@ export type ClutchFilter = {
   rentPrice?: number;
   available?: boolean;
   period?: Period;
+  bookingId?: string;
 };
 
 export class ClutchSearchParams extends SearchParams<ClutchFilter> {
@@ -41,6 +42,7 @@ export class ClutchSearchParams extends SearchParams<ClutchFilter> {
       ...(_value?.rentPrice && { rentPrice: _value.rentPrice }),
       ...(_value?.available !== undefined && { available: _value.available }),
       ...(_value?.period && { period: _value.period }),
+      ...(_value?.bookingId && { bookingId: _value.bookingId }),
     };
     this._filter = Object.values(filter).length === 0 ? null : filter;
   }

@@ -32,6 +32,7 @@ describe("ClutchSearchParams", () => {
         color: "Preto",
         model: "Sem Alça",
         rentPrice: 250.0,
+        bookingId: "123",
       };
       const searchParams = ClutchSearchParams.create({
         filter,
@@ -42,11 +43,12 @@ describe("ClutchSearchParams", () => {
       });
 
       expect(searchParams).toBeInstanceOf(ClutchSearchParams);
-      expect(searchParams.filter).toEqual({
+      expect(searchParams.filter).toStrictEqual({
         name: "Preto Sem Alça",
         color: "Preto",
         model: "Sem Alça",
         rentPrice: 250.0,
+        bookingId: "123",
       });
       expect(searchParams.page).toBe(2);
       expect(searchParams.perPage).toBe(10);

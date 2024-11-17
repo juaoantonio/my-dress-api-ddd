@@ -28,6 +28,7 @@ describe("DressSearchParams", () => {
         model: "Evening Gown",
         fabric: "Silk",
         rentPrice: 100,
+        bookingId: "123",
       };
       const searchParams = DressSearchParams.create({
         filter,
@@ -44,6 +45,7 @@ describe("DressSearchParams", () => {
         model: "Evening Gown",
         fabric: "Silk",
         rentPrice: 100,
+        bookingId: "123",
       });
       expect(searchParams.page).toBe(2);
       expect(searchParams.perPage).toBe(10);

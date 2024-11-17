@@ -33,7 +33,9 @@ export class BookingItemDressModel {
   })
   dress: Relation<DressModel>;
 
-  @ManyToOne(() => BookingModel, (booking) => booking.dresses)
+  @ManyToOne(() => BookingModel, (booking) => booking.dresses, {
+    orphanedRowAction: "delete",
+  })
   @JoinColumn({
     name: "bookingId",
     referencedColumnName: "id",

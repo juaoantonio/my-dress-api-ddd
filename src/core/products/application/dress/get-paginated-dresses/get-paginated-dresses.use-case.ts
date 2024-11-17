@@ -8,6 +8,7 @@ import {
   IsDateString,
   IsOptional,
   IsPositive,
+  IsUUID,
 } from "class-validator";
 import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 import {
@@ -52,6 +53,7 @@ export class GetPaginatedDressesUseCase
         available: input.available,
         startDate: input.startDate,
         endDate: input.endDate,
+        bookingId: input.bookingId,
       },
     });
     const result = await this.dressRepository.search(searchParams);
@@ -100,6 +102,10 @@ export class GetPaginatedDressesUseCaseInput {
   @IsDateString()
   @IsOptional()
   endDate?: string;
+
+  @IsUUID()
+  @IsOptional()
+  bookingId?: string;
 }
 
 export type GetPaginatedDressesUseCaseOutput = PaginationOutput<DressOutput>;

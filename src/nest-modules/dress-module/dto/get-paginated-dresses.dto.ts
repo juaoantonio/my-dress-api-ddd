@@ -100,6 +100,14 @@ export class GetPaginatedDressesInputDto extends GetPaginatedDressesUseCaseInput
       "Data de fim do intervalo de datas. É obrigatória se for passada a propriedade available",
   })
   declare endDate?: string;
+
+  @ApiProperty({
+    name: "bookingId",
+    required: false,
+    type: "string",
+    description: "Id da reserva",
+  })
+  declare bookingId?: string;
 }
 
 export class GetPaginatedDressesOutputDto

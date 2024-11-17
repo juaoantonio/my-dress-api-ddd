@@ -30,7 +30,9 @@ export class BookingItemClutchModel {
   })
   clutch: Relation<ClutchModel>;
 
-  @ManyToOne(() => BookingModel, (booking) => booking.clutches)
+  @ManyToOne(() => BookingModel, (booking) => booking.clutches, {
+    orphanedRowAction: "delete",
+  })
   @JoinColumn({
     name: "bookingId",
     referencedColumnName: "id",
