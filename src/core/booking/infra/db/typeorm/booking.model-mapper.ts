@@ -39,7 +39,7 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
     bookingModel.returnDate = entity
       .getBookingPeriod()
       ?.getReturnDate()
-      .getValue();
+      ?.getValue();
     bookingModel.dresses = entity.getDresses().map((item) => {
       const bookingItemModel = new BookingItemDressModel();
       bookingItemModel.id = item.getId().getValue();

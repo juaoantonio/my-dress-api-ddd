@@ -35,6 +35,8 @@ export function getAvailabilityCondition(
             : "datetime(booking.expectedReturnDate) BETWEEN :startDate AND :endDate"
         }
       )
+      AND
+      booking."status" NOT IN ('CANCELED', 'COMPLETED')
     )
   `;
 

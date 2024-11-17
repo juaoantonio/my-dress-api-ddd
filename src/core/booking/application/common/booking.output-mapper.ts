@@ -56,7 +56,7 @@ export class BookingOutputMapper {
         booking.getBookingPeriod()?.getPickUpDate().getValue().toISOString() ||
         null,
       returnDate:
-        booking.getBookingPeriod()?.getReturnDate().getValue().toISOString() ||
+        booking.getBookingPeriod()?.getReturnDate()?.getValue().toISOString() ||
         null,
       amountPaid: booking.getAmountPaid(),
       totalBookingPrice: booking.calculateTotalPrice(),
