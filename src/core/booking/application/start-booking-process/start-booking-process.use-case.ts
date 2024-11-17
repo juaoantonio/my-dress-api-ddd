@@ -22,7 +22,7 @@ export class StartBookingUseCase
     if (!booking) {
       throw new EntityNotFoundError(bookingId, Booking);
     }
-    booking.start();
+    booking.informItemsDelivery();
     if (booking.notification.hasErrors()) {
       throw new EntityValidationError(booking.notification.toJSON());
     }

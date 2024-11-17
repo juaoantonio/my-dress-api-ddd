@@ -310,7 +310,7 @@ describe("Booking Aggregate Unit Tests", function () {
         ],
       });
       booking.initBookingProcess();
-      booking.updatePayment(50);
+      booking.addPayment(50);
       expect(booking.getAmountPaid()).toBe(50);
       expect(booking.getStatus()).toBe(BookingStatus.PAYMENT_PENDING);
     });
@@ -336,7 +336,7 @@ describe("Booking Aggregate Unit Tests", function () {
       expect(booking.calculateTotalPrice()).toBe(200);
     });
 
-    it("should mark booking as ready if amountPaid is equal to 50% of booking price", () => {
+    it("should mark booking as confirmed if amountPaid is equal to 50% of booking price", () => {
       const booking = Booking.create({
         customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
@@ -358,8 +358,8 @@ describe("Booking Aggregate Unit Tests", function () {
         ],
       });
       booking.initBookingProcess();
-      booking.updatePayment(75);
-      expect(booking.getStatus()).toBe(BookingStatus.READY);
+      booking.addPayment(75);
+      expect(booking.getStatus()).toBe(BookingStatus.CONFIRMED);
     });
 
     it("should update total price when a item is added", () => {
@@ -443,9 +443,11 @@ describe("Booking Aggregate Unit Tests", function () {
         ],
       });
       booking.initBookingProcess();
-      booking.updatePayment(75);
+      booking.addPayment(75);
+      expect(booking.getStatus()).toBe(BookingStatus.CONFIRMED);
+      booking.addPayment(75);
       expect(booking.getStatus()).toBe(BookingStatus.READY);
-      booking.start();
+      booking.informItemsDelivery();
       expect(booking.getStatus()).toBe(BookingStatus.IN_PROGRESS);
     });
 
@@ -620,7 +622,7 @@ describe("Booking Aggregate Unit Tests", function () {
           ],
         });
         booking.initBookingProcess();
-        booking.updatePayment(-50);
+        booking.addPayment(-50);
         expect(booking.notification).notificationContainsErrorMessages([
           {
             amountPaid: ["Valor pago deve ser maior ou igual a 0"],
@@ -651,7 +653,7 @@ describe("Booking Aggregate Unit Tests", function () {
           ],
         });
         booking.initBookingProcess();
-        booking.updatePayment(300);
+        booking.addPayment(300);
         expect(booking.notification).notificationContainsErrorMessages([
           {
             amountPaid: [
@@ -749,8 +751,8 @@ describe("Booking Aggregate Unit Tests", function () {
             }),
           ],
         });
-        booking.updatePayment(50);
-        booking.start();
+        booking.addPayment(50);
+        booking.informItemsDelivery();
         expect(booking.notification).notificationContainsErrorMessages([
           "Reserva ainda não foi paga",
         ]);

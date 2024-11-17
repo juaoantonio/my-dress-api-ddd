@@ -154,7 +154,7 @@ describe("BookingTypeormRepository Integration Test", () => {
       await bookingRepository.save(booking);
 
       booking.changeCustomerName("Jane Smith");
-      booking.start();
+      booking.informItemsDelivery();
 
       await bookingRepository.update(booking);
 

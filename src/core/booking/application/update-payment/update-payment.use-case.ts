@@ -22,7 +22,7 @@ export class UpdatePaymentUseCase
     if (!booking) {
       throw new EntityNotFoundError(bookingId, Booking);
     }
-    booking.updatePayment(input.amount);
+    booking.addPayment(input.amount);
     if (booking.notification.hasErrors()) {
       throw new EntityValidationError(booking.notification.toJSON());
     }

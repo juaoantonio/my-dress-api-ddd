@@ -22,3 +22,13 @@ export class BookingMarkedAsCompletedEvent implements IDomainEvent {
     this.occurredOn = new Date();
   }
 }
+
+export class BookingMarkedAsInProgressEvent implements IDomainEvent {
+  public aggregateId: BookingId;
+  public occurredOn: Date;
+
+  constructor(aggregateId: BookingId) {
+    this.aggregateId = aggregateId;
+    this.occurredOn = new Date();
+  }
+}

@@ -7,6 +7,7 @@ import { BookingValidatorFactory } from "./booking.validator";
 import {
   BookingAmountPaidUpdatedEvent,
   BookingMarkedAsCompletedEvent,
+  BookingMarkedAsInProgressEvent,
 } from "./booking.event";
 import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
 import { BookingFakeBuilder } from "@core/booking/domain/booking-fake.builder";
@@ -14,6 +15,7 @@ import { BookingFakeBuilder } from "@core/booking/domain/booking-fake.builder";
 export enum BookingStatus {
   NOT_INITIATED = "NOT_INITIATED",
   PAYMENT_PENDING = "PAYMENT_PENDING",
+  CONFIRMED = "CONFIRMED",
   READY = "READY",
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED",
@@ -74,6 +76,10 @@ export class Booking extends AggregateRoot<BookingId> {
     this.registerHandler(
       BookingMarkedAsCompletedEvent.name,
       this.onBookingMarkedAsCompleted.bind(this),
+    );
+    this.registerHandler(
+      BookingMarkedAsInProgressEvent.name,
+      this.onBookingMarkedAsInProgress.bind(this),
     );
   }
 
@@ -138,7 +144,7 @@ export class Booking extends AggregateRoot<BookingId> {
     );
   }
 
-  public updatePayment(value: number): void {
+  public addPayment(value: number): void {
     if (this.status === BookingStatus.NOT_INITIATED) {
       this.notification.addError(
         "Não é possível pagar uma reserva que ainda não foi iniciada",
@@ -251,12 +257,13 @@ export class Booking extends AggregateRoot<BookingId> {
     this.status = BookingStatus.PAYMENT_PENDING;
   }
 
-  public start() {
+  public informItemsDelivery() {
     if (!(this.status === BookingStatus.READY)) {
       this.notification.addError("Reserva ainda não foi paga");
       return;
     }
     this.status = BookingStatus.IN_PROGRESS;
+    this.applyEvent(new BookingMarkedAsInProgressEvent(this.getId()));
   }
 
   public complete() {
@@ -328,13 +335,23 @@ export class Booking extends AggregateRoot<BookingId> {
   // Event handlers
   private onBookingAmountPaidUpdate(): void {
     if (this.amountPaid >= this.calculateTotalPrice() / 2) {
+      this.status = BookingStatus.CONFIRMED;
+    }
+    if (this.amountPaid >= this.calculateTotalPrice()) {
       this.status = BookingStatus.READY;
     }
   }
 
+  private onBookingMarkedAsInProgress(): void {
+    this.bookingPeriod = new BookingPeriod({
+      pickUpDate: DateVo.create(new Date()),
+    });
+  }
+
   private onBookingMarkedAsCompleted(): void {
     this.bookingPeriod = new BookingPeriod({
-      pickUpDate: this.bookingPeriod.getPickUpDate(),
+      pickUpDate:
+        this.bookingPeriod?.getPickUpDate() ?? DateVo.create(new Date()),
       returnDate: DateVo.create(new Date()),
     });
   }
