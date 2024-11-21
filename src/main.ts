@@ -9,14 +9,7 @@ import { ConfigService } from "@nestjs/config";
 import { CONFIG_SCHEMA_TYPE } from "@nest/config-module/config.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    // cors: {
-    //   origin:
-    //     process.env.NODE_ENV === "production"
-    //       ? "https://prosuite.mydressbelem.com.br"
-    //       : "*",
-    // },
-  });
+  const app = await NestFactory.create(AppModule);
   const configService: ConfigService<CONFIG_SCHEMA_TYPE> =
     app.get(ConfigService);
   const corsOrigin = configService.get("CORS_ORIGIN");
