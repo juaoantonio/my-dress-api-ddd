@@ -37,10 +37,21 @@ type USERS_SCHEMA_TYPE = {
   USERS: CommonUser[];
 };
 
+type ENV_SCHEMA_TYPE = {
+  NODE_ENV?: string;
+  PORT?: number;
+};
+
+type CORS_SCHEMA_TYPE = {
+  CORS_ORIGIN: string[];
+};
+
 export type CONFIG_SCHEMA_TYPE = DB_SCHEMA_TYPE &
   AWS_S3_SCHEMA_TYPE &
   USERS_SCHEMA_TYPE &
-  JWT_SCHEMA_TYPE;
+  JWT_SCHEMA_TYPE &
+  ENV_SCHEMA_TYPE &
+  CORS_SCHEMA_TYPE;
 
 export const CONFIG_DB_SCHEMA: Joi.StrictSchemaMap<DB_SCHEMA_TYPE> = {
   DB_VENDOR: Joi.string().required().valid("postgres", "sqlite"),
@@ -112,6 +123,18 @@ export const CONFIG_USERS_SCHEMA: Joi.StrictSchemaMap<USERS_SCHEMA_TYPE> = {
     }) as unknown as ArraySchema<CommonUser[]>,
 };
 
+export const CONFIG_ENV_SCHEMA: Joi.StrictSchemaMap<ENV_SCHEMA_TYPE> = {
+  NODE_ENV: Joi.string().optional().default("development"),
+  PORT: Joi.number().integer().optional().default(3000),
+};
+
+export const CONFIG_CORS_SCHEMA: Joi.StrictSchemaMap<CORS_SCHEMA_TYPE> = {
+  CORS_ORIGIN: Joi.array().items(Joi.string()).when("NODE_ENV", {
+    is: "production",
+    then: Joi.required(),
+  }),
+};
+
 // https://docs.nestjs.com/modules#dynamic-modules
 // https://docs.nestjs.com/techniques/configuration#configuration
 @Module({})
@@ -130,6 +153,8 @@ export class ConfigModule extends NestConfigModule {
         ...CONFIG_AWS_S3_SCHEMA,
         ...CONFIG_USERS_SCHEMA,
         ...CONFIG_JWT_SCHEMA,
+        ...CONFIG_ENV_SCHEMA,
+        ...CONFIG_CORS_SCHEMA,
       }),
       ...otherOptions,
     });

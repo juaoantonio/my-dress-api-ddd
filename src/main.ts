@@ -5,15 +5,25 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NotFoundFilter } from "@nest/shared-module/filters/not-found/not-found.filter";
 import { EntityValidationErrorFilter } from "@nest/shared-module/filters/entity-validation-error/entity-validation-error.filter";
 import { InvalidVoParamsErrorFilter } from "@nest/shared-module/filters/invalid-param/invalid-vo-params.filter";
+import { ConfigService } from "@nestjs/config";
+import { CONFIG_SCHEMA_TYPE } from "@nest/config-module/config.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin:
-        process.env.NODE_ENV === "production"
-          ? "https://prosuite.mydressbelem.com.br"
-          : "*",
-    },
+    // cors: {
+    //   origin:
+    //     process.env.NODE_ENV === "production"
+    //       ? "https://prosuite.mydressbelem.com.br"
+    //       : "*",
+    // },
+  });
+  const configService: ConfigService<CONFIG_SCHEMA_TYPE> =
+    app.get(ConfigService);
+  const corsOrigin = configService.get("CORS_ORIGIN");
+  const environment = configService.get("NODE_ENV");
+  const port = configService.get("PORT");
+  app.enableCors({
+    origin: environment === "production" ? corsOrigin : "*",
   });
   app.useGlobalFilters(
     new NotFoundFilter(),
@@ -37,7 +47,11 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("swagger", app, document);
-  await app.listen(3000);
+  await app.listen(port, () =>
+    console.log(
+      `Server is running on http://0.0.0.0:${port}. Environment: ${environment}`,
+    ),
+  );
 }
 
 bootstrap();
