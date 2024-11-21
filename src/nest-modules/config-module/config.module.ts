@@ -129,10 +129,30 @@ export const CONFIG_ENV_SCHEMA: Joi.StrictSchemaMap<ENV_SCHEMA_TYPE> = {
 };
 
 export const CONFIG_CORS_SCHEMA: Joi.StrictSchemaMap<CORS_SCHEMA_TYPE> = {
-  CORS_ORIGIN: Joi.array().items(Joi.string()).when("NODE_ENV", {
-    is: "production",
-    then: Joi.required(),
-  }),
+  CORS_ORIGIN: Joi.string()
+    .custom((value, helpers) => {
+      try {
+        const parsedValue = JSON.parse(value);
+        if (!Array.isArray(parsedValue)) {
+          return helpers.error("any.invalid", { value });
+        }
+        const { error } = Joi.array().items(Joi.string()).validate(parsedValue);
+        if (error) {
+          return helpers.error("any.invalid", { value });
+        }
+        return parsedValue as string[];
+      } catch (err) {
+        return helpers.error("any.invalid", { value });
+      }
+    })
+    .messages({
+      "any.invalid":
+        "CORS_ORIGIN precisa ser uma string JSON que represente um array válido de origens",
+    })
+    .when("NODE_ENV", {
+      is: "production",
+      then: Joi.required(),
+    }) as unknown as ArraySchema<string[]>,
 };
 
 // https://docs.nestjs.com/modules#dynamic-modules

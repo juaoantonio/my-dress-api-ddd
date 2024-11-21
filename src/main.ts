@@ -42,7 +42,7 @@ async function bootstrap() {
   SwaggerModule.setup("swagger", app, document);
   await app.listen(port, () =>
     console.log(
-      `Server is running on http://0.0.0.0:${port}. Environment: ${environment}`,
+      `Servidor rodando em http://0.0.0.0:${port}. Ambiente: ${environment}`,
     ),
   );
 }
