@@ -6,6 +6,7 @@ import { AppointmentModel } from "@core/appointment/infra/db/typeorm/appointment
 import { AppointmentHistoryModel } from "@core/appointment/infra/db/typeorm/appointment-history.model";
 import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
 import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-item-dress.model";
+import { BookingModule } from "@nest/booking-module/booking.module";
 
 @Module({
   imports: [
@@ -15,12 +16,12 @@ import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-it
       BookingModel,
       BookingItemDressModel,
     ]),
+    BookingModule,
   ],
   controllers: [AppointmentController],
   providers: [
     ...Object.values(APPOINTMENT_PROVIDERS.REPOSITORIES),
     ...Object.values(APPOINTMENT_PROVIDERS.USE_CASES),
-    ...Object.values(APPOINTMENT_PROVIDERS.OTHER_PROVIDERS),
   ],
 })
 export class AppointmentModule {}

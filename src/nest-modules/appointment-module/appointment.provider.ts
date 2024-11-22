@@ -10,11 +10,10 @@ import { RescheduleAppointmentUseCase } from "@core/appointment/application/resc
 import { ScheduleInitialVisitUseCase } from "@core/appointment/application/schedule-initial-visit/schedule-initial-visit.use.case";
 import { ScheduleAdjustmentReturnUseCase } from "@core/appointment/application/schedule-for-adjustment/schedule-adjustment-return.use-case";
 import { IBookingRepository } from "@core/booking/domain/booking.repository";
-import { BookingModel } from "@core/booking/infra/db/typeorm/booking.model";
-import { BookingTypeormRepository } from "@core/booking/infra/db/typeorm/booking.typeorm-repository";
 import { ProviderType } from "@nest/shared-module/types/provider.type";
 import { GetPaginatedAppointmentsUseCase } from "@core/appointment/application/get-paginated-appointments/get-paginated-appointments.use-case";
 import { GetAppointmentUseCase } from "@core/appointment/application/get-appointment/get-appointment.use-case";
+import { BOOKING_PROVIDERS } from "@nest/booking-module/booking.providers";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_APPOINTMENT_REPOSITORY: {
@@ -76,7 +75,7 @@ export const USE_CASES: ProviderType = {
     },
     inject: [
       REPOSITORIES.DEFAULT_APPOINTMENT_REPOSITORY.provide,
-      "IBookingRepository",
+      BOOKING_PROVIDERS.REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide,
     ],
   },
 
@@ -97,22 +96,7 @@ export const USE_CASES: ProviderType = {
   },
 };
 
-export const OTHER_PROVIDERS: ProviderType = {
-  BOOKING_REPOSITORY: {
-    provide: "IBookingRepository",
-    useExisting: AppointmentTypeormRepository,
-  },
-  TYPEORM_BOOKING_REPOSITORY: {
-    provide: BookingTypeormRepository,
-    useFactory: (bookingRepository: Repository<BookingModel>) => {
-      return new BookingTypeormRepository(bookingRepository);
-    },
-    inject: [getRepositoryToken(BookingModel)],
-  },
-};
-
 export const APPOINTMENT_PROVIDERS = {
   REPOSITORIES,
   USE_CASES,
-  OTHER_PROVIDERS,
 };

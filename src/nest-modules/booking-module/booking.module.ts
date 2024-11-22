@@ -18,6 +18,7 @@ import { BookingController } from "@nest/booking-module/booking.controller";
       BookingItemClutchModel,
     ]),
   ],
+  exports: [...Object.values(BOOKING_PROVIDERS.REPOSITORIES)],
   providers: [
     ...Object.values(BOOKING_PROVIDERS.REPOSITORIES),
     ...Object.values(BOOKING_PROVIDERS.USE_CASES),
