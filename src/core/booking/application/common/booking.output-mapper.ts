@@ -22,6 +22,10 @@ export class BookingDressItemOutput {
   id: string;
   productId: string;
   rentPrice: number;
+  color: string;
+  model: string;
+  fabric: string;
+  imagePath: string;
   adjustments: AdjustmentOutput[];
   isCourtesy: boolean;
 }
@@ -30,6 +34,9 @@ export class BookingClutchItemOutput {
   id: string;
   productId: string;
   rentPrice: number;
+  color: string;
+  model: string;
+  imagePath: string;
   isCourtesy: boolean;
 }
 
@@ -67,6 +74,10 @@ export class BookingOutputMapper {
         id: dress.getId().toString(),
         productId: dress.getProductId(),
         rentPrice: dress.getRentPrice(),
+        model: dress.getModel(),
+        color: dress.getColor(),
+        fabric: dress.getFabric(),
+        imagePath: dress.getImagePath(),
         adjustments: dress.getAdjustments().map((adjustment) => ({
           label: adjustment.label,
           description: adjustment.description,
@@ -78,6 +89,9 @@ export class BookingOutputMapper {
         productId: clutch.getProductId(),
         rentPrice: clutch.getRentPrice(),
         isCourtesy: clutch.getIsCourtesy(),
+        model: clutch.getModel(),
+        color: clutch.getColor(),
+        imagePath: clutch.getImagePath(),
       })),
     };
   }

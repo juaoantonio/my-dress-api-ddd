@@ -5,11 +5,11 @@ import { BookingItemDressModel } from "@core/booking/infra/db/typeorm/booking-it
 
 @Entity("clutches")
 export class ClutchModel extends BaseModel {
-  @Column("text")
-  imageUrl: string;
-
   @Column("float")
   rentPrice: number;
+
+  @Column("text")
+  imageUrl: string;
 
   @Column("varchar")
   color: string;

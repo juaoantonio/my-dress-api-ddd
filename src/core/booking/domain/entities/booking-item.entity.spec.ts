@@ -14,6 +14,10 @@ describe("BookingItemEntity Unit Test", () => {
         isCourtesy: false,
         rentPrice: 100,
         adjustments: [],
+        imagePath: "http://image.com",
+        model: "Vestido",
+        color: "Azul",
+        fabric: "Seda",
       });
 
       expect(bookingItem.getRentPrice()).toBe(100);
@@ -32,6 +36,10 @@ describe("BookingItemEntity Unit Test", () => {
         isCourtesy: false,
         rentPrice: 100,
         adjustments: [],
+        imagePath: "http://image.com",
+        model: "Vestido",
+        color: "Azul",
+        fabric: "Seda",
       });
 
       expect(bookingItem.getRentPrice()).toBe(100);
@@ -49,6 +57,10 @@ describe("BookingItemEntity Unit Test", () => {
         isCourtesy: false,
         rentPrice: 100,
         adjustments: [],
+        imagePath: "http://image.com",
+        model: "Vestido",
+        color: "Azul",
+        fabric: "Seda",
       });
 
       bookingItem.addAdjustment({
@@ -68,6 +80,10 @@ describe("BookingItemEntity Unit Test", () => {
         isCourtesy: false,
         rentPrice: 100,
         adjustments: [],
+        imagePath: "http://image.com",
+        model: "Vestido",
+        color: "Azul",
+        fabric: "Seda",
       });
 
       bookingItem.addManyAdjustments([
@@ -91,6 +107,10 @@ describe("BookingItemEntity Unit Test", () => {
           new Adjustment("Cintura", "3cm"),
           new Adjustment("Tronco", "2cm"),
         ],
+        imagePath: "http://image.com",
+        model: "Vestido",
+        color: "Azul",
+        fabric: "Seda",
       });
 
       bookingItem.removeAdjustment({
@@ -113,6 +133,10 @@ describe("BookingItemEntity Unit Test", () => {
           new Adjustment("Cintura", "3cm"),
           new Adjustment("Tronco", "2cm"),
         ],
+        imagePath: "http://image.com",
+        model: "Vestido",
+        color: "Azul",
+        fabric: "Seda",
       });
 
       bookingItem.clearAdjustments();
@@ -127,6 +151,10 @@ describe("BookingItemEntity Unit Test", () => {
         isCourtesy: false,
         rentPrice: 100,
         adjustments: [],
+        color: "Azul",
+        model: "Vestido",
+        fabric: "Seda",
+        imagePath: "http://image.com",
       });
 
       expect(bookingItem.notification.hasErrors()).toBe(true);

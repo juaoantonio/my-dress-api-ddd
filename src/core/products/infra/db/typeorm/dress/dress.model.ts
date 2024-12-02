@@ -5,17 +5,20 @@ import { BaseModel } from "@core/@shared/infra/db/typeorm/base.model";
 
 @Entity("dresses")
 export class DressModel extends BaseModel {
-  @Column("text")
-  imageUrl: string;
-
   @Column("float")
   rentPrice: number;
+  
+  @Column("text")
+  imageUrl: string;
 
   @Column("varchar")
   color: string;
 
   @Column("varchar")
   model: string;
+
+  @Column("varchar")
+  fabric: string;
 
   @Column("boolean")
   isPickedUp: boolean;
@@ -33,7 +36,4 @@ export class DressModel extends BaseModel {
 
   @OneToMany(() => BookingItemDressModel, (bookingItem) => bookingItem.dress)
   bookingItems: BookingItemDressModel[];
-
-  @Column("varchar")
-  fabric: string;
 }

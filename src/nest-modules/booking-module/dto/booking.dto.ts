@@ -118,6 +118,34 @@ export class BookingDressItemOutputDto extends BookingDressItemOutput {
   declare rentPrice: number;
 
   @ApiProperty({
+    name: "color",
+    description: "Cor do vestido",
+    example: "Vermelho",
+  })
+  declare color: string;
+
+  @ApiProperty({
+    name: "model",
+    description: "Modelo do vestido",
+    example: "Sereia",
+  })
+  declare model: string;
+
+  @ApiProperty({
+    name: "fabric",
+    description: "Tecido do vestido",
+    example: "Seda",
+  })
+  declare fabric: string;
+
+  @ApiProperty({
+    name: "imagePath",
+    description: "Caminho da imagem do vestido",
+    example: "http://image.com",
+  })
+  declare imagePath: string;
+
+  @ApiProperty({
     name: "isCourtesy",
     description: "Cortesia",
     example: false,
@@ -154,6 +182,27 @@ export class BookingClutchItemOutputDto extends BookingClutchItemOutput {
     example: 100,
   })
   declare rentPrice: number;
+
+  @ApiProperty({
+    name: "color",
+    description: "Cor da bolsa",
+    example: "Azul",
+  })
+  declare color: string;
+
+  @ApiProperty({
+    name: "model",
+    description: "Modelo da bolsa",
+    example: "Strass",
+  })
+  declare model: string;
+
+  @ApiProperty({
+    name: "imagePath",
+    description: "Caminho da imagem da bolsa",
+    example: "http://image.com",
+  })
+  declare imagePath: string;
 
   @ApiProperty({
     name: "isCourtesy",

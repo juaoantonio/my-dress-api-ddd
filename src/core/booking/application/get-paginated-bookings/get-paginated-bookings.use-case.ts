@@ -21,12 +21,23 @@ import {
 } from "@core/booking/application/common/booking.output-mapper";
 import { SortDirection } from "@core/@shared/domain/repository/search-params";
 import { BookingStatus } from "@core/booking/domain/booking.aggregate-root";
+import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
+import { UrlPresignerService } from "@core/@shared/application/url-presigner.service";
+import { BookingDressItem } from "@core/booking/domain/entities/booking-dress-item.entity";
+import { BookingClutchItem } from "@core/booking/domain/entities/booking-clutch-item.entity";
 
 export class GetPaginatedBookingsUseCase
   implements
     IUseCase<GetPaginatedBookingsInput, Promise<GetPaginatedBookingsOutput>>
 {
-  constructor(private readonly bookingRepository: IBookingRepository) {}
+  readonly urlPresignerService: UrlPresignerService;
+
+  constructor(
+    private readonly bookingRepository: IBookingRepository,
+    readonly imageStorageService: IImageStorageService,
+  ) {
+    this.urlPresignerService = new UrlPresignerService(imageStorageService);
+  }
 
   async execute(
     input: GetPaginatedBookingsInput,
@@ -43,7 +54,26 @@ export class GetPaginatedBookingsUseCase
         status: input.status,
       },
     });
-    const result = await this.bookingRepository.search(searchParams);
+    let result = await this.bookingRepository.search(searchParams);
+    for (const booking of result.items) {
+      const dresses = booking.getDresses();
+      const clutches = booking.getClutches();
+      const dressesWithPreSignedUrl =
+        await this.urlPresignerService.signMany<BookingDressItem>(
+          dresses,
+          "imagePath" as keyof BookingDressItem,
+        );
+      const clutchesWithPreSignedUrl =
+        await this.urlPresignerService.signMany<BookingClutchItem>(
+          clutches,
+          "imagePath" as keyof BookingClutchItem,
+        );
+      // @ts-ignore
+      booking.dresses = dressesWithPreSignedUrl;
+      // @ts-ignore
+      booking.clutches = clutchesWithPreSignedUrl;
+    }
+
     const bookingsOutput = BookingOutputMapper.toOutputMany(result.items);
     return PaginationOutputMapper.toOutput(bookingsOutput, result);
   }

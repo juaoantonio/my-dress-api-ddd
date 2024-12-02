@@ -37,6 +37,24 @@ export class BookingClutchItemFakeBuilder<TBuild = any> {
     return this.getValue("rentPrice");
   }
 
+  private _model: PropOrFactory<string> = () => this.chance.word();
+
+  get model() {
+    return this.getValue("model");
+  }
+
+  private _color: PropOrFactory<string> = () => this.chance.word();
+
+  get color() {
+    return this.getValue("color");
+  }
+
+  private _imagePath: PropOrFactory<string> = () => this.chance.word();
+
+  get imagePath() {
+    return this.getValue("imagePath");
+  }
+
   private _isCourtesy: PropOrFactory<boolean> = () => this.chance.bool();
 
   get isCourtesy() {
@@ -68,6 +86,21 @@ export class BookingClutchItemFakeBuilder<TBuild = any> {
     return this;
   }
 
+  withModel(valueOrFactory: PropOrFactory<string>) {
+    this._model = valueOrFactory;
+    return this;
+  }
+
+  withColor(valueOrFactory: PropOrFactory<string>) {
+    this._color = valueOrFactory;
+    return this;
+  }
+
+  withImagePath(valueOrFactory: PropOrFactory<string>) {
+    this._imagePath = valueOrFactory;
+    return this;
+  }
+
   withIsCourtesy(valueOrFactory: PropOrFactory<boolean>) {
     this._isCourtesy = valueOrFactory;
     return this;
@@ -82,6 +115,9 @@ export class BookingClutchItemFakeBuilder<TBuild = any> {
           productId: this.callFactory(this._productId, index),
           rentPrice: this.callFactory(this._rentPrice, index),
           isCourtesy: this.callFactory(this._isCourtesy, index),
+          color: this.callFactory(this._color, index),
+          model: this.callFactory(this._model, index),
+          imagePath: this.callFactory(this._imagePath, index),
         });
       },
     );

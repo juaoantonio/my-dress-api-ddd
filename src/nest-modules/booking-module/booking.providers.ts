@@ -9,7 +9,10 @@ import { AddBookingItemsUseCase } from "@core/booking/application/add-booking-it
 import { IBookingRepository } from "@core/booking/domain/booking.repository";
 import { IDressRepository } from "@core/products/domain/dress/dress.repository";
 import { DRESS_PROVIDERS } from "@nest/dress-module/dress.provider";
-import { CLUTCH_PROVIDERS } from "@nest/clutch-module/clutch.provider";
+import {
+  CLUTCH_PROVIDERS,
+  SERVICES,
+} from "@nest/clutch-module/clutch.provider";
 import { AddAdjustmentsUseCase } from "@core/booking/application/add-adjustments/add-adjustments.use-case";
 import { GetBookingUseCase } from "@core/booking/application/get-booking/get-booking.use-case";
 import { IClutchRepository } from "@core/products/domain/clutch/clutch.repository";
@@ -18,6 +21,7 @@ import { UpdatePaymentUseCase } from "@core/booking/application/update-payment/u
 import { CancelBookingUseCase } from "@core/booking/application/cancel-booking/cancel-booking.use-case";
 import { StartBookingUseCase } from "@core/booking/application/start-booking-process/start-booking-process.use-case";
 import { CompleteBookingUseCase } from "@core/booking/application/complete-booking/complete-booking.use-case";
+import { IImageStorageService } from "@core/@shared/application/image-storage-service.interface";
 
 export const REPOSITORIES: ProviderType = {
   DEFAULT_BOOKING_REPOSITORY: {
@@ -118,18 +122,30 @@ export const USE_CASES: ProviderType = {
 
   GET_PAGINATED_BOOKINGS_USE_CASE: {
     provide: GetPaginatedBookingsUseCase,
-    useFactory: (bookingRepository: IBookingRepository) => {
-      return new GetPaginatedBookingsUseCase(bookingRepository);
+    useFactory: (
+      bookingRepository: IBookingRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new GetPaginatedBookingsUseCase(bookingRepository, uploadService);
     },
-    inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
+    inject: [
+      REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
   },
 
   GET_BOOKING_USE_CASE: {
     provide: GetBookingUseCase,
-    useFactory: (bookingRepository: IBookingRepository) => {
-      return new GetBookingUseCase(bookingRepository);
+    useFactory: (
+      bookingRepository: IBookingRepository,
+      uploadService: IImageStorageService,
+    ) => {
+      return new GetBookingUseCase(bookingRepository, uploadService);
     },
-    inject: [REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide],
+    inject: [
+      REPOSITORIES.DEFAULT_BOOKING_REPOSITORY.provide,
+      SERVICES.DEFAULT_IMAGE_STORAGE_SERVICE.provide,
+    ],
   },
 };
 

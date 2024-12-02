@@ -72,6 +72,10 @@ describe("BookingTypeormRepository Integration Test", () => {
         rentPrice: 150.0,
         isCourtesy: false,
         adjustments: [new Adjustment("Size Adjustment", "Adjusted to size M")],
+        fabric: "Cotton",
+        imagePath: "https://example.com/dress.jpg",
+        color: "Red",
+        model: "A-Line",
       });
 
       const booking = Booking.create({
@@ -100,12 +104,19 @@ describe("BookingTypeormRepository Integration Test", () => {
         productId: dressId.value,
         rentPrice: 150.0,
         isCourtesy: false,
+        fabric: "Cotton",
+        imagePath: "https://example.com/dress.jpg",
+        color: "Red",
+        model: "A-Line",
         adjustments: [new Adjustment("Size Adjustment", "Adjusted to size M")],
       });
       const clutchItem = BookingClutchItem.create({
         productId: clutchId.value,
         rentPrice: 200.0,
         isCourtesy: false,
+        imagePath: "https://example.com/dress.jpg",
+        color: "Red",
+        model: "A-Line",
       });
 
       const booking1 = Booking.create({

@@ -6,7 +6,10 @@ import { ClutchModel } from "@core/products/infra/db/typeorm/clutch/clutch.model
 
 @Module({
   imports: [TypeOrmModule.forFeature([ClutchModel])],
-  exports: [...Object.values(CLUTCH_PROVIDERS.REPOSITORIES)],
+  exports: [
+    ...Object.values(CLUTCH_PROVIDERS.REPOSITORIES),
+    ...Object.values(CLUTCH_PROVIDERS.SERVICES),
+  ],
   controllers: [ClutchController],
   providers: [
     ...Object.values(CLUTCH_PROVIDERS.REPOSITORIES),

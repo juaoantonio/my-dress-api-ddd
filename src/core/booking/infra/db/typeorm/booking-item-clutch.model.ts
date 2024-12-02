@@ -17,6 +17,21 @@ export class BookingItemClutchModel {
   @Column({ type: "float" })
   rentPrice: number;
 
+  @Column("text", {
+    nullable: true,
+  })
+  imageUrl: string;
+
+  @Column("varchar", {
+    nullable: true,
+  })
+  color: string;
+
+  @Column("varchar", {
+    nullable: true,
+  })
+  model: string;
+
   @Column({ type: "boolean" })
   isCourtesy: boolean;
 

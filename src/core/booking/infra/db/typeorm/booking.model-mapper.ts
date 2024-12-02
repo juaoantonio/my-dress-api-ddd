@@ -48,6 +48,10 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
       bookingItemModel.adjustments = item.getAdjustments();
       bookingItemModel.dressId = item.getProductId();
       bookingItemModel.bookingId = entity.getId().getValue();
+      bookingItemModel.model = item.getModel();
+      bookingItemModel.color = item.getColor();
+      bookingItemModel.fabric = item.getFabric();
+      bookingItemModel.imageUrl = item.getImagePath();
       return bookingItemModel;
     });
     bookingModel.clutches = entity.getClutches().map((item) => {
@@ -57,6 +61,9 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
       bookingItemModel.isCourtesy = item.getIsCourtesy();
       bookingItemModel.clutchId = item.getProductId();
       bookingItemModel.bookingId = entity.getId().getValue();
+      bookingItemModel.model = item.getModel();
+      bookingItemModel.color = item.getColor();
+      bookingItemModel.imageUrl = item.getImagePath();
       return bookingItemModel;
     });
     return bookingModel;
@@ -92,6 +99,10 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
                   new Adjustment(adjustment.label, adjustment.description),
               ),
               productId: item.dressId,
+              model: item.model,
+              color: item.color,
+              fabric: item.fabric,
+              imagePath: item.imageUrl,
             });
           })
         : [],
@@ -102,6 +113,9 @@ export class BookingModelMapper implements IModelMapper<Booking, BookingModel> {
               rentPrice: item.rentPrice,
               isCourtesy: item.isCourtesy,
               productId: item.clutchId,
+              model: item.model,
+              color: item.color,
+              imagePath: item.imageUrl,
             });
           })
         : [],

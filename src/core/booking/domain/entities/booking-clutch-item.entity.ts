@@ -11,11 +11,17 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
   private productId: string;
   private rentPrice: number;
   private isCourtesy: boolean;
+  private color: string;
+  private model: string;
+  private imagePath: string;
 
   constructor(props: {
     id: BookingClutchItemId;
     productId: string;
     rentPrice: number;
+    color: string;
+    model: string;
+    imagePath: string;
     reservationPeriods?: Period[];
     isCourtesy?: boolean;
   }) {
@@ -24,6 +30,9 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
     this.rentPrice = props.rentPrice;
     this._reservationPeriods = props.reservationPeriods ?? [];
     this.isCourtesy = props.isCourtesy ?? false;
+    this.color = props.color;
+    this.model = props.model;
+    this.imagePath = props.imagePath;
   }
 
   private _reservationPeriods: Period[];
@@ -40,6 +49,9 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
     id?: BookingClutchItemId;
     productId: string;
     rentPrice: number;
+    color: string;
+    model: string;
+    imagePath: string;
     reservationPeriods?: Period[];
     isCourtesy?: boolean;
   }): BookingClutchItem {
@@ -49,6 +61,9 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
       rentPrice: props.rentPrice,
       reservationPeriods: props.reservationPeriods,
       isCourtesy: props.isCourtesy,
+      color: props.color,
+      model: props.model,
+      imagePath: props.imagePath,
     });
     newBooking.validate();
     return newBooking;
@@ -58,6 +73,9 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
     return BookingClutchItem.create({
       productId: clutch.getId().getValue(),
       rentPrice: clutch.getRentPrice(),
+      color: clutch.getColor(),
+      model: clutch.getModel(),
+      imagePath: clutch.getImagePath(),
     });
   }
 
@@ -76,6 +94,18 @@ export class BookingClutchItem extends Entity<BookingClutchItemId> {
 
   public getProductId(): string {
     return this.productId;
+  }
+
+  public getColor(): string {
+    return this.color;
+  }
+
+  public getModel(): string {
+    return this.model;
+  }
+
+  public getImagePath(): string {
+    return this.imagePath;
   }
 
   public setIsCourtesy(isCourtesy: boolean): void {

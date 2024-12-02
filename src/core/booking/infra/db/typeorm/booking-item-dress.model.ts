@@ -17,6 +17,26 @@ export class BookingItemDressModel {
   @Column({ type: "float" })
   rentPrice: number;
 
+  @Column("text", {
+    nullable: true,
+  })
+  imageUrl: string;
+
+  @Column("varchar", {
+    nullable: true,
+  })
+  color: string;
+
+  @Column("varchar", {
+    nullable: true,
+  })
+  model: string;
+
+  @Column("varchar", {
+    nullable: true,
+  })
+  fabric: string;
+
   @Column({ type: "json" })
   adjustments: { label: string; description: string }[];
 

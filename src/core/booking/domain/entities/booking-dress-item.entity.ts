@@ -13,11 +13,19 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
   private rentPrice: number;
   private adjustments: Set<Adjustment>;
   private isCourtesy: boolean;
+  private color: string;
+  private model: string;
+  private fabric: string;
+  private imagePath: string;
 
   constructor(props: {
     id: BookingDressItemId;
     productId: string;
     rentPrice: number;
+    color: string;
+    model: string;
+    fabric: string;
+    imagePath: string;
     adjustments?: Adjustment[];
     reservationPeriods?: Period[];
     isCourtesy?: boolean;
@@ -28,6 +36,10 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
     this.adjustments = new Set(props.adjustments ?? []);
     this._reservationPeriods = props.reservationPeriods ?? [];
     this.isCourtesy = props.isCourtesy ?? false;
+    this.color = props.color;
+    this.model = props.model;
+    this.fabric = props.fabric;
+    this.imagePath = props.imagePath;
   }
 
   private _reservationPeriods: Period[];
@@ -44,6 +56,10 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
     id?: BookingDressItemId;
     productId: string;
     rentPrice: number;
+    color: string;
+    model: string;
+    fabric: string;
+    imagePath: string;
     adjustments?: Adjustment[];
     reservationPeriods?: Period[];
     isCourtesy?: boolean;
@@ -55,6 +71,10 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
       adjustments: props.adjustments,
       reservationPeriods: props.reservationPeriods,
       isCourtesy: props.isCourtesy,
+      color: props.color,
+      model: props.model,
+      fabric: props.fabric,
+      imagePath: props.imagePath,
     });
     newBooking.validate();
     return newBooking;
@@ -64,6 +84,10 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
     return BookingDressItem.create({
       productId: dress.getId().getValue(),
       rentPrice: dress.getRentPrice(),
+      color: dress.getColor(),
+      model: dress.getModel(),
+      fabric: dress.getFabric(),
+      imagePath: dress.getImagePath(),
     });
   }
 
@@ -128,5 +152,21 @@ export class BookingDressItem extends Entity<BookingDressItemId> {
 
   public getProductId(): string {
     return this.productId;
+  }
+
+  public getColor(): string {
+    return this.color;
+  }
+
+  public getModel(): string {
+    return this.model;
+  }
+
+  public getFabric(): string {
+    return this.fabric;
+  }
+
+  public getImagePath(): string {
+    return this.imagePath;
   }
 }

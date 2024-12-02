@@ -236,6 +236,9 @@ describe("BookingModelMapper", () => {
         productId: uuidv4(),
         rentPrice: 50.0,
         isCourtesy: true,
+        color: "Black",
+        model: "Clutch Model",
+        imagePath: "clutch.jpg",
       });
 
       const booking = new Booking({

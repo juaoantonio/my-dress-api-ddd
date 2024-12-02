@@ -39,6 +39,26 @@ export class BookingDressItemFakeBuilder<TBuild = any> {
     return this;
   }
 
+  withModel(valueOrFactory: PropOrFactory<string>) {
+    this._model = valueOrFactory;
+    return this;
+  }
+
+  withColor(valueOrFactory: PropOrFactory<string>) {
+    this._color = valueOrFactory;
+    return this;
+  }
+
+  withFabric(valueOrFactory: PropOrFactory<string>) {
+    this._fabric = valueOrFactory;
+    return this;
+  }
+
+  withImagePath(valueOrFactory: PropOrFactory<string>) {
+    this._imagePath = valueOrFactory;
+    return this;
+  }
+
   withIsCourtesy(valueOrFactory: PropOrFactory<boolean>) {
     this._isCourtesy = valueOrFactory;
     return this;
@@ -70,6 +90,18 @@ export class BookingDressItemFakeBuilder<TBuild = any> {
             this._adjustments instanceof Function
               ? this._adjustments(index)
               : this._adjustments,
+          imagePath:
+            this._imagePath instanceof Function
+              ? this._imagePath(index)
+              : this._imagePath,
+          model:
+            this._model instanceof Function ? this._model(index) : this._model,
+          color:
+            this._color instanceof Function ? this._color(index) : this._color,
+          fabric:
+            this._fabric instanceof Function
+              ? this._fabric(index)
+              : this._fabric,
         });
       },
     );
@@ -84,6 +116,14 @@ export class BookingDressItemFakeBuilder<TBuild = any> {
 
   private _rentPrice: PropOrFactory<number> = () =>
     this.chance.floating({ min: 10, max: 1000 });
+
+  private _model: PropOrFactory<string> = () => this.chance.word();
+
+  private _color: PropOrFactory<string> = () => this.chance.word();
+
+  private _fabric: PropOrFactory<string> = () => this.chance.word();
+
+  private _imagePath: PropOrFactory<string> = () => this.chance.word();
 
   private _isCourtesy: PropOrFactory<boolean> = () => this.chance.bool();
 
