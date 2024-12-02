@@ -246,9 +246,9 @@ export class Booking extends AggregateRoot<BookingId> {
   }
 
   public initBookingProcess(): void {
-    if (this.dresses.length === 0) {
+    if (this.dresses.length === 0 && this.clutches.length === 0) {
       this.notification.addError(
-        "Deve haver ao menos um vestido na reserva para poder iniciar o processo de reserva",
+        "Não é possível iniciar uma reserva sem itens",
       );
     }
     if (this.status !== BookingStatus.NOT_INITIATED) {

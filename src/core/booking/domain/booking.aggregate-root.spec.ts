@@ -611,28 +611,32 @@ describe("Booking Aggregate Unit Tests", function () {
       ).toBe("2024-09-02");
     });
 
-    it("should not initialize a booking if it has no dresses assigned", () => {
+    it("should not initialize a booking if it has no dresses and clutches assigned", () => {
       const booking = Booking.create({
         customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
         eventDate: "2024-09-01",
         expectedPickUpDate: "2024-08-31",
         expectedReturnDate: "2024-09-02",
         dresses: [],
-        clutches: [
-          new BookingClutchItem({
-            id: BookingDressItemId.random(),
-            productId: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
-            rentPrice: 50,
-            color: "Azul",
-            model: "Vestido de Festa",
-            imagePath: "http://image.com",
-          }),
-        ],
+        clutches: [],
       });
       booking.initBookingProcess();
       expect(booking.notification).notificationContainsErrorMessages([
-        "Deve haver ao menos um vestido na reserva para poder iniciar o processo de reserva",
+        "Não é possível iniciar uma reserva sem itens",
       ]);
+    });
+
+    it("should initialize a booking if it has no dresses assigned", () => {
+      const booking = Booking.create({
+        customerName: "81d4babd-9644-4b6a-afaf-930f6608f6d5",
+        eventDate: "2024-09-01",
+        expectedPickUpDate: "2024-08-31",
+        expectedReturnDate: "2024-09-02",
+        dresses: [],
+        clutches: [BookingClutchItem.fake().aClutchItem().build()],
+      });
+      booking.initBookingProcess();
+      expect(booking.getStatus()).toBe(BookingStatus.PAYMENT_PENDING);
     });
 
     it("should override items if passed items dont have same product id", () => {
