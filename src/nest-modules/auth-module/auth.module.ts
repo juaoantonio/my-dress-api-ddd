@@ -16,7 +16,7 @@ import { UsersModule } from "@nest/users-module/users.module";
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get("JWT_SECRET"),
         signOptions: {
-          expiresIn: "24h",
+          expiresIn: "7d",
         },
       }),
       inject: [ConfigService],
