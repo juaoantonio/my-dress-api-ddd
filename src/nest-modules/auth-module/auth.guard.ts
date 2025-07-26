@@ -27,24 +27,30 @@ export class AuthGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-    const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+
+    const request = context.switchToHttp().getRequest<Request>();
+    const token = this.extractTokenFromRequest(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("Token ausente");
     }
+
     try {
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
       request["user"] = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get("JWT_SECRET"),
       });
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("Token inválido ou expirado");
     }
+
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
+  private extractTokenFromRequest(request: Request): string | undefined {
+    // 🔐 1. Prioriza cookie
+    const cookieToken = request.cookies?.accessToken;
+    if (cookieToken) return cookieToken;
+
+    // 🔁 2. Fallback para Authorization header
     const [type, token] = request.headers.authorization?.split(" ") ?? [];
     return type === "Bearer" ? token : undefined;
   }

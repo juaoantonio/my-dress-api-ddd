@@ -7,6 +7,7 @@ import { EntityValidationErrorFilter } from "@nest/shared-module/filters/entity-
 import { InvalidVoParamsErrorFilter } from "@nest/shared-module/filters/invalid-param/invalid-vo-params.filter";
 import { ConfigService } from "@nestjs/config";
 import { CONFIG_SCHEMA_TYPE } from "@nest/config-module/config.module";
+import cookieParser from "cookie-parser";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,8 +17,10 @@ async function bootstrap() {
   const environment = configService.get("NODE_ENV");
   const port = configService.get("PORT");
   app.enableCors({
-    origin: environment === "production" ? corsOrigin : "*",
+    origin: corsOrigin,
+    credentials: true,
   });
+  app.use(cookieParser());
   app.useGlobalFilters(
     new NotFoundFilter(),
     new EntityValidationErrorFilter(),
@@ -42,7 +45,7 @@ async function bootstrap() {
   SwaggerModule.setup("swagger", app, document);
   await app.listen(port, () =>
     console.log(
-      `Servidor rodando em http://0.0.0.0:${port}. Ambiente: ${environment}`,
+      `Servidor rodando em http://0.0.0.0:${port}. Ambiente: ${environment}. Cors: ${corsOrigin.join(`, `)}`,
     ),
   );
 }
